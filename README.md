@@ -1,5 +1,9 @@
 # Accounting Lab
 
+**Working website (outside Sites):** [Open Accounting Lab](https://rawcdn.githack.com/AeronTekle/accounting-lab/8a36cefcf8739197286bbeea61fc30a1ed0dac51/exams.html)
+
+The host may display a brief confirmation screen before opening HTML pages. This link is pinned to the verified publication snapshot.
+
 A Danish browser-based exam-practice website for Data Analytics in Accounting. Students run SQL or Excel-style formulas directly against attached course data, inspect results, and check answers. No AI API key is required.
 
 ## What is included

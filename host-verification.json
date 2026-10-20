@@ -1,0 +1,134 @@
+[
+  {
+    "path": "exams.html",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  },
+  {
+    "path": "index.html",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  },
+  {
+    "path": "style.css",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  },
+  {
+    "path": "exams.css",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  },
+  {
+    "path": "app.js",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  },
+  {
+    "path": "exams.js",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  },
+  {
+    "path": "course-extra.js",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  },
+  {
+    "path": "formula.js",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  },
+  {
+    "path": "sql-worker.js",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  },
+  {
+    "path": "excel-worker.js",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  },
+  {
+    "path": "assets/sql-wasm.js",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  },
+  {
+    "path": "assets/sql-wasm.wasm",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  },
+  {
+    "path": "assets/practice.json",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  },
+  {
+    "path": "assets/catalog.json",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  },
+  {
+    "path": "assets/songs.db",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  },
+  {
+    "path": "assets/chinook.sqlite",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  },
+  {
+    "path": "assets/movies-practice.db",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  },
+  {
+    "path": "assets/pcards-practice.db",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  },
+  {
+    "path": "assets/employees.json",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  },
+  {
+    "path": "assets/payroll.json",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  },
+  {
+    "path": "materials/restaurant.xlsm",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  },
+  {
+    "path": "materials/film.xlsx",
+    "status": "200",
+    "exact": true,
+    "error": ""
+  }
+]

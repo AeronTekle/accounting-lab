@@ -1,0 +1,17 @@
+{
+  "dataset": "Complete supplied Chinook_Sqlite.sqlite",
+  "queries": {
+    "reference": "SELECT SUM(Total) FROM Invoice;",
+    "alternative": "SELECT SUM(UnitPrice*Quantity) FROM InvoiceLine;",
+    "incorrect": "SELECT SUM(i.Total) FROM Invoice i JOIN InvoiceLine il ON il.InvoiceId=i.InvoiceId;"
+  },
+  "values": {
+    "reference": 2328.6,
+    "alternative": 2328.6,
+    "incorrect": 20848.62
+  },
+  "alternative_correct_query_matches": true,
+  "incorrect_join_rejected": true,
+  "interpretation": "The incorrect join repeats each invoice total for every matching line. A query can execute successfully and still overstate the requested measure. Equivalent results are accepted without demanding identical SQL text.",
+  "limits": "This verifies computational behaviour, not improved student learning, causal educational effects or a guaranteed assignment grade."
+}
