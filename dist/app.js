@@ -28,13 +28,14 @@ const exercises={
   {id:'p3',title:'Den rigtige løn pr. time',skill:'SUM · VÆGTET GENNEMSNIT',desc:'Find samlet bruttoløn divideret med samlede timer for hele 2015-udtrækket. A/B er timer; C/D er løn. Brug alle rækker 2–4982 og afrund til to decimaler.',starter:'=ROUND(SUM(C2:C4982)/SUM(A2:A4982),2)',answer:'=ROUND((SUM(C2:C4982)+SUM(D2:D4982))/(SUM(A2:A4982)+SUM(B2:B4982)),2)',mode:'summary',hint:'Tæl overtid med i både løn og timer. Divider summen af løn med summen af timer, frem for at tage et simpelt gennemsnit af satser.',explain:'1.086.734,19 i bruttoløn / 32.878,75 timer = 33,05 pr. time. Syv kildelinjer har nul timer og ikke-nul løn; beløbene er bevaret og bør undersøges før en forretningskonklusion.'}
  ]
 };
+if(window.COURSE_EXTRA){Object.assign(datasets,window.COURSE_EXTRA.datasets);Object.assign(exercises,window.COURSE_EXTRA.exercises);}
 let saved={};try{saved=JSON.parse(localStorage.getItem('accountingLab.v1')||'{}');}catch{}
 let state={studio:'sql',dataset:'songs',index:0,play:false,completed:new Set(saved.completed||[]),drafts:saved.drafts||{},last:null,worker:null,timer:null,working:false,data:null,loadId:0};
 const dataCache={};const fmt=new Intl.NumberFormat('da-DK',{maximumFractionDigits:8});
 const same=(a,b)=>typeof a==='number'&&typeof b==='number'?Math.abs(a-b)<=1e-7*Math.max(1,Math.abs(a),Math.abs(b)):a===b;
 function persist(){try{localStorage.setItem('accountingLab.v1',JSON.stringify({completed:[...state.completed],drafts:state.drafts}));}catch{}}
 function current(){return state.play?null:exercises[state.dataset][state.index];}
-function key(){return state.dataset+':'+(state.play?'play':current().id);}
+function key(){return state.dataset+':'+(state.play?'play':current().id)+(new URLSearchParams(location.search).get('attempt')||'');}
 function input(){return state.studio==='sql'?$('sqlInput'):$('formulaInput');}
 function remember(){if(state.working)return;state.drafts[key()]={text:input().value,mode:$('formulaMode').value};persist();}
 function stop(){if(state.worker)state.worker.terminate();clearTimeout(state.timer);state.worker=null;state.working=false;$('runButton').disabled=false;$('checkButton').disabled=state.play;$('runButton').innerHTML=state.studio==='sql'?'<span>▶</span> Kør SQL <kbd>⌘ ↵</kbd>':'<span>▶</span> Beregn <kbd>⌘ ↵</kbd>';}
@@ -48,8 +49,9 @@ function list(){
 function renderTask(){
  stop();clearResults();const ex=current();list();$('hint').hidden=true;$('solution').hidden=true;$('hintButton').textContent='✧ Vis et hint';$('solutionButton').textContent='Se løsningsforslag ↗';$('taskKicker').textContent=ex?'ØVELSE '+String(state.index+1).padStart(2,'0'):'DIN FRIE LEGEPLADS';$('skillTag').textContent=ex?ex.skill:'PRØV DIG FREM';$('taskTitle').textContent=ex?ex.title:'Hvad vil du undersøge?';$('taskDescription').textContent=ex?ex.desc:state.studio==='sql'?'Skriv din egen SELECT-forespørgsel på det valgte datasæt. Udforsk tabellerne, forbind dem, og se hvad du finder. Her er der intet facit.':'Afprøv de understøttede Excel-funktioner på datasættet. Vælg pr. række eller én samlet beregning. Her er der intet facit.';
  $('hintButton').hidden=!ex;$('solutionButton').hidden=!ex;$('checkButton').disabled=!ex;$('taskNote').textContent=datasets[state.dataset].source;
- const draft=state.drafts[key()];input().value=draft?draft.text:ex?ex.starter:state.studio==='sql'?(state.dataset==='songs'?'SELECT *\nFROM songs\nLIMIT 10;':'SELECT *\nFROM Invoice\nLIMIT 10;'):'=A2';$('formulaMode').value=draft?.mode||ex?.mode||'rows';updateLines();
+ const examLocked=new URLSearchParams(location.search).get('exam')==='1';const draft=state.drafts[key()];input().value=draft?draft.text:examLocked?(state.studio==='sql'?'SELECT ':'='):ex?ex.starter:state.studio==='sql'?(state.dataset==='songs'?'SELECT *\nFROM songs\nLIMIT 10;':'SELECT *\nFROM Invoice\nLIMIT 10;'):'=A2';$('formulaMode').value=draft?.mode||ex?.mode||'rows';updateLines();
  if(ex){$('hint').textContent=ex.hint;$('solutionCode').textContent=ex.answer;$('solutionExplanation').textContent=ex.explain;}
+ if(examLocked){for(const id of ['solutionButton','hintButton','checkButton'])$(id).hidden=true;}
 }
 function makeTable(headers,rows,{index=false,computed=-1}={}){
  const wrap=document.createElement('div');wrap.className='table-scroll';const table=document.createElement('table'),head=document.createElement('thead'),tr=document.createElement('tr');
@@ -66,7 +68,7 @@ async function renderContext(){
  }
 }
 function setStudio(studio){
- remember();stop();state.loadId++;state.studio=studio;state.dataset=studio==='sql'?'songs':'employees';state.index=0;state.play=false;$('sqlTab').classList.toggle('active',studio==='sql');$('excelTab').classList.toggle('active',studio==='excel');$('sqlTab').setAttribute('aria-pressed',studio==='sql');$('excelTab').setAttribute('aria-pressed',studio==='excel');$('crumb').textContent=studio==='sql'?'SQL STUDIO':'EXCEL STUDIO';$('pageTitle').textContent=studio==='sql'?'Fra spørgsmål til forespørgsel.':'En formel. Et resultat. Et aha.';$('pageSubtitle').textContent=studio==='sql'?'Prøv din SQL på rigtige kursusdata, og se resultatet med det samme.':'Afprøv Excel-formler på dine kursusdata — én række eller hele datasættet.';$('engineBadge').textContent=studio==='sql'?'SQLite · i browseren':'22 Excel-funktioner · i browseren';$('editorHeading').textContent=studio==='sql'?'Din forespørgsel':'Din Excel-formel';$('sqlEditorWrap').hidden=studio!=='sql';$('excelEditorWrap').hidden=studio!=='excel';$('dataset').replaceChildren();(studio==='sql'?['songs','chinook']:['employees','payroll']).forEach(id=>{const opt=document.createElement('option');opt.value=id;opt.textContent=datasets[id].name;$('dataset').append(opt);});renderTask();renderContext();
+ remember();stop();state.loadId++;state.studio=studio;state.dataset=studio==='sql'?'songs':'employees';state.index=0;state.play=false;$('sqlTab').classList.toggle('active',studio==='sql');$('excelTab').classList.toggle('active',studio==='excel');$('sqlTab').setAttribute('aria-pressed',studio==='sql');$('excelTab').setAttribute('aria-pressed',studio==='excel');$('crumb').textContent=studio==='sql'?'SQL STUDIO':'EXCEL STUDIO';$('pageTitle').textContent=studio==='sql'?'Fra spørgsmål til forespørgsel.':'En formel. Et resultat. Et aha.';$('pageSubtitle').textContent=studio==='sql'?'Prøv din SQL på rigtige kursusdata, og se resultatet med det samme.':'Afprøv Excel-formler på dine kursusdata — én række eller hele datasættet.';$('engineBadge').textContent=studio==='sql'?'SQLite · i browseren':'22 Excel-funktioner · i browseren';$('editorHeading').textContent=studio==='sql'?'Din forespørgsel':'Din Excel-formel';$('sqlEditorWrap').hidden=studio!=='sql';$('excelEditorWrap').hidden=studio!=='excel';$('dataset').replaceChildren();(studio==='sql'?['songs','chinook','movies','pcards']:['employees','payroll']).forEach(id=>{const opt=document.createElement('option');opt.value=id;opt.textContent=datasets[id].name;$('dataset').append(opt);});renderTask();renderContext();
 }
 function updateLines(){$('lineNumbers').textContent=$('sqlInput').value.split('\n').map((_,i)=>i+1).join('\n');}
 function compareRows(actual,ref,ordered){if(actual.length!==ref.length)return false;if(!actual.length)return true;if(actual[0].length!==ref[0].length)return false;if(ordered)return actual.every((row,i)=>row.every((v,j)=>same(v,ref[i][j])));const a=[...actual].sort((x,y)=>JSON.stringify(x).localeCompare(JSON.stringify(y))),b=[...ref].sort((x,y)=>JSON.stringify(x).localeCompare(JSON.stringify(y)));return a.every((row,i)=>row.every((v,j)=>same(v,b[i][j])));}
@@ -110,5 +112,13 @@ $('sqlInput').onscroll=()=>{$('lineNumbers').scrollTop=$('sqlInput').scrollTop;}
 $('exportButton').onclick=()=>{if(state.last)download(new Blob([csv(state.last.headers,state.last.rows)],{type:'text/csv;charset=utf-8'}),'accounting-lab-resultat.csv');};
 $('downloadButton').onclick=()=>{const ds=datasets[state.dataset];if(state.studio==='sql'){const a=document.createElement('a');a.href=ds.file;a.download=state.dataset==='songs'?'songs.db':'Chinook_Sqlite.sqlite';a.click();}else if(state.data)download(new Blob([csv(state.data.headers,state.data.rows)],{type:'text/csv;charset=utf-8'}),state.dataset+'.csv');};
 $('helpButton').onclick=()=>$('helpDialog').showModal();$('closeHelp').onclick=()=>$('helpDialog').close();$('startHelp').onclick=()=>$('helpDialog').close();$('helpDialog').addEventListener('click',e=>{if(e.target===$('helpDialog')){const r=$('helpDialog').getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)$('helpDialog').close();}});
-['songs','chinook'].forEach(id=>{const opt=document.createElement('option');opt.value=id;opt.textContent=datasets[id].name;$('dataset').append(opt);});
+['songs','chinook','movies','pcards'].forEach(id=>{const opt=document.createElement('option');opt.value=id;opt.textContent=datasets[id].name;$('dataset').append(opt);});
 renderTask();renderContext();
+
+// Deep links used by the practice bank and embedded exam workspace.
+(function(){
+ const p=new URLSearchParams(location.search),ds=p.get('dataset'),id=p.get('exercise');
+ if(ds&&datasets[ds]){const type=datasets[ds].schema?'sql':'excel';setStudio(type);state.dataset=ds;$('dataset').value=ds;const ix=exercises[ds].findIndex(x=>x.id===id);state.index=ix<0?0:ix;renderTask();renderContext();}
+ if(p.get('embed')==='1')document.body.classList.add('embedded-lab');
+ if(p.get('exam')==='1'){for(const id of ['solutionButton','hintButton','checkButton'])$(id).hidden=true;}
+})();

@@ -1,0 +1,538 @@
+{
+  "questions": [
+    {
+      "id": "f1",
+      "title": "Import og datatyper",
+      "category": "NYC Film Permits",
+      "kind": "Excel",
+      "prompt": "Import the film-permit workbook. How many data records and columns are there? Explain why date/time fields must be recognised as dates, not text.",
+      "answer": "33,502 records and 14 columns, excluding the header. StartDateTime, EndDateTime and EnteredOn must retain date/time meaning; numeric date arithmetic on text is unreliable. In a text import, explicitly select the correct delimiter and date/number locale.",
+      "hint": "Do not count the header. Check StartDateTime after import.",
+      "files": [
+        "materials/film.xlsx"
+      ],
+      "checks": [
+        "Exclude the header",
+        "Identify 33,502 records and 14 fields",
+        "Explain date and locale handling"
+      ]
+    },
+    {
+      "id": "f2",
+      "title": "Filtrering og optælling",
+      "category": "NYC Film Permits",
+      "kind": "Excel",
+      "prompt": "How many Shooting Permit records are in Brooklyn? Show an Excel method, not just a number.",
+      "answer": "10,367. One method is COUNTIFS with EventType=\"Shooting Permit\" and Borough=\"Brooklyn\". A filtered pivot table counting EventID also works. Count permits, not unique dates.",
+      "hint": "Apply both criteria at the same time.",
+      "files": [
+        "materials/film.xlsx"
+      ],
+      "checks": [
+        "Filter both EventType and Borough",
+        "Count records, not dates",
+        "Keep the formula or pivot table visible"
+      ]
+    },
+    {
+      "id": "f3",
+      "title": "Varighed i timer",
+      "category": "NYC Film Permits",
+      "kind": "Excel",
+      "prompt": "Find the mean permit duration in hours for Shooting Permit records. Give the unrounded mean to two decimals and explain the Excel conversion.",
+      "answer": "16.98 hours. In a helper column use =(EndDateTime-StartDateTime)*24; Excel date differences are days. Filter EventType=\"Shooting Permit\", then average the helper. Do not average only Brooklyn for this question.",
+      "hint": "Excel date differences are measured in days.",
+      "files": [
+        "materials/film.xlsx"
+      ],
+      "checks": [
+        "Use end minus start",
+        "Multiply days by 24",
+        "Filter Shooting Permit",
+        "Average all matching records"
+      ]
+    },
+    {
+      "id": "t1",
+      "title": "Ryd op uden at gætte",
+      "category": "ETL Case 1",
+      "kind": "Excel",
+      "prompt": "Identify four data-quality problems in the balance-sheet CSV and explain what you would do before analysis.",
+      "answer": "Examples: inconsistent missing inventories (blank, spaces, hyphens); inconsistent ticker spacing; duplicated APVO 2018 record; K/M suffixes; parentheses for negative depreciation; an unquoted comma inside Apple, Inc. disrupts CSV columns. Standardise missing values without replacing unknowns with zero, normalise identifiers, investigate duplicates, and parse units/signs. Do not guess the units of Total Current Assets from its magnitude: obtain metadata.",
+      "hint": "Look at identifiers, missing markers, units, duplicate records and CSV delimiters.",
+      "files": [
+        "materials/etl-case1.csv"
+      ],
+      "checks": [
+        "Give four real source examples",
+        "Separate missing from zero",
+        "Do not invent Total Current Assets units",
+        "Document transformations"
+      ]
+    },
+    {
+      "id": "j1",
+      "title": "Sammenkobl journaldata",
+      "category": "ETL Case 4",
+      "kind": "Excel",
+      "prompt": "Explain how to add BusinessUnit and account information to every journal line without dropping journal lines. Which identifiers should be used?",
+      "answer": "Use BusinessUnitID to match BusinessUnits and GLAccountNumber to match ChartOfAccounts. Use a lookup or left join from JELineItems. Preserve each journal line, flag unmatched IDs, and check that reference keys are unique so joins cannot multiply rows. A JENumber can occur on multiple journal lines; it is not a unique line identifier by itself.",
+      "hint": "Start with the journal lines as the table you must preserve.",
+      "files": [
+        "materials/journal.xlsx"
+      ],
+      "checks": [
+        "Name the correct matching keys",
+        "Preserve journal-line count",
+        "Check duplicate and unmatched reference keys",
+        "Do not assume JENumber is unique per line"
+      ]
+    },
+    {
+      "id": "j2",
+      "title": "Bevar et revisionsspor",
+      "category": "ETL Case 4",
+      "kind": "Excel",
+      "prompt": "Why should the repeatable journal-data solution retain formulas rather than replace all outputs with pasted values?",
+      "answer": "Formulas retain the mapping logic and dependencies, making the transformation easier to review and repeat on a consistently structured replacement dataset. Keep source worksheets intact, populate the requested solution columns, and test both successful matches and unmatched IDs. A pasted number alone does not show how it was derived.",
+      "hint": "Think about review, re-performance and future refreshes.",
+      "files": [
+        "materials/journal.xlsx"
+      ],
+      "checks": [
+        "Explain traceability",
+        "Explain repeatability",
+        "Keep source data intact"
+      ]
+    },
+    {
+      "id": "i1",
+      "title": "Sammenlign to lønsystemer",
+      "category": "IntegrateCo",
+      "kind": "Excel",
+      "prompt": "Compare total gross wages in the supplied 2015 and 2016 extracts. Define the measure consistently, and compute 2016 minus 2015.",
+      "answer": "2015 gross wages: 1,086,734.19; 2016: 1,352,789.75; increase: 266,055.56. 2015 uses Reg_Pay + OT_Pay; 2016 uses Gross_Wages. Do not add overtime twice in 2016. Both extracts cover the first six months; row counts and aggregation levels differ. Keep all supplied rows for these totals.",
+      "hint": "Gross_Wages already includes overtime in 2016.",
+      "files": [
+        "materials/payroll2015.xlsx",
+        "materials/payroll2016.xlsx"
+      ],
+      "checks": [
+        "Consistent gross-pay definition",
+        "Same six-month period",
+        "2016 minus 2015",
+        "Explain different row granularity"
+      ]
+    },
+    {
+      "id": "i2",
+      "title": "Manglende medarbejdernummer",
+      "category": "IntegrateCo",
+      "kind": "Excel",
+      "prompt": "How many 2016 rows have a missing Employee_Number, and what total Gross_Wages do those rows contain? What can you conclude?",
+      "answer": "68 rows, with total gross wages 32,951.29. These are data-quality exceptions requiring follow-up. The extract alone does not establish fraud or prove that an employee does not exist. Employee_ID is a separate field and is not the requested Employee_Number.",
+      "hint": "Test Employee_Number, not Employee_ID or Employee_Name.",
+      "files": [
+        "materials/payroll2016.xlsx"
+      ],
+      "checks": [
+        "Use the correct field",
+        "Count missing rows",
+        "Sum their gross wages",
+        "Separate an exception from proof of fraud"
+      ]
+    },
+    {
+      "id": "r1",
+      "kind": "Regression",
+      "category": "Restaurant",
+      "title": "Forudsig salg",
+      "prompt": "Using the temperature model, predict daily sales when tmax is 70°F. Give dollars to two decimals.",
+      "model": "temperature",
+      "answer": "3255.87. Prediction = intercept + temperature coefficient × 70. Include the intercept. This is a fitted conditional mean, not a guaranteed outcome.",
+      "hint": "Do not omit the intercept.",
+      "files": [
+        "materials/restaurant.xlsm"
+      ],
+      "checks": [
+        "Include intercept",
+        "Use 70°F, not 70°C",
+        "Describe a model prediction"
+      ],
+      "expected": 3255.8705706118917
+    },
+    {
+      "id": "r2",
+      "kind": "Regression",
+      "category": "Restaurant",
+      "title": "Fortolk temperatur",
+      "prompt": "Interpret the temperature coefficient. What change does the model predict for a 10°F increase? Does this demonstrate causality?",
+      "model": "temperature",
+      "answer": "The model associates a 1°F increase with 7.579688 additional dollars of predicted daily sales. A 10°F increase corresponds to 75.80. Observational association alone does not establish causality; season, holidays and other omitted factors may matter.",
+      "hint": "Multiply the slope by 10.",
+      "files": [
+        "materials/restaurant.xlsm"
+      ],
+      "checks": [
+        "State units",
+        "Distinguish association from causality",
+        "Hold model specification fixed"
+      ],
+      "expected": 75.79687651878784
+    },
+    {
+      "id": "r3",
+      "kind": "Regression",
+      "category": "Restaurant",
+      "title": "Vurder statistisk evidens",
+      "prompt": "Using the reported p-value, assess the temperature slope at the 5% level. What does R² tell you, and what does it not tell you?",
+      "model": "temperature",
+      "answer": "The temperature p-value is 0.00766585; compare it with 0.05. The slope is statistically significant under the OLS assumptions. R²=0.0227 describes in-sample explained variation, not causal proof, a guarantee of forecast accuracy, or the probability the model is true.",
+      "hint": "Statistical significance and practical forecasting usefulness are different.",
+      "files": [
+        "materials/restaurant.xlsm"
+      ],
+      "checks": [
+        "Compare actual p-value to .05",
+        "Interpret R² as in-sample variation",
+        "Do not claim causality or certain forecasts"
+      ],
+      "expected": null
+    },
+    {
+      "id": "r4",
+      "kind": "Regression",
+      "category": "Restaurant",
+      "title": "Kampdag med interaktion",
+      "prompt": "In the interaction model, let L=5000. Find predicted sales without a game and with a game, then the difference. For the numeric check, enter only the difference in dollars.",
+      "model": "interaction",
+      "answer": "No game: 4142.39. Game: 4583.12. Difference = b_G + b_LG × 5000 = 440.73. It is not just the game coefficient.",
+      "hint": "Switching G from 0 to 1 changes the G term and L×G term.",
+      "files": [
+        "materials/restaurant.xlsm"
+      ],
+      "checks": [
+        "Include interaction",
+        "Hold L constant",
+        "Interpret model comparison, not a proven causal effect"
+      ],
+      "expected": 440.7279835490987
+    },
+    {
+      "id": "r5",
+      "kind": "Regression",
+      "category": "Restaurant",
+      "title": "Hældningen på en kampdag",
+      "prompt": "What is the slope on L for game days? Explain how it differs from the slope on non-game days. Enter the game-day slope for the numeric check.",
+      "model": "interaction",
+      "answer": "Non-game slope: 0.619594460. Game-day slope: b_L + b_LG = 0.630334132. The interaction changes how current predicted sales relate to sales 364 days earlier. L is a sales amount, not elapsed days.",
+      "hint": "Collect the terms multiplying L when G=1.",
+      "files": [
+        "materials/restaurant.xlsm"
+      ],
+      "checks": [
+        "Add main and interaction slopes",
+        "Explain G=0 reference group",
+        "Interpret L correctly"
+      ],
+      "expected": 0.6303341319427155
+    },
+    {
+      "id": "r6",
+      "kind": "Regression",
+      "category": "Restaurant",
+      "title": "Forudsig syv dage frem",
+      "prompt": "Bob wants a sales forecast seven days after the last observed date. Explain what additional predictor information and validation you need before using these models for that forecast.",
+      "model": "interaction",
+      "answer": "Identify the future target date. For the interaction model, obtain sales 364 days before that target date and the scheduled game-day status. For the temperature model, obtain a forecast of tmax, not the realised future weather. Evaluate predictions on a chronological holdout and communicate forecast uncertainty. In-sample fit alone is insufficient. The case workbook does not justify inventing missing future inputs.",
+      "hint": "Which values must be known at the time the forecast is made?",
+      "files": [
+        "materials/restaurant.xlsm"
+      ],
+      "checks": [
+        "Specify target-date inputs",
+        "Avoid future-data leakage",
+        "Use chronological validation",
+        "Communicate uncertainty"
+      ],
+      "expected": null
+    }
+  ],
+  "models": {
+    "temperature": {
+      "n": 312,
+      "r2": 0.022710326050421004,
+      "coefficients": [
+        {
+          "term": "Intercept",
+          "estimate": 2725.292434980377,
+          "standardError": 204.51638336820935,
+          "pValue": 2.4442913938029947e-32
+        },
+        {
+          "term": "tmax (Fahrenheit)",
+          "estimate": 7.579687651878785,
+          "standardError": 2.824037326982624,
+          "pValue": 0.007665852088456378
+        }
+      ],
+      "b": [
+        2725.292434980377,
+        7.579687651878785
+      ]
+    },
+    "interaction": {
+      "n": 312,
+      "r2": 0.5359805345805859,
+      "coefficients": [
+        {
+          "term": "Intercept",
+          "estimate": 1044.4154790997852,
+          "standardError": 132.90517503997873,
+          "pValue": 6.568923292400721e-14
+        },
+        {
+          "term": "L: sales 364 days earlier",
+          "estimate": 0.6195944603553604,
+          "standardError": 0.036431272059606494,
+          "pValue": 3.330881036561226e-46
+        },
+        {
+          "term": "G: game day (0/1)",
+          "estimate": 387.0296256123234,
+          "standardError": 813.7022734805144,
+          "pValue": 0.6346677952780345
+        },
+        {
+          "term": "L × G",
+          "estimate": 0.010739671587355063,
+          "standardError": 0.15762702040324542,
+          "pValue": 0.945723618141431
+        }
+      ],
+      "b": [
+        1044.4154790997852,
+        0.6195944603553604,
+        387.0296256123234,
+        0.010739671587355063
+      ]
+    }
+  },
+  "materials": [
+    {
+      "title": "NYC Film Permits",
+      "file": "materials/film.xlsx",
+      "origin": "materials/1. Excel Part 1/PWC Excel Assignment/NYC_Film_Permits.xlsx",
+      "sha256": "5a3cace05355db722b301cafb6c0389652ab94146b07b62a2da0d9c56bbdb264",
+      "note": "Original supplied file, unchanged."
+    },
+    {
+      "title": "ETL Case 1",
+      "file": "materials/etl-case1.csv",
+      "origin": "materials/1. Excel part 2/ETL Assignment/data/case 1/Analytics_mindset_case_studies_ETL_Case1.csv",
+      "sha256": "bd7eb765eed79f8f3b8599ea59931c032fa6545d650b73999cf2ccd249d3036b",
+      "note": "Original supplied file, unchanged."
+    },
+    {
+      "title": "ETL Case 2",
+      "file": "materials/etl-case2.xlsx",
+      "origin": "materials/1. Excel part 2/ETL Assignment/data/case 2/Analytics_mindset_case_studies_ETL_Case2_Excel.xlsx",
+      "sha256": "b2af83da05522c61afd62e9d9534566410ea2d9cb190096145206f2c08d3804b",
+      "note": "Original supplied file, unchanged."
+    },
+    {
+      "title": "ETL Case 3",
+      "file": "materials/etl-case3.xlsx",
+      "origin": "materials/1. Excel part 2/ETL Assignment/data/case 3/Analytics_mindset_case_studies_ETL_Case3_Excel.xlsx",
+      "sha256": "ecd870566d30223332dc98f90c4ebbec4e9d812056ee8c38a24c6c0e97bbd47f",
+      "note": "Original supplied file, unchanged."
+    },
+    {
+      "title": "ETL Case 4 Journal entries",
+      "file": "materials/journal.xlsx",
+      "origin": "materials/1. Excel part 2/ETL Assignment/data/case 4/Analytics_mindset_case_studies_ETL_Case4_Excel.xlsx",
+      "sha256": "5ff18c7ea3260e6a24b60293c2580d0a284c392982c60bb415f32636ee69c17e",
+      "note": "Original supplied file, unchanged."
+    },
+    {
+      "title": "IntegrateCo 2015",
+      "file": "materials/payroll2015.xlsx",
+      "origin": "materials/1. Excel part 3/IntegrateCo Assignment/Analytics_mindset_case_studies_IntegrateCo_2015payroll.xlsx",
+      "sha256": "b112f85a26d03d0d395dd5406b4001f58eaee6fe8ad097d5a949656eaaaf8b68",
+      "note": "Original supplied file, unchanged."
+    },
+    {
+      "title": "IntegrateCo 2016",
+      "file": "materials/payroll2016.xlsx",
+      "origin": "materials/1. Excel part 3/IntegrateCo Assignment/Analytics_mindset_case_studies_IntegrateCo_2016payroll.xlsx",
+      "sha256": "424505e23bd51187719e225a2ce11727349b0371f71f798c39b391ef742f56d1",
+      "note": "Original supplied file, unchanged."
+    },
+    {
+      "title": "IntegrateCo job codes",
+      "file": "materials/jobcodes.csv",
+      "origin": "materials/1. Excel part 3/IntegrateCo Assignment/Analytics_mindset_case_studies_IntegrateCo_jobcodes.csv",
+      "sha256": "f2b3ace92cfb7009209bbafb78d61febf9f6e2c275987f41a6ab2e42995ba256",
+      "note": "Original supplied file, unchanged."
+    },
+    {
+      "title": "IntegrateCo locations",
+      "file": "materials/locations.csv",
+      "origin": "materials/1. Excel part 3/IntegrateCo Assignment/Analytics_mindset_case_studies_IntegrateCo_locations.csv",
+      "sha256": "0994e60c18d0b4593e31437322d604266341d578d7c5b07fbb6e78a37a579b1f",
+      "note": "Original supplied file, unchanged."
+    },
+    {
+      "title": "Restaurant regression source workbook",
+      "file": "materials/restaurant.xlsm",
+      "origin": "materials/1. Excel part 4/Regression Assignment/Restaurant/data.xlsm",
+      "sha256": "52770bbc5d89b323cabf09d4438d3e9c3cc0563186ce835e14c91007d9cab078",
+      "note": "Original supplied file, unchanged."
+    },
+    {
+      "title": "Movies · 2.000-filmudsnit",
+      "file": "assets/movies-practice.db",
+      "origin": "SQL part 1 / CS50 Movies",
+      "note": "CS50 Movies · top 2.000 efter stemmetal; ikke hele databasen"
+    },
+    {
+      "title": "P-cards · OSU-udsnit",
+      "file": "assets/pcards-practice.db",
+      "origin": "SQL part 2 / Pcards",
+      "note": "P-card case · første 2.000 OSU-rækker med Year=2014 efter ID"
+    },
+    {
+      "title": "Songs full database",
+      "file": "assets/songs.db",
+      "origin": "SQL part 1 / CS50 Songs",
+      "note": "Complete original database."
+    },
+    {
+      "title": "Chinook full database",
+      "file": "assets/chinook.sqlite",
+      "origin": "SQL part 1 / PwC",
+      "note": "Complete original database."
+    }
+  ],
+  "verification": {
+    "film_records": 33502,
+    "shooting_records": 28680,
+    "brooklyn_shoots": 10367,
+    "duration_hours": 16.981659112040912,
+    "gross2015": 1086734.19,
+    "gross2016": 1352789.75,
+    "phantom_rows": 68,
+    "phantom_pay": 32951.29,
+    "sql": {
+      "m1": {
+        "rows": 88,
+        "preview": [
+          [
+            "Ghost Rider"
+          ],
+          [
+            "Before the Devil Knows You're Dead"
+          ],
+          [
+            "Rush Hour 3"
+          ],
+          [
+            "Live Free or Die Hard"
+          ],
+          [
+            "Hannibal Rising"
+          ]
+        ]
+      },
+      "m2": {
+        "rows": 1,
+        "preview": [
+          [
+            6.8028571428571425
+          ]
+        ]
+      },
+      "m3": {
+        "rows": 4,
+        "preview": [
+          [
+            "Richard Harris"
+          ],
+          [
+            "Maggie Smith"
+          ],
+          [
+            "Rupert Grint"
+          ],
+          [
+            "Daniel Radcliffe"
+          ]
+        ]
+      },
+      "a1": {
+        "rows": 1,
+        "preview": [
+          [
+            1
+          ]
+        ]
+      },
+      "a2": {
+        "rows": 925,
+        "preview": [
+          [
+            "108 AUTO & TRUCK SALVAGE",
+            150.0
+          ],
+          [
+            "360 TRAINING",
+            347.0
+          ],
+          [
+            "3MStPau KM15671 072214",
+            304.04
+          ],
+          [
+            "3MStPau PT51055 4272",
+            2536.68
+          ],
+          [
+            "3MStPau PT51060 B55817",
+            901.05
+          ]
+        ]
+      },
+      "a3": {
+        "rows": 5,
+        "preview": [
+          [
+            813,
+            "NASA CATERING 10550515",
+            11944.42
+          ],
+          [
+            1090,
+            "BIO RAD  VIGOLAY07/24/1",
+            4990.0
+          ],
+          [
+            1486,
+            "THE LEE COMPANY",
+            4960.78
+          ],
+          [
+            1181,
+            "STERIS CORPORATION",
+            4715.88
+          ],
+          [
+            1339,
+            "PHARMCO PRODUCTS INC",
+            4630.0
+          ]
+        ]
+      }
+    }
+  },
+  "modelMethod": "Daily sum(netTotal) and sum(netTotal_364); date join to weather; absent dates in the supplied complete football schedule coded G=0; 312 observed sales dates; OLS with intercept; conventional homoskedastic standard errors. Not a validated forecasting model."
+}

@@ -1,0 +1,279 @@
+{
+  "datasets": {
+    "songs": {
+      "name": "Songs · Spotify",
+      "file": "assets/songs.db",
+      "meta": "100 sange · 2 tabeller",
+      "source": "CS50 Songs · SQL part 1",
+      "schema": {
+        "songs": "id INTEGER · name TEXT · artist_id INTEGER · danceability REAL · energy REAL · key INTEGER · loudness REAL · speechiness REAL · valence REAL · tempo REAL · duration_ms INTEGER",
+        "artists": "id INTEGER · name TEXT"
+      }
+    },
+    "chinook": {
+      "name": "Chinook · Musikbutik",
+      "file": "assets/chinook.sqlite",
+      "meta": "412 fakturaer · 11 tabeller",
+      "source": "PwC Chinook · SQL part 1",
+      "schema": {
+        "Invoice": "InvoiceId INTEGER · CustomerId INTEGER · InvoiceDate DATETIME · BillingAddress TEXT · BillingCity TEXT · BillingState TEXT · BillingCountry TEXT · BillingPostalCode TEXT · Total NUMERIC",
+        "InvoiceLine": "InvoiceLineId INTEGER · InvoiceId INTEGER · TrackId INTEGER · UnitPrice NUMERIC · Quantity INTEGER",
+        "Customer": "CustomerId INTEGER · FirstName TEXT · LastName TEXT · Company TEXT · Address TEXT · City TEXT · State TEXT · Country TEXT · PostalCode TEXT · Phone TEXT · Fax TEXT · Email TEXT · SupportRepId INTEGER",
+        "Track": "TrackId INTEGER · Name TEXT · AlbumId INTEGER · MediaTypeId INTEGER · GenreId INTEGER · Composer TEXT · Milliseconds INTEGER · Bytes INTEGER · UnitPrice NUMERIC",
+        "Album": "AlbumId INTEGER · Title TEXT · ArtistId INTEGER",
+        "Artist": "ArtistId INTEGER · Name TEXT",
+        "Genre": "GenreId INTEGER · Name TEXT",
+        "Employee": "EmployeeId INTEGER · LastName TEXT · FirstName TEXT · Title TEXT · ReportsTo INTEGER · BirthDate DATETIME · HireDate DATETIME · Address TEXT · City TEXT · State TEXT · Country TEXT · PostalCode TEXT · Phone TEXT · Fax TEXT · Email TEXT",
+        "MediaType": "MediaTypeId INTEGER · Name TEXT",
+        "Playlist": "PlaylistId INTEGER · Name TEXT",
+        "PlaylistTrack": "PlaylistId INTEGER · TrackId INTEGER"
+      }
+    },
+    "employees": {
+      "name": "Medarbejderkoder · ETL",
+      "file": "assets/employees.json",
+      "meta": "597 medarbejdere · ETL case 3",
+      "source": "ETL Case 3 · Excel part 2"
+    },
+    "payroll": {
+      "name": "Løndata · IntegrateCo 2015",
+      "file": "assets/payroll.json",
+      "meta": "4.981 lønlinjer · 5 udvalgte felter",
+      "source": "IntegrateCo 2015 · Excel part 3"
+    },
+    "movies": {
+      "name": "Movies · 2.000-filmudsnit",
+      "file": "assets/movies-practice.db",
+      "meta": "2.000 film · reduceret kursusudsnit",
+      "source": "CS50 Movies · top 2.000 efter stemmetal; ikke hele databasen",
+      "schema": {
+        "movies": "id INTEGER · title TEXT · year NUMERIC",
+        "ratings": "movie_id INTEGER · rating REAL · votes INTEGER",
+        "stars": "movie_id INTEGER · person_id INTEGER",
+        "directors": "movie_id INTEGER · person_id INTEGER",
+        "people": "id INTEGER · name TEXT · birth NUMERIC"
+      }
+    },
+    "pcards": {
+      "name": "P-cards · OSU-udsnit",
+      "file": "assets/pcards-practice.db",
+      "meta": "2.000 transaktioner · reduceret kursusudsnit",
+      "source": "P-card case · første 2.000 OSU-rækker med Year=2014 efter ID",
+      "schema": {
+        "pcards": "Year INTEGER · Month INTEGER · FullName TEXT · ID INTEGER · AgencyNumber INTEGER · AgencyName TEXT · CardholderLastName TEXT · CardholderFirstInitial TEXT · Description TEXT · Amount REAL · Vendor TEXT · TransactionDate TEXT · PostedDate TEXT · MCC TEXT"
+      }
+    }
+  },
+  "exercises": {
+    "songs": [
+      {
+        "id": "s1",
+        "title": "Dit første kig på data",
+        "skill": "SELECT · LIMIT",
+        "desc": "Vis navn og energy for de første fem sange, sorteret efter id i stigende rækkefølge. Resultatet skal have præcis de to kolonner i den rækkefølge.",
+        "starter": "SELECT name, energy\nFROM songs\nORDER BY id\nLIMIT 5;",
+        "answer": "SELECT name, energy\nFROM songs\nORDER BY id ASC\nLIMIT 5;",
+        "hint": "Vælg kolonner med SELECT. ORDER BY id giver en fast rækkefølge, og LIMIT 5 begrænser resultatet.",
+        "explain": "SELECT vælger de to felter. Sorteringen gør det entydigt, hvilke fem sange vi mener.",
+        "ordered": true
+      },
+      {
+        "id": "s2",
+        "title": "Tre krav på én gang",
+        "skill": "WHERE · AND",
+        "desc": "Find sangnavne, hvor danceability, energy og valence alle er større end 0.6. Vis kun name. Rækkefølgen er valgfri.",
+        "starter": "SELECT name\nFROM songs\nWHERE danceability > 0.6;",
+        "answer": "SELECT name\nFROM songs\nWHERE danceability > 0.6\n  AND energy > 0.6\n  AND valence > 0.6;",
+        "hint": "Alle tre krav skal være opfyldt. Overvej AND frem for OR.",
+        "explain": "AND kræver, at alle betingelser er sande. På denne fulde kursusdatabase giver det 23 sange.",
+        "ordered": false
+      },
+      {
+        "id": "s3",
+        "title": "Forbind sang med kunstner",
+        "skill": "JOIN · WHERE",
+        "desc": "Find navnene på alle sange af Drake. Brug kunstnerens navn til at finde ham; antag ikke, at du kender hans id. Vis kun sangnavnet. Rækkefølgen er valgfri.",
+        "starter": "SELECT s.name\nFROM songs AS s\n-- Forbind songs med artists her",
+        "answer": "SELECT s.name\nFROM songs AS s\nJOIN artists AS a ON s.artist_id = a.id\nWHERE a.name = 'Drake';",
+        "hint": "songs.artist_id peger på artists.id. Kunstnerens navn findes i artists.name.",
+        "explain": "Vi forbinder tabellerne via ID og filtrerer derefter på kunstnernavnet. En tilsvarende subquery er også en gyldig løsning.",
+        "ordered": false
+      }
+    ],
+    "chinook": [
+      {
+        "id": "c1",
+        "title": "Find de store fakturaer",
+        "skill": "COUNT · WHERE",
+        "desc": "Hvor mange fakturaer har en Total, som er strengt større end 20? Returnér ét tal i én kolonne.",
+        "starter": "SELECT COUNT(*)\nFROM Invoice\nWHERE Total > 20;",
+        "answer": "SELECT COUNT(*) AS InvoiceCount\nFROM Invoice\nWHERE Total > 20;",
+        "hint": "Filtrér på Total først, og tæl derefter med COUNT(*).",
+        "explain": "COUNT(*) tæller de fakturaer, der består betingelsen. > 20 udelukker fakturaer på præcis 20.",
+        "ordered": false
+      },
+      {
+        "id": "c2",
+        "title": "Omsætning uden dobbeltregning",
+        "skill": "SUM · DATANIVEAU",
+        "desc": "Find den samlede fakturaværdi på tværs af alle fakturaer. Hver faktura skal tælles én gang. Returnér ét tal.",
+        "starter": "SELECT SUM(i.Total)\nFROM Invoice AS i\nJOIN InvoiceLine AS il\n  ON il.InvoiceId = i.InvoiceId;",
+        "answer": "SELECT SUM(Total) AS InvoiceValue\nFROM Invoice;",
+        "hint": "En faktura kan have mange linjer. Hvad sker der med i.Total, når du laver et join til InvoiceLine?",
+        "explain": "Invoice indeholder allerede én række pr. faktura. Et join til linjerne gentager fakturatotalerne. Korrekt total: 2.328,60.",
+        "ordered": false
+      },
+      {
+        "id": "c3",
+        "title": "Hvilke lande køber mest?",
+        "skill": "GROUP BY · ORDER BY",
+        "desc": "Vis BillingCountry og summen af Total for hvert faktureringsland. Sortér efter summen fra størst til mindst, og derefter alfabetisk på land ved lighed.",
+        "starter": "SELECT BillingCountry, SUM(Total) AS Revenue\nFROM Invoice\n-- Tilføj gruppering og sortering",
+        "answer": "SELECT BillingCountry, SUM(Total) AS Revenue\nFROM Invoice\nGROUP BY BillingCountry\nORDER BY Revenue DESC, BillingCountry ASC;",
+        "hint": "GROUP BY samler fakturaer pr. land. ORDER BY SUM(Total) DESC sorterer den samlede værdi.",
+        "explain": "Gruppering og summering giver én række pr. land. Sekundær sortering giver en entydig rækkefølge ved samme omsætning.",
+        "ordered": true
+      }
+    ],
+    "employees": [
+      {
+        "id": "e1",
+        "title": "Saml fornavn og efternavn",
+        "skill": "TEKST · &",
+        "desc": "Saml FirstName i kolonne B og LastName i kolonne C til ét navn med ét mellemrum. Skriv formlen for række 2; den kopieres ned til alle 597 medarbejdere.",
+        "starter": "=B2&\" \"&C2",
+        "answer": "=B2&\" \"&C2",
+        "mode": "rows",
+        "hint": "& kombinerer tekst. Et mellemrum skal stå i anførselstegn: \" \".",
+        "explain": "Første resultat er Carl Rodriguez. Relative referencer ændres automatisk, når formlen kopieres ned."
+      },
+      {
+        "id": "e2",
+        "title": "Find plantens nummer",
+        "skill": "MID · FIND",
+        "desc": "Udtræk PlantID fra EmployeeCode i kolonne A. Plantens nummer står efter bindestregen og før M/Mo eller W/We. Det kan have ét eller to cifre. Returnér en numerisk værdi.",
+        "starter": "=MID(A2,1,1)",
+        "answer": "=VALUE(MID(A2,FIND(\"-\",A2)+1,LEN(A2)-FIND(\"-\",A2)-IF(OR(RIGHT(A2,1)=\"o\",RIGHT(A2,1)=\"e\"),2,1)))",
+        "mode": "rows",
+        "hint": "Find bindestregen med FIND. Antal cifre er den samlede længde minus bindestregens position minus længden af suffixet: to tegn for Mo/We, ellers ét. Brug VALUE til sidst.",
+        "explain": "For Japan177-3Mo er resultatet tallet 3. FIND gør løsningen uafhængig af landekodens og medarbejdernummerets længde."
+      },
+      {
+        "id": "e3",
+        "title": "M eller Mo? Håndtér begge",
+        "skill": "IF · OR · RIGHT",
+        "desc": "Returnér \"Monthly\" for koder, der slutter på M eller Mo, og \"Weekly\" for W eller We. Brug EmployeeCode i A og kopier ned.",
+        "starter": "=RIGHT(A2,1)",
+        "answer": "=IF(OR(RIGHT(A2,1)=\"M\",RIGHT(A2,2)=\"Mo\"),\"Monthly\",\"Weekly\")",
+        "mode": "rows",
+        "hint": "RIGHT(A2,1) returnerer o for en kode, der slutter på Mo. Test både M og Mo med OR.",
+        "explain": "Datasættet har 181 Mo-koder, 158 M-koder og 258 W-koder. De definerede gyldige koder omfatter også We. Ugyldige koder bør flagges særskilt i et produktionssystem."
+      }
+    ],
+    "payroll": [
+      {
+        "id": "p1",
+        "title": "Beregn samlet bruttoløn",
+        "skill": "REGULÆR LØN + OVERTID",
+        "desc": "Beregn bruttoløn for hver lønlinje: Reg_Pay i kolonne C plus OT_Pay i D. Arbejd pr. række fra række 2.",
+        "starter": "=C2+D2",
+        "answer": "=C2+D2",
+        "mode": "rows",
+        "hint": "Bruttoløn består her af almindelig løn og overtidsløn. Skatter og øvrige omkostninger indgår ikke i dette mål.",
+        "explain": "Hver kildeobservation er en lønallokering, ikke en unik medarbejder. Vi bevarer alle 4.981 linjer."
+      },
+      {
+        "id": "p2",
+        "title": "Hvor mange timer i alt?",
+        "skill": "SUM · OMRÅDER",
+        "desc": "Find det samlede antal arbejdstimer på tværs af alle 4.981 linjer: Reg_Hrs i A og OT_Hrs i B. Data går fra række 2 til 4982. Brug én samlet beregning.",
+        "starter": "=SUM(A2:A4982)",
+        "answer": "=SUM(A2:A4982)+SUM(B2:B4982)",
+        "mode": "summary",
+        "hint": "Husk både almindelige timer og overtidstimer. Du kan også summere det sammenhængende område A2:B4982.",
+        "explain": "Korrekt total: 32.878,75 timer. En AVERAGE af linjerne vil besvare et andet spørgsmål."
+      },
+      {
+        "id": "p3",
+        "title": "Den rigtige løn pr. time",
+        "skill": "SUM · VÆGTET GENNEMSNIT",
+        "desc": "Find samlet bruttoløn divideret med samlede timer for hele 2015-udtrækket. A/B er timer; C/D er løn. Brug alle rækker 2–4982 og afrund til to decimaler.",
+        "starter": "=ROUND(SUM(C2:C4982)/SUM(A2:A4982),2)",
+        "answer": "=ROUND((SUM(C2:C4982)+SUM(D2:D4982))/(SUM(A2:A4982)+SUM(B2:B4982)),2)",
+        "mode": "summary",
+        "hint": "Tæl overtid med i både løn og timer. Divider summen af løn med summen af timer, frem for at tage et simpelt gennemsnit af satser.",
+        "explain": "1.086.734,19 i bruttoløn / 32.878,75 timer = 33,05 pr. time. Syv kildelinjer har nul timer og ikke-nul løn; beløbene er bevaret og bør undersøges før en forretningskonklusion."
+      }
+    ],
+    "movies": [
+      {
+        "id": "m1",
+        "title": "Film fra 2007",
+        "desc": "Vis titlerne på film udgivet i 2007 i det valgte udsnit. Vis kun title; rækkefølgen er valgfri.",
+        "answer": "SELECT title FROM movies WHERE year=2007;",
+        "starter": "SELECT title FROM movies\n-- Færdiggør forespørgslen",
+        "hint": "Filtrér movies.year med WHERE.",
+        "skill": "WHERE",
+        "explain": "Svaret kontrolleres på det downloadbare, reducerede kursusudsnit. Resultatet kan afvige fra den fulde kursusdatabase.",
+        "ordered": false
+      },
+      {
+        "id": "m2",
+        "title": "Gennemsnitlig filmrating",
+        "desc": "Find den gennemsnitlige rating for film fra 2013 i udsnittet. Returnér ét tal.",
+        "answer": "SELECT AVG(r.rating) FROM movies m JOIN ratings r ON r.movie_id=m.id WHERE m.year=2013;",
+        "starter": "SELECT AVG(r.rating) FROM movies m JOIN ratings r ON r.movie_id=m.id\n-- Færdiggør forespørgslen",
+        "hint": "Forbind movie_id med movies.id før du filtrerer på år.",
+        "skill": "JOIN · AVG",
+        "explain": "Svaret kontrolleres på det downloadbare, reducerede kursusudsnit. Resultatet kan afvige fra den fulde kursusdatabase.",
+        "ordered": false
+      },
+      {
+        "id": "m3",
+        "title": "Hvem er med i Harry Potter?",
+        "desc": "Vis personnavne for skuespillere i Harry Potter and the Sorcerer's Stone i udsnittet. Vis hvert person-ID én gang. Rækkefølgen er valgfri.",
+        "answer": "SELECT p.name FROM people p WHERE p.id IN (SELECT s.person_id FROM stars s JOIN movies m ON m.id=s.movie_id WHERE m.title='Harry Potter and the Sorcerer''s Stone');",
+        "starter": "SELECT p.name FROM people p\n-- Færdiggør forespørgslen",
+        "hint": "Du skal forbinde movies, stars og people. En IN-subquery undgår at gentage person-ID.",
+        "skill": "RELATIONER",
+        "explain": "Svaret kontrolleres på det downloadbare, reducerede kursusudsnit. Resultatet kan afvige fra den fulde kursusdatabase.",
+        "ordered": false
+      }
+    ],
+    "pcards": [
+      {
+        "id": "a1",
+        "title": "Køb over beløbsgrænsen",
+        "desc": "Hvor mange transaktioner i dette OSU-udsnit har Amount strengt over 5000? Det er undersøgelsesflag, ikke bevis for regelbrud. Returnér ét tal.",
+        "answer": "SELECT COUNT(*) FROM pcards WHERE Amount>5000;",
+        "starter": "SELECT COUNT(*) FROM pcards\n-- Færdiggør forespørgslen",
+        "hint": "Brug > 5000, ikke >= 5000. Undtagelser kan kræve ekstra dokumentation.",
+        "skill": "COUNT · KONTROL",
+        "explain": "Svaret kontrolleres på det downloadbare, reducerede kursusudsnit. Resultatet kan afvige fra den fulde kursusdatabase.",
+        "ordered": false
+      },
+      {
+        "id": "a2",
+        "title": "Beløb fordelt på leverandør",
+        "desc": "Vis Vendor og summen af Amount for hver leverandør i udsnittet. Bevar krediteringer. Rækkefølgen er valgfri.",
+        "answer": "SELECT Vendor,SUM(Amount) AS NetAmount FROM pcards GROUP BY Vendor;",
+        "starter": "SELECT Vendor,SUM(Amount) AS NetAmount FROM pcards\n-- Færdiggør forespørgslen",
+        "hint": "GROUP BY Vendor. Negative beløb skal med i nettosummen.",
+        "skill": "GROUP BY · SUM",
+        "explain": "Svaret kontrolleres på det downloadbare, reducerede kursusudsnit. Resultatet kan afvige fra den fulde kursusdatabase.",
+        "ordered": false
+      },
+      {
+        "id": "a3",
+        "title": "De største enkeltkøb",
+        "desc": "Vis ID, Vendor og Amount for de fem største positive transaktioner i udsnittet. Sortér Amount faldende og ID stigende ved samme beløb.",
+        "answer": "SELECT ID,Vendor,Amount FROM pcards WHERE Amount>0 ORDER BY Amount DESC,ID ASC LIMIT 5;",
+        "starter": "SELECT ID,Vendor,Amount FROM pcards\n-- Færdiggør forespørgslen",
+        "hint": "Filtrér positive beløb, sortér og begræns til fem.",
+        "skill": "ORDER BY · LIMIT",
+        "explain": "Svaret kontrolleres på det downloadbare, reducerede kursusudsnit. Resultatet kan afvige fra den fulde kursusdatabase.",
+        "ordered": true
+      }
+    ]
+  }
+}
