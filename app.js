@@ -146,7 +146,7 @@ function run(check=false,sample=0){
   delete sampleStatus.dataset.outcome;
  }else $('feedback').hidden=true;
  updateSampleButtons();
- const worker=new Worker(state.studio==='sql'?'sql-worker.js':'excel-worker.js');state.worker=worker;
+ const worker=new Worker(state.studio==='sql'?'sql-worker.js?v=practice-56':'excel-worker.js');state.worker=worker;
  state.timer=setTimeout(()=>{stop();reportError('The calculation reached the eight-second limit. Try a smaller query or formula.');},8000);
  worker.onerror=()=>{if(state.worker!==worker)return;stop();reportError('Could not start the calculation engine. Reload the page to try again.');};
  worker.onmessage=e=>{if(state.worker!==worker)return;const r=e.data;stop();if(!r.ok){reportError(r.error);return;}
