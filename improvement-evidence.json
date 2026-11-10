@@ -13,5 +13,40 @@
   "alternative_correct_query_matches": true,
   "incorrect_join_rejected": true,
   "interpretation": "The incorrect join repeats each invoice total for every matching line. A query can execute successfully and still overstate the requested measure. Equivalent results are accepted without demanding identical SQL text.",
+  "sample_challenge": {
+    "query": "SELECT SUM(DISTINCT Total) FROM Invoice;",
+    "samples": [
+      {
+        "sample": 1,
+        "invoices": [
+          [
+            1,
+            1.98
+          ],
+          [
+            2,
+            3.96
+          ]
+        ],
+        "expected": 5.94,
+        "distinct_total": 5.94
+      },
+      {
+        "sample": 2,
+        "invoices": [
+          [
+            1,
+            1.98
+          ],
+          [
+            7,
+            1.98
+          ]
+        ],
+        "expected": 3.96,
+        "distinct_total": 1.98
+      }
+    ]
+  },
   "limits": "This verifies computational behaviour, not improved student learning, causal educational effects or a guaranteed assignment grade."
 }

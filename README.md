@@ -2,7 +2,7 @@
 
 **Working website (outside Sites):** [Open Accounting Lab](https://aerontekle.github.io/accounting-lab/exams.html)
 
-[Open the Chinook walkthrough](https://aerontekle.github.io/accounting-lab/exams.html?question=c2).
+[Open the Chinook two-sample challenge](https://aerontekle.github.io/accounting-lab/exams.html?question=c2).
 
 An English-language browser-based exam-practice website for Data Analytics in Accounting. Students run SQL or Excel-style formulas directly against attached course data, inspect results, and check answers. No AI API key is required.
 
@@ -39,7 +39,7 @@ Additional source mappings, original-file hashes, exact subset definitions and v
 
 The site's proposed improvement is an integrated execution workspace: students can run actual read-only SQLite queries and a limited set of Excel-style formulas immediately within practice questions. The checker compares output values rather than requiring identical source code. SQL answers can use alternative queries; ordering is checked only when requested, and duplicate rows are preserved during comparison. Excel exercises check every supplied source row or a single aggregate, as appropriate.
 
-The Chinook exercise shows a real invoice before and after joining to its line items. Students can see the repeated invoice total, explain the error and rerun a corrected query. Students can also download the same practice data for Excel or a SQLite editor and compare their work with the worked solution.
+The Chinook exercise shows a real invoice before and after joining to its line items. Its two-sample challenge also runs the same student query on two pairs of invoices. SUM(DISTINCT Total) matches the first pair at $5.94 and undercounts the second pair, which contains two separate $1.98 invoices. The challenge reveals those rows and accepts supported queries that produce the requested output on both samples. Students can also download the same practice data for Excel or a SQLite editor and compare their work with the worked solution.
 
 ## Deliberate limits
 

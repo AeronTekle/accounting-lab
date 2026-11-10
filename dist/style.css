@@ -18,3 +18,12 @@
 .join-walkthrough > p { margin: 12px 0; }
 .join-walkthrough caption { padding: 8px; text-align: left; font-weight: 600; }
 .join-explanation p { margin: 8px 0 0; }
+
+.sample-challenge h2 { margin: 4px 0 0; }
+.sample-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.sample-challenge .sample-result { margin: 10px 0 0; font-weight: 600; }
+.sample-challenge .sample-result:empty { margin: 0; }
+.sample-result[data-outcome="fail"] { color: #9a3026; }
+.sample-result[data-outcome="pass"] { color: #286043; }
+#sampleEvidence { margin-top: 12px; }
+#sampleEvidence p { margin: 8px 0 0; }

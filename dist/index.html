@@ -29,6 +29,24 @@
 </details>
 <div class="work-grid"><section class="editor-panel" aria-labelledby="editorHeading"><div class="panel-bar"><div><span class="panel-dot"></span><h2 id="editorHeading">Your query</h2></div><button id="resetButton" class="text-button">↺ Reset</button></div><div class="editor-wrap" id="sqlEditorWrap"><div class="line-numbers" id="lineNumbers" aria-hidden="true">1</div><textarea id="sqlInput" spellcheck="false" aria-label="SQL editor" autocapitalize="off" autocomplete="off"></textarea><div class="editor-language">SQL <span>UTF-8</span></div></div><div id="excelEditorWrap" class="excel-editor" hidden><label for="formulaInput">YOUR FORMULA · START IN ROW 2</label><div class="formula-entry"><span>ƒx</span><textarea id="formulaInput" spellcheck="false" aria-label="Excel formula" rows="3" autocapitalize="off"></textarea></div><div class="formula-mode"><label for="formulaMode">Calculate</label><select id="formulaMode"><option value="rows">Per row · fill the formula down</option><option value="summary">Summary · one calculation</option></select></div><p class="formula-note">Use English function names and decimal points. Separate arguments with commas or semicolons.</p></div><div class="editor-actions"><button id="runButton" class="primary-button"><span>▶</span> Run SQL <kbd>⌘ ↵</kbd></button><button id="checkButton" class="secondary-button">Check answer <span>✓</span></button></div></section>
 <section class="context-panel"><div class="panel-bar"><div><span class="data-icon">▤</span><h2 id="contextHeading">Database tables</h2></div><button id="downloadButton" class="text-button">Download data ↓</button></div><div id="schema" class="schema"></div><div class="context-tip" id="contextTip"><span>↳</span> Look for shared IDs when joining tables.</div></section></div>
+<section id="sampleChallenge" class="join-walkthrough sample-challenge" aria-labelledby="sampleTitle" hidden>
+  <span class="eyebrow">CHINOOK SQL CHALLENGE</span>
+  <h2 id="sampleTitle">Will your query still work?</h2>
+  <p>Use the SQL editor above to calculate one total. Check the query on a small sample, then run it unchanged on another sample. Each sample contains two invoices and their line items from the course database.</p>
+  <div class="sample-actions">
+    <button id="checkSampleOne" class="primary-button" type="button">Check Sample 1</button>
+    <button id="checkSampleTwo" class="secondary-button" type="button" disabled>Test on another sample</button>
+    <button id="loadSampleExample" class="text-button" type="button">Load example query</button>
+  </div>
+  <div role="status">
+    <p id="sampleOneResult" class="sample-result"></p>
+    <p id="sampleTwoResult" class="sample-result"></p>
+  </div>
+  <div id="sampleEvidence" hidden>
+    <div id="sampleInvoices"></div>
+    <p>These are two separate invoices. What should identify a unique invoice when two invoices have the same total?</p>
+  </div>
+</section>
 <section class="results-panel" aria-labelledby="resultsHeading"><div class="panel-bar"><div><span class="result-icon">↳</span><h2 id="resultsHeading">Results</h2><span class="result-count" id="resultCount">Ready for your first attempt</span></div><div class="results-tools"><span id="timing"></span><button id="exportButton" class="text-button" disabled>Export CSV ↓</button></div></div><div id="feedback" class="feedback" role="status" hidden></div><div id="resultArea"><div class="empty-result"><span class="empty-icon">▤<span>↗</span></span><h3>Your results will appear here</h3><p>Enter a solution and select <strong id="emptyRunLabel">Run SQL</strong>.<br>You can edit your solution and run it again.</p></div></div><div id="tableFooter" class="table-footer" hidden></div></section>
 <footer class="main-footer"><span>PRACTICE WORKSPACE</span><span>Course data · Worked solutions · Result checks</span></footer>
 </main></div>

@@ -32,13 +32,15 @@ if(window.COURSE_EXTRA){Object.assign(datasets,window.COURSE_EXTRA.datasets);Obj
 let saved={};try{saved=JSON.parse(localStorage.getItem('accountingLab.v1')||'{}');}catch{}
 let state={studio:'sql',dataset:'songs',index:0,play:false,completed:new Set(saved.completed||[]),drafts:saved.drafts||{},last:null,worker:null,timer:null,working:false,data:null,loadId:0};
 const dataCache={};const fmt=new Intl.NumberFormat('en-US',{maximumFractionDigits:8});
+const usd=new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:8});
+let sampleOneQuery=null;
 const same=(a,b)=>typeof a==='number'&&typeof b==='number'?Math.abs(a-b)<=1e-7*Math.max(1,Math.abs(a),Math.abs(b)):a===b;
 function persist(){try{localStorage.setItem('accountingLab.v1',JSON.stringify({completed:[...state.completed],drafts:state.drafts}));}catch{}}
 function current(){return state.play?null:exercises[state.dataset][state.index];}
 function key(){return state.dataset+':'+(state.play?'play':current().id)+(new URLSearchParams(location.search).get('attempt')||'');}
 function input(){return state.studio==='sql'?$('sqlInput'):$('formulaInput');}
 function remember(){if(state.working)return;state.drafts[key()]={text:input().value,mode:$('formulaMode').value};persist();}
-function stop(){if(state.worker)state.worker.terminate();clearTimeout(state.timer);state.worker=null;state.working=false;$('runButton').disabled=false;$('checkButton').disabled=state.play;$('runButton').innerHTML=state.studio==='sql'?'<span>▶</span> Run SQL <kbd>⌘ ↵</kbd>':'<span>▶</span> Calculate <kbd>⌘ ↵</kbd>';}
+function stop(){if(state.worker)state.worker.terminate();clearTimeout(state.timer);state.worker=null;state.working=false;$('runButton').disabled=false;$('checkButton').disabled=state.play;$('runButton').innerHTML=state.studio==='sql'?'<span>▶</span> Run SQL <kbd>⌘ ↵</kbd>':'<span>▶</span> Calculate <kbd>⌘ ↵</kbd>';updateSampleButtons();}
 function clearResults(){state.last=null;$('resultCount').textContent='Ready for your next attempt';$('timing').textContent='';$('feedback').hidden=true;$('tableFooter').hidden=true;$('exportButton').disabled=true;$('resultArea').replaceChildren();const div=document.createElement('div');div.className='empty-result';div.innerHTML='<span class="empty-icon">▤<span>↗</span></span><h3>Your results will appear here</h3><p>Enter a solution and select <strong>'+(state.studio==='sql'?'Run SQL':'Calculate')+'</strong>.<br>You can edit your solution and run it again.</p>';$('resultArea').append(div);}
 function feedback(message,type='neutral'){$('feedback').textContent=message;$('feedback').className='feedback '+type;$('feedback').hidden=false;}
 function list(){
@@ -56,6 +58,8 @@ function renderTask(){
  walkthrough.hidden=examLocked||ex?.id!=='c2';
  walkthrough.open=false;
  walkthrough.querySelector('.join-explanation').open=false;
+ $('sampleChallenge').hidden=walkthrough.hidden;
+ resetSamples();
 }
 function makeTable(headers,rows,{index=false,computed=-1}={}){
  const wrap=document.createElement('div');wrap.className='table-scroll';const table=document.createElement('table'),head=document.createElement('thead'),tr=document.createElement('tr');
@@ -78,15 +82,64 @@ function setStudio(studio){
 }
 function updateLines(){$('lineNumbers').textContent=$('sqlInput').value.split('\n').map((_,i)=>i+1).join('\n');}
 function compareRows(actual,ref,ordered){if(actual.length!==ref.length)return false;if(!actual.length)return true;if(actual[0].length!==ref[0].length)return false;if(ordered)return actual.every((row,i)=>row.every((v,j)=>same(v,ref[i][j])));const a=[...actual].sort((x,y)=>JSON.stringify(x).localeCompare(JSON.stringify(y))),b=[...ref].sort((x,y)=>JSON.stringify(x).localeCompare(JSON.stringify(y)));return a.every((row,i)=>row.every((v,j)=>same(v,b[i][j])));}
-function run(check=false){
+function updateSampleButtons(){
+ $('checkSampleOne').disabled=state.working;
+ $('checkSampleTwo').disabled=state.working||sampleOneQuery!==$('sqlInput').value;
+ $('loadSampleExample').disabled=state.working;
+}
+function resetSamples(){
+ sampleOneQuery=null;
+ for(const id of ['sampleOneResult','sampleTwoResult']){
+  $(id).textContent='';
+  delete $(id).dataset.outcome;
+ }
+ $('sampleEvidence').hidden=true;
+ $('sampleInvoices').replaceChildren();
+ updateSampleButtons();
+}
+function showSampleResult(sample,result,query){
+ const actual=result.rows[0]?.[0];
+ const reference=result.reference.rows[0][0];
+ const scalar=result.count===1&&result.columns.length===1&&Number.isFinite(actual);
+ const matches=scalar&&same(actual,reference);
+ const status=$(sample===1?'sampleOneResult':'sampleTwoResult');
+ const outcome=scalar?'Your total '+usd.format(actual)+'. Expected '+usd.format(reference)+'.':'Return one numeric total in one column.';
+ status.textContent='Sample '+sample+(matches?' passed. ':' needs another look. ')+outcome;
+ status.dataset.outcome=matches?'pass':'fail';
+ if(sample===1&&matches)sampleOneQuery=query;
+ if(sample===2){
+  const invoices=result.sampleInvoices.map(([id,total])=>[id,usd.format(total)]);
+  $('sampleInvoices').replaceChildren(makeTable(['Invoice ID','Invoice total'],invoices));
+  $('sampleEvidence').hidden=false;
+ }
+ updateSampleButtons();
+}
+function run(check=false,sample=0){
  if(state.working)return;remember();const ex=current();if(check&&!ex)return;
+ const query=input().value;
+ if(sample&&($('sampleChallenge').hidden||(sample===2&&query!==sampleOneQuery)))return;
+ if(sample===1)resetSamples();
+ const sampleStatus=sample?$(sample===1?'sampleOneResult':'sampleTwoResult'):null;
+ const reportError=message=>{
+  if(!sample){feedback(message,'error');return;}
+  if(query!==$('sqlInput').value)return;
+  sampleStatus.textContent=message;
+  sampleStatus.dataset.outcome='fail';
+ };
  if(state.studio==='excel'&&!state.data){feedback('The data is loading. Wait a moment or select the dataset again.','error');return;}
- if(!input().value.trim()){feedback('Enter a solution in the editor first.','error');input().focus();return;}
- stop();state.working=true;$('runButton').disabled=true;$('checkButton').disabled=true;$('runButton').textContent='Running…';$('feedback').hidden=true;
+ if(!query.trim()){reportError('Enter a solution in the editor first.');input().focus();return;}
+ stop();state.working=true;$('runButton').disabled=true;$('checkButton').disabled=true;$('runButton').textContent='Running…';
+ if(sample){
+  sampleStatus.textContent='Running Sample '+sample+'…';
+  delete sampleStatus.dataset.outcome;
+ }else $('feedback').hidden=true;
+ updateSampleButtons();
  const worker=new Worker(state.studio==='sql'?'sql-worker.js':'excel-worker.js');state.worker=worker;
- state.timer=setTimeout(()=>{stop();feedback('The calculation reached the eight-second limit. Try a smaller query or formula.','error');},8000);
- worker.onerror=()=>{stop();feedback('Could not start the calculation engine. Reload the page to try again.','error');};
- worker.onmessage=e=>{const r=e.data;stop();if(!r.ok){feedback(r.error,'error');return;}$('exportButton').disabled=false;$('timing').textContent=r.ms+' ms';
+ state.timer=setTimeout(()=>{stop();reportError('The calculation reached the eight-second limit. Try a smaller query or formula.');},8000);
+ worker.onerror=()=>{if(state.worker!==worker)return;stop();reportError('Could not start the calculation engine. Reload the page to try again.');};
+ worker.onmessage=e=>{if(state.worker!==worker)return;const r=e.data;stop();if(!r.ok){reportError(r.error);return;}
+  if(sample){if(query===$('sqlInput').value)showSampleResult(sample,r,query);return;}
+  $('exportButton').disabled=false;$('timing').textContent=r.ms+' ms';
   if(state.studio==='sql'){
    state.last={headers:r.columns,rows:r.rows};$('resultCount').textContent=r.count+' '+(r.count===1?'row':'rows');$('resultArea').replaceChildren(makeTable(r.columns,r.rows.slice(0,200)));
    $('tableFooter').hidden=false;$('tableFooter').textContent='Showing '+Math.min(r.count,200)+' of '+r.count+' rows. Export the CSV to see all rows.';
@@ -98,8 +151,8 @@ function run(check=false){
    if(check){const pass=$('formulaMode').value===ex.mode&&!r.errors&&r.results.length===r.reference.length&&r.results.every((v,i)=>!r.reference[i].error&&same(v.value,r.reference[i].value));if(pass)passed(ex);else feedback('The results differ. '+($('formulaMode').value!==ex.mode?'Select '+(ex.mode==='summary'?'one summary calculation':'one calculation per row')+'.':r.errors?'Fix the formula errors shown in the result column.':'Some rows differ from the reference result.')+' Try a hint and calculate again.','error');}
   }
  };
- if(state.studio==='sql')worker.postMessage({sql:input().value,database:datasets[state.dataset].file,expected:check?ex.answer:null});
- else worker.postMessage({formula:input().value,data:state.data,mode:$('formulaMode').value,expected:check?ex.answer:null});
+ if(state.studio==='sql')worker.postMessage({sql:query,database:datasets[state.dataset].file,expected:check?ex.answer:null,sample});
+ else worker.postMessage({formula:query,data:state.data,mode:$('formulaMode').value,expected:check?ex.answer:null});
 }
 function passed(ex){state.completed.add(ex.id);persist();list();feedback('✓ Your result matches the reference. '+(ex.id==='p3'?'Review the source rows with zero hours.':'Can you explain why your method works?'),'success');}
 function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
@@ -108,12 +161,19 @@ $('sqlTab').onclick=()=>{if(state.studio!=='sql')setStudio('sql');};$('excelTab'
 $('dataset').onchange=()=>{remember();state.dataset=$('dataset').value;state.index=0;state.play=false;renderTask();renderContext();};
 $('playButton').onclick=()=>{remember();state.play=true;renderTask();};
 $('runButton').onclick=()=>run();$('checkButton').onclick=()=>run(true);
+$('checkSampleOne').onclick=()=>run(true,1);
+$('checkSampleTwo').onclick=()=>run(true,2);
+$('loadSampleExample').onclick=()=>{
+ $('sqlInput').value='SELECT SUM(DISTINCT Total) FROM Invoice;';
+ $('sqlInput').dispatchEvent(new Event('input'));
+ $('sqlInput').focus();
+};
 $('hintButton').onclick=()=>{$('hint').hidden=!$('hint').hidden;$('hintButton').textContent=$('hint').hidden?'✧ Show hint':'✧ Hide hint';};
 $('solutionButton').onclick=()=>{$('solution').hidden=!$('solution').hidden;$('solutionButton').textContent=$('solution').hidden?'Show worked solution ↗':'Hide worked solution ↑';};
-$('useSolution').onclick=()=>{input().value=current().answer;$('formulaMode').value=current().mode||'rows';remember();updateLines();input().focus();};
+$('useSolution').onclick=()=>{input().value=current().answer;$('formulaMode').value=current().mode||'rows';input().dispatchEvent(new Event('input'));input().focus();};
 $('resetButton').onclick=()=>{stop();delete state.drafts[key()];persist();renderTask();};
-$('sqlInput').oninput=()=>{updateLines();remember();};$('formulaInput').oninput=remember;$('formulaMode').onchange=()=>{stop();remember();clearResults();};
-for(const el of [$('sqlInput'),$('formulaInput')])el.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run();}if(e.key==='Tab'){e.preventDefault();el.setRangeText('  ',el.selectionStart,el.selectionEnd,'end');updateLines();remember();}});
+$('sqlInput').oninput=()=>{updateLines();resetSamples();remember();};$('formulaInput').oninput=remember;$('formulaMode').onchange=()=>{stop();remember();clearResults();};
+for(const el of [$('sqlInput'),$('formulaInput')])el.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run();}if(e.key==='Tab'){e.preventDefault();el.setRangeText('  ',el.selectionStart,el.selectionEnd,'end');el.dispatchEvent(new Event('input'));}});
 $('sqlInput').onscroll=()=>{$('lineNumbers').scrollTop=$('sqlInput').scrollTop;};
 $('exportButton').onclick=()=>{if(state.last)download(new Blob([csv(state.last.headers,state.last.rows)],{type:'text/csv;charset=utf-8'}),'accounting-lab-results.csv');};
 $('downloadButton').onclick=()=>{const ds=datasets[state.dataset];if(state.studio==='sql'){const a=document.createElement('a');a.href=ds.file;a.download=ds.file.split('/').pop();a.click();}else if(state.data)download(new Blob([csv(state.data.headers,state.data.rows)],{type:'text/csv;charset=utf-8'}),state.dataset+'.csv');};
