@@ -14,8 +14,8 @@ for(const ex of context.exercises.payroll){const ast=compile(ex.answer);if(ex.id
 const cases=[['=LEFT(A2,5)','Japan'],['=RIGHT(A2,2)','Mo'],['=MID(A2,6,3)','177'],['=LEN(B2)',4],['=FIND("-",A2)',9],['=SEARCH("JAPAN",A2)',1],['=IF(TRUE,7,1/0)',7],['=IFERROR(1/0,99)',99],['=AND(1=1,2<3)',true],['=OR(FALSE,TRUE)',true],['=NOT(FALSE)',true],['=CONCATENATE(B2," ",C2)','Carl Rodriguez'],['=TRIM("  a   b  ")','a b'],['=UPPER(B2)','CARL'],['=LOWER(B2)','carl'],['=VALUE("123")',123],['=ROUND(-1.25,1)',-1.3],['=SUM(1,2,3)',6],['=AVERAGE(2,4)',3],['=COUNT(1,"a",2)',2],['=MIN(8,2,3)',2],['=MAX(8,2,3)',8],['=IF(TRUE;2;3)',2],['=IF(FALSE,1/0,7)',7]];
 for(const [f,expected] of cases)equal(run(f),expected);
 equal(run('=$B$2',employee,10),'Carl');equal(run('=B2',employee,1),'Anne');equal(run('=SUM(A2:B2)',payroll,1),25);
-assert.throws(()=>run('=1/0'),/DIV/);assert.throws(()=>run('=Z99999'),/REF/);assert.throws(()=>run('=DOESNOTEXIST(1)'),/understøttes/);
-assert.throws(()=>run('=FIND("missing",A2)'),/VALUE/);assert.throws(()=>run('=SEARCH("*",A2)'),/jokertegn/);
+assert.throws(()=>run('=1/0'),/DIV/);assert.throws(()=>run('=Z99999'),/REF/);assert.throws(()=>run('=DOESNOTEXIST(1)'),/unavailable/);
+assert.throws(()=>run('=FIND("missing",A2)'),/VALUE/);assert.throws(()=>run('=SEARCH("*",A2)'),/literal text/);
 assert.throws(()=>run('=AVERAGE("a")'),/DIV/);
 (async()=>{
  const init=require(path.join(dir,'assets/sql-wasm.js'));const SQL=await init({locateFile:f=>path.join(dir,'assets',f)});

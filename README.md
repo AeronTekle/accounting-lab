@@ -1,10 +1,10 @@
 # Accounting Lab
 
-**Working website (outside Sites):** [Open Accounting Lab](https://rawcdn.githack.com/AeronTekle/accounting-lab/8a36cefcf8739197286bbeea61fc30a1ed0dac51/exams.html)
+**Working website (outside Sites):** [Open Accounting Lab](https://aerontekle.github.io/accounting-lab/exams.html)
 
-The host may display a brief confirmation screen before opening HTML pages. This link is pinned to the verified publication snapshot.
+[Open the Chinook walkthrough](https://aerontekle.github.io/accounting-lab/exams.html?question=c2).
 
-A Danish browser-based exam-practice website for Data Analytics in Accounting. Students run SQL or Excel-style formulas directly against attached course data, inspect results, and check answers. No AI API key is required.
+An English-language browser-based exam-practice website for Data Analytics in Accounting. Students run SQL or Excel-style formulas directly against attached course data, inspect results, and check answers. No AI API key is required.
 
 ## What is included
 
@@ -39,7 +39,7 @@ Additional source mappings, original-file hashes, exact subset definitions and v
 
 The site's proposed improvement is an integrated execution workspace: students can run actual read-only SQLite queries and a limited set of Excel-style formulas immediately within practice questions. The checker compares output values rather than requiring identical source code. SQL answers can use alternative queries; ordering is checked only when requested, and duplicate rows are preserved during comparison. Excel exercises check every supplied source row or a single aggregate, as appropriate.
 
-This reduces setup for short practice sessions. It does not replace practising in Microsoft Excel or prove readiness for an oral exam. Claimed educational benefit is a design rationale, not a measured learning-effectiveness result.
+The Chinook exercise shows a real invoice before and after joining to its line items. Students can see the repeated invoice total, explain the error and rerun a corrected query. Students can also download the same practice data for Excel or a SQLite editor and compare their work with the worked solution.
 
 ## Deliberate limits
 

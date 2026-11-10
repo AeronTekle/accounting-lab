@@ -2,7 +2,7 @@
 
 ## Required deliverables
 
-1. Working website: linked in README.md and SUBMISSION.md; hosted outside Sites through a GitHub-backed static CDN.
+1. Working website: linked in README.md and SUBMISSION.md and hosted on GitHub Pages.
 2. Source repository: https://github.com/AeronTekle/accounting-lab
 3. One paragraph about the useful added functionality: SUBMISSION.md.
 4. One paragraph about why the starting materials are harder: SUBMISSION.md.
@@ -17,7 +17,7 @@
 - All question IDs, exam compositions, downloadable files, original hashes, regression arithmetic, six added SQL answers and subset database integrity passed node check-course.cjs.
 - node demonstrate-improvement.cjs confirms that an alternative correct SQL query returns 2328.60, whereas the invoice-line duplication query returns 20848.62. This is functional evidence, not evidence of improved learning or a promised grade.
 
-## Browser and publication checks
+## Initial browser and publication checks
 
 Local browser checks exercised question-bank filtering, the embedded exam workspace, hidden review controls during practice exams, start/pause, timer persistence after navigation/refresh, review mode, and regression output. The earlier studio tests checked actual SQL execution, wrong-answer feedback, alternative/correct results, row-wise Excel calculations, the 33.05 payroll result and CSV download.
 
