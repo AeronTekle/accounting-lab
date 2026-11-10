@@ -53,6 +53,73 @@
       ]
     },
     {
+      "id": "f4",
+      "title": "Count missing ZIP codes",
+      "category": "NYC Film Permits",
+      "kind": "Excel",
+      "prompt": "How many permit records have a missing ZIP code? Inspect the column and explain how the source represents missing values.",
+      "answer": "The source contains 11 missing ZIP codes recorded as the text N/A. Filter ZipCode to N/A or use COUNTIF on that marker. COUNTBLANK would skip those text values.",
+      "hint": "Look for a text placeholder as well as empty cells.",
+      "files": [
+        "materials/film.xlsx"
+      ],
+      "checks": [
+        "Use the full permit table",
+        "Identify the missing-value marker",
+        "Distinguish missing from invalid"
+      ]
+    },
+    {
+      "id": "f5",
+      "title": "Find the earliest and latest entry times",
+      "category": "NYC Film Permits",
+      "kind": "Excel",
+      "prompt": "Give the oldest and newest EnteredOn timestamps. Include the date and time.",
+      "answer": "Earliest 2011-12-07 16:38. Latest 2018-02-09 12:46. MIN and MAX work on the imported date/time field.",
+      "hint": "Use EnteredOn and format the results to include time.",
+      "files": [
+        "materials/film.xlsx"
+      ],
+      "checks": [
+        "Use EnteredOn",
+        "Report both date and time"
+      ]
+    },
+    {
+      "id": "f6",
+      "title": "Find the most common shooting-permit category",
+      "category": "NYC Film Permits",
+      "kind": "Excel",
+      "prompt": "Among Shooting Permit records, find the category with the most records and give its count.",
+      "answer": "Television, with 16,731 records. Filter EventType to Shooting Permit, then count EventID by Category and sort descending.",
+      "hint": "Apply the event-type filter before grouping.",
+      "files": [
+        "materials/film.xlsx"
+      ],
+      "checks": [
+        "Filter EventType",
+        "Group by Category",
+        "Report the top count"
+      ]
+    },
+    {
+      "id": "t2",
+      "title": "Build a location and plant key",
+      "category": "ETL Case 2",
+      "kind": "Excel",
+      "prompt": "Using the Case 2 source sheet, derive a location and plant key such as USA-12. Explain why PlantID by itself can repeat across locations.",
+      "answer": "For JAP1080-19M, the key is JAP-19. Use LEFT(A2,3) for the location and MID(A2,FIND(\"-\",A2)+1,2) for the two-digit plant. Join them with a hyphen and fill down. A plant number can recur in different countries.",
+      "hint": "Combine the country code and the plant number, leaving out the pay-period letter.",
+      "files": [
+        "materials/etl-case2.xlsx"
+      ],
+      "checks": [
+        "Use the Case 2 source sheet",
+        "Keep both parts of the key",
+        "Explain why location matters"
+      ]
+    },
+    {
       "id": "t1",
       "title": "Resolve data quality issues",
       "category": "ETL Case 1",
@@ -140,6 +207,42 @@
         "Count missing rows",
         "Sum their gross wages",
         "Separate an exception from proof of fraud"
+      ]
+    },
+    {
+      "id": "i3",
+      "title": "Compare average gross pay per hour",
+      "category": "IntegrateCo",
+      "kind": "Excel",
+      "prompt": "Calculate company-wide gross pay per hour for each extract, including overtime. Explain why an average of individual row rates can differ.",
+      "answer": "2015: USD 33.05 using 32,878.75 hours. 2016: USD 33.20 using 40,742.40 hours. Divide total pay by total hours, which weights the result by hours.",
+      "hint": "Sum regular and overtime hours for each year and use the corresponding gross-wage total.",
+      "files": [
+        "materials/payroll2015.xlsx",
+        "materials/payroll2016.xlsx"
+      ],
+      "checks": [
+        "Include overtime hours",
+        "Use company-wide totals",
+        "Explain weighting"
+      ]
+    },
+    {
+      "id": "i4",
+      "title": "Estimate January 2016 payroll from the 2015 pattern",
+      "category": "IntegrateCo",
+      "kind": "Excel",
+      "prompt": "Use January’s share of the first six months of 2015 gross wages to estimate January 2016 gross wages from the 2016 six-month total.",
+      "answer": "January 2015 gross pay is USD 178,365.77, or 16.41% of the six-month total. Applying the share at full precision gives estimated January 2016 gross pay of USD 222,033.49. This assumes the monthly pattern carries over.",
+      "hint": "Divide January 2015 gross pay by the 2015 six-month gross pay first.",
+      "files": [
+        "materials/payroll2015.xlsx",
+        "materials/payroll2016.xlsx"
+      ],
+      "checks": [
+        "Filter 2015 pay dates to January",
+        "Use the six-month 2015 denominator",
+        "Apply the share to 2016 gross pay"
       ]
     },
     {
@@ -371,6 +474,82 @@
         "Use only information available at forecast time"
       ],
       "expected": null
+    },
+    {
+      "id": "r13",
+      "kind": "Regression",
+      "category": "Restaurant",
+      "title": "Forecast seven days ahead using prior sales",
+      "prompt": "Use the prior-sales regression to forecast sales on 2019-01-07. The 7-day, 28-day and 364-day inputs in dollars are 3,252.00, 1,987.00 and 2,841.00, respectively. Give your result to two decimals.",
+      "model": "lagged",
+      "answer": "USD 2,685.62. Use the intercept and multiply each prior sales amount by its matching coefficient. The input dates are 2018-12-31, 2018-12-10, 2018-01-08.",
+      "hint": "Match the 7-, 28- and 364-day coefficients to their own inputs.",
+      "files": [
+        "materials/restaurant.xlsm"
+      ],
+      "checks": [
+        "Include the intercept",
+        "Match each lag to its own sales amount",
+        "Round the final forecast"
+      ],
+      "expected": 2685.621314622225
+    },
+    {
+      "id": "r14",
+      "kind": "Regression",
+      "category": "Restaurant",
+      "title": "Interpret a squared temperature term",
+      "prompt": "Use the model with tmax and tmax squared. Is the fitted curve concave or convex? Can its temperature effect be represented by one constant slope?",
+      "model": "quadratic",
+      "answer": "The squared term is -0.410749, so the fitted curve is concave. The local slope changes with temperature and equals b₁ + 2 × b₂ × tmax. Interpret this association within the observed range.",
+      "hint": "Look at the sign on tmax squared.",
+      "files": [
+        "materials/restaurant.xlsm"
+      ],
+      "checks": [
+        "Use the sign of the squared term",
+        "Explain that the slope depends on temperature",
+        "Treat the relationship as an association"
+      ],
+      "expected": null
+    },
+    {
+      "id": "r15",
+      "kind": "Regression",
+      "category": "Restaurant",
+      "title": "Compare sales on game and non-game days",
+      "prompt": "Use the game-day model to find the predicted dollar difference between a game day and a non-game day. Give the difference to two decimals and explain what it measures.",
+      "model": "game",
+      "answer": "USD 1,436.30. Changing G from 0 to 1 adds the G coefficient. This is an unadjusted difference between the groups. Other differences, including day of week, may explain part of it.",
+      "hint": "Set G to 1 and 0, then subtract.",
+      "files": [
+        "materials/restaurant.xlsm"
+      ],
+      "checks": [
+        "Report the G coefficient in dollars",
+        "Interpret the difference in predictions",
+        "Avoid a causal claim"
+      ],
+      "expected": 1436.3043478260872
+    },
+    {
+      "id": "r16",
+      "kind": "Regression",
+      "category": "Restaurant",
+      "title": "Compare the prior-sales slope on home-game days",
+      "prompt": "In the home-game model, calculate the slope on L for home games. Give the slope to four decimal places and explain how it differs from the slope on days without a home game.",
+      "model": "home",
+      "answer": "On days without a home game the slope is 0.619049. On home-game days it is -0.040484, found by adding the interaction coefficient -0.659533. The comparison describes the fitted association.",
+      "hint": "Collect the coefficients multiplying L when H=1.",
+      "files": [
+        "materials/restaurant.xlsm"
+      ],
+      "checks": [
+        "Add the main and interaction slopes",
+        "Distinguish home games from all games",
+        "Interpret the fitted relationship"
+      ],
+      "expected": -0.0404840883307338
     }
   ],
   "models": {
@@ -430,6 +609,129 @@
         0.6195944603553604,
         387.0296256123234,
         0.010739671587355063
+      ]
+    },
+    "lagged": {
+      "n": 312,
+      "r2": 0.5978232319670512,
+      "coefficients": [
+        {
+          "term": "Intercept",
+          "estimate": 513.0792771325088,
+          "standardError": 135.65139430478692,
+          "pValue": 0.00018662525052213545
+        },
+        {
+          "term": "Sales 7 days earlier",
+          "estimate": 0.16378326294033346,
+          "standardError": 0.047746370514280684,
+          "pValue": 0.0006852170572667345
+        },
+        {
+          "term": "Sales 28 days earlier",
+          "estimate": 0.2106953146531138,
+          "standardError": 0.04495061633512577,
+          "pValue": 4.163689549189546e-06
+        },
+        {
+          "term": "Sales 364 days earlier",
+          "estimate": 0.42987232530517944,
+          "standardError": 0.04345631735018175,
+          "pValue": 3.235675665977666e-20
+        }
+      ],
+      "b": [
+        513.0792771325088,
+        0.16378326294033346,
+        0.2106953146531138,
+        0.42987232530517944
+      ]
+    },
+    "quadratic": {
+      "n": 312,
+      "r2": 0.043230377004225495,
+      "coefficients": [
+        {
+          "term": "Intercept",
+          "estimate": 934.8395272121069,
+          "standardError": 724.4333740692193,
+          "pValue": 0.19786187358379945
+        },
+        {
+          "term": "tmax (Fahrenheit)",
+          "estimate": 64.46237943726287,
+          "standardError": 22.272630340183202,
+          "pValue": 0.004071220858131103
+        },
+        {
+          "term": "tmax squared",
+          "estimate": -0.4107492958581819,
+          "standardError": 0.15955560298717347,
+          "pValue": 0.010508823644027939
+        }
+      ],
+      "b": [
+        934.8395272121069,
+        64.46237943726287,
+        -0.4107492958581819
+      ]
+    },
+    "game": {
+      "n": 312,
+      "r2": 0.07476485996654414,
+      "coefficients": [
+        {
+          "term": "Intercept",
+          "estimate": 3191.0802675585305,
+          "standardError": 58.57837293497807,
+          "pValue": 8.469600764167973e-161
+        },
+        {
+          "term": "G: game day (0/1)",
+          "estimate": 1436.3043478260872,
+          "standardError": 286.97424730631303,
+          "pValue": 9.383148834818122e-07
+        }
+      ],
+      "b": [
+        3191.0802675585305,
+        1436.3043478260872
+      ]
+    },
+    "home": {
+      "n": 312,
+      "r2": 0.5591592707379577,
+      "coefficients": [
+        {
+          "term": "Intercept",
+          "estimate": 1044.1833324152744,
+          "standardError": 128.25842419812594,
+          "pValue": 9.805904894949607e-15
+        },
+        {
+          "term": "L: sales 364 days earlier",
+          "estimate": 0.6190489987230874,
+          "standardError": 0.034948368496417935,
+          "pValue": 6.659887449242792e-49
+        },
+        {
+          "term": "H: home game (0/1)",
+          "estimate": 4930.351004764123,
+          "standardError": 1445.1848067920673,
+          "pValue": 0.0007321411411628392
+        },
+        {
+          "term": "L × H",
+          "estimate": -0.6595330870538212,
+          "standardError": 0.24346263418925648,
+          "pValue": 0.007126841865271817
+        }
+      ],
+      "b": [
+        1044.1833324152744,
+        0.6190489987230874,
+        4930.351004764123,
+        -0.6595330870538212
       ]
     }
   },
@@ -642,6 +944,188 @@
           ]
         ]
       },
+      "m7": {
+        "rows": 1,
+        "preview": [
+          [
+            1963
+          ]
+        ]
+      },
+      "m8": {
+        "rows": 180,
+        "preview": [
+          [
+            "1917"
+          ],
+          [
+            "6 Underground"
+          ],
+          [
+            "A Quiet Place"
+          ],
+          [
+            "A Simple Favor"
+          ],
+          [
+            "A Star Is Born"
+          ]
+        ]
+      },
+      "m9": {
+        "rows": 1,
+        "preview": [
+          [
+            2
+          ]
+        ]
+      },
+      "m10": {
+        "rows": 4,
+        "preview": [
+          [
+            "Toy Story",
+            1995
+          ],
+          [
+            "Toy Story 2",
+            1999
+          ],
+          [
+            "Toy Story 3",
+            2010
+          ],
+          [
+            "Toy Story 4",
+            2019
+          ]
+        ]
+      },
+      "m11": {
+        "rows": 100,
+        "preview": [
+          [
+            "The Intouchables",
+            8.5
+          ],
+          [
+            "A Separation",
+            8.3
+          ],
+          [
+            "Warrior",
+            8.2
+          ],
+          [
+            "Harry Potter and the Deathly Hallows: Part 2",
+            8.1
+          ],
+          [
+            "The Help",
+            8.0
+          ]
+        ]
+      },
+      "m12": {
+        "rows": 222,
+        "preview": [
+          [
+            "Harold Gould"
+          ],
+          [
+            "Lauren Bacall"
+          ],
+          [
+            "Bob Newhart"
+          ],
+          [
+            "Gene Hackman"
+          ],
+          [
+            "Sean Connery"
+          ]
+        ]
+      },
+      "m13": {
+        "rows": 170,
+        "preview": [
+          [
+            "Stanley Kubrick"
+          ],
+          [
+            "Akira Kurosawa"
+          ],
+          [
+            "Luc Besson"
+          ],
+          [
+            "James Cameron"
+          ],
+          [
+            "John Carpenter"
+          ]
+        ]
+      },
+      "m14": {
+        "rows": 5,
+        "preview": [
+          [
+            "The King's Speech"
+          ],
+          [
+            "Wallace & Gromit: The Curse of the Were-Rabbit"
+          ],
+          [
+            "Corpse Bride"
+          ],
+          [
+            "Sweeney Todd: The Demon Barber of Fleet Street"
+          ],
+          [
+            "Cinderella"
+          ]
+        ]
+      },
+      "m15": {
+        "rows": 6,
+        "preview": [
+          [
+            "Corpse Bride"
+          ],
+          [
+            "Charlie and the Chocolate Factory"
+          ],
+          [
+            "Sweeney Todd: The Demon Barber of Fleet Street"
+          ],
+          [
+            "Alice in Wonderland"
+          ],
+          [
+            "Dark Shadows"
+          ]
+        ]
+      },
+      "m16": {
+        "rows": 30,
+        "preview": [
+          [
+            "Brad Pitt"
+          ],
+          [
+            "Neve Campbell"
+          ],
+          [
+            "Tom Cruise"
+          ],
+          [
+            "Robert De Niro"
+          ],
+          [
+            "Tom Hanks"
+          ]
+        ]
+      },
       "a1": {
         "rows": 1,
         "preview": [
@@ -763,5 +1247,5 @@
       }
     }
   },
-  "modelMethod": "Daily sum(netTotal) and sum(netTotal_364); date join to weather; absent dates in the supplied complete football schedule coded G=0; 312 observed sales dates; OLS with intercept; conventional homoskedastic standard errors. Not a validated forecasting model."
+  "modelMethod": "Aggregate sales and lagged sales fields by date, join to weather, and code dates absent from the football schedule as non-game days. The six models use the same 312 observed sales dates, OLS with intercept, and conventional homoskedastic standard errors. Forecast accuracy has not been measured on held-out dates."
 }

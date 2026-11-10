@@ -8,8 +8,8 @@ An English-language browser-based exam-practice website for Data Analytics in Ac
 
 ## What is included
 
-- 56 course-based questions: 24 SQL, 20 Excel/ETL and 12 regression questions.
-- Twelve eight-minute Excel/SQL practice exams and six five-minute regression practice exams. These are authored practice sets, not official exam promises.
+- 82 course-based questions: 40 SQL, 26 Excel/ETL and 16 regression questions.
+- Eighteen eight-minute data manipulation exams and eight five-minute regression practice exams. These are authored practice sets, not official exam promises.
 - Searchable question bank with subject and case filters.
 - Embedded SQL/Excel workspaces, hints, worked answers, numeric checks, self-assessment criteria, pause/resume timers and browser-local draft storage.
 - Complete Songs and Chinook databases; clearly labelled Movies and P-card subsets. Original Excel and CSV case files are available from Materials.
@@ -33,6 +33,8 @@ All data come from the user's supplied `1. ExamStudio.zip`:
 - `materials/1. Excel part 3/IntegrateCo Assignment/Analytics_mindset_case_studies_IntegrateCo_2015payroll.xlsx`: all 4,981 data rows; original Reg_Hrs, OT_Hrs, Reg_Pay, OT_Pay plus First_Name and Last_Name concatenated for display. These selected fields are serialized as `payroll.json`. Payroll amounts are preserved, including seven zero-hour lines with nonzero pay.
 
 The exercises are based on the supplied CS50 songs requirements, PwC SQL questions, ETL employee-code instructions and IntegrateCo payroll measures. The question bank and full practice exams cover the core supplied case families. The optional Fiftyville mystery is not included. There is no claim that every possible course question is represented. `build_course_content.py` rebuilds added content from the extracted original ZIP, using openpyxl, NumPy and SciPy only during authoring; the published website requires no Python.
+
+The bank covers the eight Songs tasks and 13 Movies tasks supplied with the course. Movies prompts and worked answers refer to the browser’s 2,000-film subset. Selected film-permit, ETL, payroll and restaurant exercises also draw on the completed coursework and were checked against the original course data.
 
 Additional source mappings, original-file hashes, exact subset definitions and verified values are in `dist/assets/practice.json`. Movies contains the 2,000 highest-vote films and their original ratings/people/relationship records. P-cards contains the first 2,000 OSU records with Year=2014 ordered by ID. Numeric answers are tied to those files, not the full databases.
 

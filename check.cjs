@@ -50,7 +50,13 @@ assert.throws(()=>run('=AVERAGE("a")'),/DIV/);
  if(ex.id==='c4'){equal(result.values.length,59);assert(Math.abs(result.values.reduce((n,row)=>n+row[1],0)-2328.60)<1e-7);}
  if(ex.id==='c5'){equal(result.values.length,5);equal(first[0],412);}
  if(ex.id==='c6'){equal(result.values.length,24);equal(result.values.reduce((n,row)=>n+row[1],0),59);}
+ if(ex.id==='s7'){equal(result.values.length,100);equal(result.columns.length,2);}
+ if(ex.id==='s8')equal(result.values.length,100);
+ if(ex.id==='s9')equal(result.values.length,3);
+ if(ex.id==='s10'||ex.id==='s11'){equal(result.values.length,1);assert(Number.isFinite(first[0]));}
+ if(ex.id==='s12')assert(result.values.every(([name])=>name.toLowerCase().includes('feat.')));
+
 }
  assert.throws(()=>db.exec('DELETE FROM '+(dataset==='songs'?'songs':'Invoice')),/readonly/);db.close();}
- console.log(checks+' independent data/function checks passed; all '+functions.length+' supported functions covered; twelve SQL solutions executed using bundled SQLite.');
+ console.log(checks+' independent data/function checks passed; all '+functions.length+' supported functions covered; 18 SQL solutions executed using bundled SQLite.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

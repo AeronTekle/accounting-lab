@@ -17,12 +17,20 @@ const examSets=[
  {id:'M10',title:'Film Ratings and Credits',type:'manipulation',seconds:480,ids:['m4','m5','m6','f2','f3'],desc:'Filter and rank films, trace director credits and analyse permit records.'},
  {id:'M11',title:'Purchasing Card Review',type:'manipulation',seconds:480,ids:['a4','a5','a6','j1','j2'],desc:'Find credits, summarise spend, flag repeated charges and preserve an audit trail.'},
  {id:'M12',title:'Accounting Analytics Review',type:'manipulation',seconds:480,ids:['c3','a3','p6','a6','t1'],desc:'Rank results, flag exceptions and identify data quality issues.'},
+ {id:'M13',title:'Songs Before Joins',type:'manipulation',seconds:480,ids:['s7','s8','s9','s2','s10'],desc:'Select song fields, sort, filter and calculate an average.'},
+ {id:'M14',title:'Artists and Employee Codes',type:'manipulation',seconds:480,ids:['s3','s11','s12','e4','t2'],desc:'Join songs to artists, search titles and build a location and plant key.'},
+ {id:'M15',title:'Movie Lookup and Sorting',type:'manipulation',seconds:480,ids:['m1','m7','m8','m9','m10'],desc:'Find people and films, filter ratings and sort a film series.'},
+ {id:'M16',title:'Movie Relationships',type:'manipulation',seconds:480,ids:['m11','m12','m13','m14','m15'],desc:'Join ratings, directors and actors, then compare groups of films.'},
+ {id:'M17',title:'Film Permits and Co-Stars',type:'manipulation',seconds:480,ids:['f4','f5','f6','m16','m3'],desc:'Find missing permit data and trace performers through shared films.'},
+ {id:'M18',title:'Payroll Rates and Monthly Estimates',type:'manipulation',seconds:480,ids:['i1','i2','i3','i4','p3'],desc:'Compare payroll extracts, calculate weighted rates and estimate January pay.'},
  {id:'R01',title:'Temperature and Sales',type:'regression',seconds:300,ids:['r1','r2','r3','r6'],desc:'Interpret coefficients and p-values, make predictions and identify forecast inputs.'},
  {id:'R02',title:'Sales on Game Days',type:'regression',seconds:300,ids:['r4','r5','r3','r6'],desc:'Interpret interactions, reference groups and uncertainty.'},
  {id:'R03',title:'Explain the Model',type:'regression',seconds:300,ids:['r1','r3','r4','r5'],desc:'Calculate and interpret model results.'},
  {id:'R04',title:'Temperature Predictions and Limits',type:'regression',seconds:300,ids:['r1','r7','r9','r12'],desc:'Compare predictions, identify extrapolation and plan a fair forecast test.'},
  {id:'R05',title:'Game-Day Effects and Predictions',type:'regression',seconds:300,ids:['r8','r10','r11','r4'],desc:'Interpret the interaction and predict sales under two game-day scenarios.'},
- {id:'R06',title:'Forecasting and Model Comparison',type:'regression',seconds:300,ids:['r3','r6','r8','r12'],desc:'Evaluate model evidence and explain how to test a forecast over time.'}
+ {id:'R06',title:'Forecasting and Model Comparison',type:'regression',seconds:300,ids:['r3','r6','r8','r12'],desc:'Evaluate model evidence and explain how to test a forecast over time.'},
+ {id:'R07',title:'Prior-Sales Forecast and Temperature',type:'regression',seconds:300,ids:['r13','r14','r6','r12'],desc:'Produce a seven-day forecast, interpret curvature and plan a forecast test.'},
+ {id:'R08',title:'Game Days and Home-Game Effects',type:'regression',seconds:300,ids:['r15','r16','r8','r11'],desc:'Compare game-day sales and interpret the slope for home games.'}
 ];
 const store=()=>{try{localStorage.setItem('accountingLab.exam.v1',JSON.stringify(session));}catch{}};
 function text(tag,content,cls){const x=document.createElement(tag);x.textContent=content;if(cls)x.className=cls;return x;}
@@ -118,22 +126,31 @@ function resetBankPage(){
 function downloadLinks(container,files){container.replaceChildren();for(const file of [...new Set(files)]){const a=text('a',file.split('/').pop()+' ↓');a.href=file;a.download='';container.append(a);}}
 function filesFor(q){return q.files||[catalog.datasets[q.dataset].file];}
 function allFiles(){return [...new Set(session.ids.flatMap(id=>filesFor(byId[id])))];}
+const modelViews={
+ temperature:['b₀ + b₁ × tmax','Sales is daily sales in dollars. tmax is the daily high temperature in °F. The observed range is 28.94–104 °F.'],
+ interaction:['b₀ + b₁ × L + b₂ × G + b₃ × L × G','L is sales 364 days earlier. G is 1 on game days and 0 otherwise. Of the 312 observed sales dates, 13 were game days.'],
+ lagged:['b₀ + b₁ × Sales₇ + b₂ × Sales₂₈ + b₃ × Sales₃₆₄','Each Sales term is the daily sales amount at its indicated lag, measured in dollars.'],
+ quadratic:['b₀ + b₁ × tmax + b₂ × tmax²','The fitted slope varies with tmax, which is measured in °F. The observed range is 28.94–104 °F.'],
+ game:['b₀ + b₁ × G','G is 1 on any game day and 0 on non-game days. The model compares the two groups without other predictors.'],
+ home:['b₀ + b₁ × L + b₂ × H + b₃ × L × H','L is sales 364 days earlier. H is 1 on home-game days and 0 on all other days.']
+};
 function renderModel(q){
  const out=el('regressionOutput');out.replaceChildren();out.hidden=!q.model;if(!q.model)return;
  const m=practice.models[q.model],card=text('section','','model-card');card.append(text('header','OLS from the restaurant case · n = '+m.n+' · R² = '+m.r2.toFixed(4)+' · conventional OLS standard errors'));
- const formula=q.model==='temperature'?'Predicted sales = b₀ + b₁ × tmax':'Predicted sales = b₀ + b₁ × L + b₂ × G + b₃ × L × G';card.append(text('div',formula,'model-formula'));
+ const [formula,description]=modelViews[q.model];
+ card.append(text('div','Predicted sales = '+formula,'model-formula'));
  const table=document.createElement('table'),caption=text('caption','Model coefficients fitted to the supplied restaurant data');caption.className='sr-only';table.append(caption);const head=document.createElement('thead'),tr=document.createElement('tr');['Term','Estimate','Standard error','p-value'].forEach(x=>tr.append(text('th',x)));head.append(tr);table.append(head);const body=document.createElement('tbody');m.coefficients.forEach(c=>{const row=document.createElement('tr');[c.term,nf.format(c.estimate),nf.format(c.standardError),c.pValue<.0001?c.pValue.toExponential(3):c.pValue.toFixed(6)].forEach(x=>row.append(text('td',x)));body.append(row);});table.append(body);card.append(table);out.append(card);
- out.append(text('p',q.model==='temperature'?'Sales is daily sales in dollars. tmax is the daily high temperature in °F. The observed range is 28.94–104 °F.':'L is total sales 364 days earlier. G is 1 on game days and 0 otherwise. The interaction is L × G. Of the 312 observed sales dates, 13 were game days.','model-description'));
+ out.append(text('p',description,'model-description'));
 }
 function renderQuestion(){
  const q=byId[session.ids[session.index]],lock=locked();el('questionLabel').textContent=(session.index+1)+' / '+session.ids.length+' · '+q.kind.toUpperCase();el('questionCategory').textContent=q.category;el('questionTitle').textContent=q.title;el('questionPrompt').textContent=q.prompt;downloadLinks(el('questionFiles'),filesFor(q));renderModel(q);
  el('questionNav').replaceChildren();session.ids.forEach((id,i)=>{const b=btn(String(i+1).padStart(2,'0')+' · '+byId[id].kind,()=>{session.index=i;store();renderQuestion();},(i===session.index?'active ':'')+(session.done[id]?'completed':''));b.setAttribute('aria-current',i===session.index?'step':'false');el('questionNav').append(b);});
  const area=el('responseArea');area.replaceChildren();
  if(q.dataset){
-  const frame=document.createElement('iframe');frame.title='Interactive workspace: '+q.title;frame.className='lab-frame';frame.src='index.html?v=practice-56&embed=1&dataset='+encodeURIComponent(q.dataset)+'&exercise='+encodeURIComponent(q.id)+'&attempt='+encodeURIComponent(session.attempt||'guided')+(lock?'&exam=1':'');area.append(frame);
+  const frame=document.createElement('iframe');frame.title='Interactive workspace: '+q.title;frame.className='lab-frame';frame.src='index.html?v=practice-82&embed=1&dataset='+encodeURIComponent(q.dataset)+'&exercise='+encodeURIComponent(q.id)+'&attempt='+encodeURIComponent(session.attempt||'guided')+(lock?'&exam=1':'');area.append(frame);
  }else{
   const label=text('label','YOUR METHOD AND EXPLANATION','response-label');label.htmlFor='writtenAnswer';const answer=document.createElement('textarea');answer.id='writtenAnswer';answer.className='scratch-answer';answer.placeholder='Write your calculation, method or interpretation here…';answer.value=session.answers[q.id]||'';answer.oninput=()=>{session.answers[q.id]=answer.value;store();};area.append(label,answer);
-  if(q.expected!==null&&q.expected!==undefined&&!lock){const wrap=text('div','','numeric-check'),label=text('label','Check your numeric result','response-label');label.htmlFor='numericAnswer';const inp=document.createElement('input');inp.type='text';inp.inputMode='decimal';inp.id='numericAnswer';inp.className='numeric-answer';inp.placeholder='Enter your result';const result=text('span','','numeric-feedback');result.setAttribute('role','status');const button=btn('Check number',()=>{const val=Number(inp.value.trim().replace(',','.'));if(!inp.value.trim()||!Number.isFinite(val)){result.textContent='Enter a number without a thousands separator.';return;}const tolerance=q.id==='r5'?0.000001:0.011;result.textContent=Math.abs(val-q.expected)<=tolerance?'✓ The number is correct. Use the criteria below to review your explanation.':'The result differs. Check the model and the inputs requested in the question.';},'secondary-button');wrap.append(label,inp,button,result);area.append(wrap);}
+  if(q.expected!==null&&q.expected!==undefined&&!lock){const wrap=text('div','','numeric-check'),label=text('label','Check your numeric result','response-label');label.htmlFor='numericAnswer';const inp=document.createElement('input');inp.type='text';inp.inputMode='decimal';inp.id='numericAnswer';inp.className='numeric-answer';inp.placeholder='Enter your result';const result=text('span','','numeric-feedback');result.setAttribute('role','status');const button=btn('Check number',()=>{const val=Number(inp.value.trim().replace(',','.'));if(!inp.value.trim()||!Number.isFinite(val)){result.textContent='Enter a number without a thousands separator.';return;}const tolerance=q.id==='r5'?0.000001:q.id==='r16'?0.000051:0.011;result.textContent=Math.abs(val-q.expected)<=tolerance?'✓ The number is correct. Use the criteria below to review your explanation.':'The result differs. Check the model and the inputs requested in the question.';},'secondary-button');wrap.append(label,inp,button,result);area.append(wrap);}
  }
  el('answerDetails').hidden=lock;el('answerDetails').open=false;el('questionHint').hidden=true;el('questionHint').textContent=q.hint||'Check the data, method and units.';el('showQuestionHint').hidden=lock;el('questionAnswer').textContent=q.answer;el('answerChecks').replaceChildren();(q.checks||['Check the output values and rows','Explain why your method works','Use the specified dataset']).forEach(x=>el('answerChecks').append(text('li',x)));el('doneCheckbox').checked=!!session.done[q.id];el('doneCheckbox').onchange=()=>{session.done[q.id]=el('doneCheckbox').checked;store();renderNavMarks();};
  el('nextQuestion').textContent=session.index<session.ids.length-1?'Next question →':'First question ↺';
@@ -151,7 +168,7 @@ function updateTimer(){if(!session||session.guided)return;const n=remaining();el
 function finish(expired=false){if(!session||session.guided||session.finished)return;session.remaining=remaining();session.deadline=null;session.finished=true;session.expired=expired;store();renderSession();}
 async function init(){
  try{
-  const [c,p]=await Promise.all([fetch('assets/catalog.json?v=practice-56'),fetch('assets/practice.json?v=practice-56')]);if(!c.ok||!p.ok)throw Error();catalog=await c.json();practice=await p.json();
+  const [c,p]=await Promise.all([fetch('assets/catalog.json?v=practice-82'),fetch('assets/practice.json?v=practice-82')]);if(!c.ok||!p.ok)throw Error();catalog=await c.json();practice=await p.json();
   for(const [dataset,qs] of Object.entries(catalog.exercises)){for(const q of qs)bank.push({...q,dataset,kind:catalog.datasets[dataset].schema?'SQL':'Excel',category:catalog.datasets[dataset].name,prompt:q.desc,answer:q.answer+'\n\n'+q.explain});}
   bank.push(...practice.questions);byId=Object.fromEntries(bank.map(q=>[q.id,q]));for(const ex of examSets)if(ex.ids.some(id=>!byId[id]))throw Error('Unknown exam question.');
   el('questionCount').textContent=bank.length;el('examCount').textContent=examSets.length;el('datasetCount').textContent=Object.keys(catalog.datasets).length;el('modelMethod').textContent=practice.modelMethod;
