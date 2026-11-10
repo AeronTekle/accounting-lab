@@ -57,6 +57,20 @@ function showExamGroup(group){
 function remaining(){return session?.deadline?Math.max(0,Math.ceil((session.deadline-Date.now())/1000)):session?.remaining||0;}
 function displayTime(n){return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');}
 function locked(){return session&&!session.guided&&!session.finished;}
+function currentPart(){return session.parts?.[session.partIndex];}
+function activeQuestionIds(){return locked()&&currentPart()?currentPart().ids:session.ids;}
+function moveToQuestion(id){
+ session.index=session.ids.indexOf(id);
+ store();
+ renderQuestion();
+}
+function protectAttempt(message){
+ if(!locked()||!(session.started||session.partIndex>0))return false;
+ renderSession();
+ el('examInstructions').prepend(text('p',message,'attempt-message'));
+ el('sessionTitle').focus();
+ return true;
+}
 function renderCards(){
  for(const group of ['manipulation','regression']){
   const container=el(group+'Cards');
@@ -74,17 +88,37 @@ function renderCards(){
  }
  document.querySelector('.return-session')?.remove();
  if(session&&!session.guided&&!session.finished){
-  el('home').prepend(btn('Resume exam: '+session.title,()=>{
+  el('home').prepend(btn((session.started||session.partIndex>0?'Resume: ':'Open: ')+session.title,()=>{
    renderSession();
    el('sessionTitle').focus();
   },'secondary-button return-session'));
  }
 }
 function newExam(ex){
- if(session&&!session.guided&&!session.finished&&session.deadline){renderSession();el('examInstructions').textContent='You have an exam in progress. Finish it before starting another.';return;}
- session={attempt:String(Date.now()),id:ex.id,title:ex.title,ids:ex.ids,seconds:ex.seconds,remaining:ex.seconds,deadline:null,index:0,answers:{},done:{},finished:false,guided:false};store();renderSession();el('sessionTitle').focus();
+ if(protectAttempt('Resume or finish your current attempt before opening another exam.'))return;
+ session={attempt:String(Date.now()),id:ex.id,title:ex.title,ids:ex.ids,remaining:ex.seconds,deadline:null,index:0,answers:{},done:{},finished:false,guided:false};
+ store();
+ renderSession();
+ el('sessionTitle').focus();
 }
-function single(id){if(session&&!session.guided&&!session.finished&&session.deadline){renderSession();el('examInstructions').textContent='Finish your current exam before opening guided practice with worked solutions.';return;}session={id:'single',title:'Guided practice',ids:[id],index:0,answers:{},done:{},finished:false,guided:true};store();renderSession();}
+function newMock(){
+ if(protectAttempt('Resume or finish your current attempt before opening another exam.'))return;
+ const parts=['manipulation','regression'].map(type=>{
+  const sets=examSets.filter(ex=>ex.type===type);
+  const {id,title,ids,seconds}=sets[Math.floor(Math.random()*sets.length)];
+  return {id,title,ids,seconds};
+ });
+ session={attempt:String(Date.now()),id:'mock',title:'Full mock exam',parts,partIndex:0,ids:parts.flatMap(part=>part.ids),remaining:parts[0].seconds,deadline:null,index:0,answers:{},done:{},finished:false,guided:false};
+ store();
+ renderSession();
+ el('sessionTitle').focus();
+}
+function single(id){
+ if(protectAttempt('Resume or finish your current attempt before opening guided practice.'))return;
+ session={id:'single',title:'Guided practice',ids:[id],index:0,answers:{},done:{},finished:false,guided:true};
+ store();
+ renderSession();
+}
 function renderBank(){
  const subject=el('subjectFilter').value;
  const subjectQuestions=bank.filter(q=>subject==='all'||q.kind===subject);
@@ -143,8 +177,16 @@ function renderModel(q){
  out.append(text('p',description,'model-description'));
 }
 function renderQuestion(){
- const q=byId[session.ids[session.index]],lock=locked();el('questionLabel').textContent=(session.index+1)+' / '+session.ids.length+' · '+q.kind.toUpperCase();el('questionCategory').textContent=q.category;el('questionTitle').textContent=q.title;el('questionPrompt').textContent=q.prompt;downloadLinks(el('questionFiles'),filesFor(q));renderModel(q);
- el('questionNav').replaceChildren();session.ids.forEach((id,i)=>{const b=btn(String(i+1).padStart(2,'0')+' · '+byId[id].kind,()=>{session.index=i;store();renderQuestion();},(i===session.index?'active ':'')+(session.done[id]?'completed':''));b.setAttribute('aria-current',i===session.index?'step':'false');el('questionNav').append(b);});
+ const questionId=session.ids[session.index];
+ const q=byId[questionId],lock=locked(),activeIds=activeQuestionIds(),position=activeIds.indexOf(questionId);
+ el('questionLabel').textContent=(position+1)+' / '+activeIds.length+' · '+q.kind.toUpperCase();el('questionCategory').textContent=q.category;el('questionTitle').textContent=q.title;el('questionPrompt').textContent=q.prompt;downloadLinks(el('questionFiles'),filesFor(q));renderModel(q);
+ el('questionNav').replaceChildren();
+ activeIds.forEach((id,i)=>{
+  const selected=id===questionId;
+  const button=btn(String(i+1).padStart(2,'0')+' · '+byId[id].kind,()=>moveToQuestion(id),(selected?'active ':'')+(session.done[id]?'completed':''));
+  if(selected)button.setAttribute('aria-current','step');
+  el('questionNav').append(button);
+ });
  const area=el('responseArea');area.replaceChildren();
  if(q.dataset){
   const frame=document.createElement('iframe');frame.title='Interactive workspace: '+q.title;frame.className='lab-frame';frame.src='index.html?v=practice-82&embed=1&dataset='+encodeURIComponent(q.dataset)+'&exercise='+encodeURIComponent(q.id)+'&attempt='+encodeURIComponent(session.attempt||'guided')+(lock?'&exam=1':'');area.append(frame);
@@ -153,19 +195,132 @@ function renderQuestion(){
   if(q.expected!==null&&q.expected!==undefined&&!lock){const wrap=text('div','','numeric-check'),label=text('label','Check your numeric result','response-label');label.htmlFor='numericAnswer';const inp=document.createElement('input');inp.type='text';inp.inputMode='decimal';inp.id='numericAnswer';inp.className='numeric-answer';inp.placeholder='Enter your result';const result=text('span','','numeric-feedback');result.setAttribute('role','status');const button=btn('Check number',()=>{const val=Number(inp.value.trim().replace(',','.'));if(!inp.value.trim()||!Number.isFinite(val)){result.textContent='Enter a number without a thousands separator.';return;}const tolerance=q.id==='r5'?0.000001:q.id==='r16'?0.000051:0.011;result.textContent=Math.abs(val-q.expected)<=tolerance?'✓ The number is correct. Use the criteria below to review your explanation.':'The result differs. Check the model and the inputs requested in the question.';},'secondary-button');wrap.append(label,inp,button,result);area.append(wrap);}
  }
  el('answerDetails').hidden=lock;el('answerDetails').open=false;el('questionHint').hidden=true;el('questionHint').textContent=q.hint||'Check the data, method and units.';el('showQuestionHint').hidden=lock;el('questionAnswer').textContent=q.answer;el('answerChecks').replaceChildren();(q.checks||['Check the output values and rows','Explain why your method works','Use the specified dataset']).forEach(x=>el('answerChecks').append(text('li',x)));el('doneCheckbox').checked=!!session.done[q.id];el('doneCheckbox').onchange=()=>{session.done[q.id]=el('doneCheckbox').checked;store();renderNavMarks();};
- el('nextQuestion').textContent=session.index<session.ids.length-1?'Next question →':'First question ↺';
+ el('nextQuestion').textContent=position<activeIds.length-1?'Next question →':'First question ↺';
  if(lock&&!q.dataset)area.append(text('p','You can see hints, worked solutions and review criteria after finishing the exam.','locked-note'));
 }
-function renderNavMarks(){Array.from(el('questionNav').children).forEach((b,i)=>b.classList.toggle('completed',!!session.done[session.ids[i]]));}
-function renderSession(){
- show('session');el('backButton').textContent=session.guided?'← Back to question bank':'← Back to practice exams';el('sessionTitle').textContent=session.guided?byId[session.ids[0]].title:session.id+' · '+session.title;el('sessionMode').textContent=session.guided?'GUIDED PRACTICE':'TIMED PRACTICE EXAM';el('sessionStatus').textContent=session.guided?'Hints and worked solutions available':session.finished?'Review':session.deadline?'Exam in progress':'Ready to start';el('timerPanel').hidden=session.guided;
- el('examInstructions').replaceChildren(text('div',session.guided?'Try the question first, then use the hints, worked solution and review criteria to check your work.':'This exam has '+session.ids.length+' questions. Use the lab for SQL and supported Excel formulas, or use the downloads to work in your own tools. The review lists the questions you marked as attempted.'));
- if(!session.guided){const links=text('div','','file-links');downloadLinks(links,allFiles());el('examInstructions').append(links);}
- el('reviewSummary').hidden=!session.finished;el('reviewSummary').replaceChildren();if(session.finished){const n=session.ids.filter(id=>session.done[id]).length;el('reviewSummary').append(text('h2','Review your exam'),text('p','You marked '+n+' of '+session.ids.length+' questions as attempted. Compare your work with the worked solutions and try your queries and formulas again.'),text('p',session.expired?'Time is up. Worked solutions and result checks are available.':'You finished the exam. Worked solutions and result checks are available.'),btn('Back to question bank',()=>show('bank'),'secondary-button'));}
- renderQuestion();updateTimer();
+function renderNavMarks(){
+ const ids=activeQuestionIds();
+ Array.from(el('questionNav').children).forEach((button,i)=>button.classList.toggle('completed',!!session.done[ids[i]]));
 }
-function updateTimer(){if(!session||session.guided)return;const n=remaining();el('timer').textContent=displayTime(n);el('startTimer').disabled=!!session.deadline||session.finished;el('startTimer').textContent=session.started?'Resume ▶':'Start exam ▶';el('pauseTimer').disabled=!session.deadline||session.finished;el('finishExam').disabled=session.finished;el('timerPanel').classList.toggle('expired',!!session.expired);if(session.deadline&&n===0){finish(true);}}
-function finish(expired=false){if(!session||session.guided||session.finished)return;session.remaining=remaining();session.deadline=null;session.finished=true;session.expired=expired;store();renderSession();}
+const mockSectionNames=['Data manipulation','Data interpretation'];
+function renderMockProgress(){
+ const progress=el('mockProgress');
+ progress.hidden=!session.parts;
+ progress.replaceChildren();
+ if(!session.parts)return;
+ session.parts.forEach((part,i)=>{
+  const current=!session.finished&&session.partIndex===i;
+  const item=text('li','','mock-step');
+  if(current)item.setAttribute('aria-current','step');
+  const status=part.expired?'Time expired':part.expired===false?'Finished':current?'Current section':'Up next';
+  item.append(text('strong',(i+1)+'. '+mockSectionNames[i]),text('span',part.seconds/60+' min · '+status));
+  progress.append(item);
+ });
+}
+function renderReview(){
+ const panel=el('reviewSummary');
+ panel.hidden=!session.finished;
+ panel.replaceChildren();
+ if(!session.finished)return;
+ const heading=text('h2',session.parts?'Review your full mock exam':'Review your exam');
+ heading.id='reviewHeading';
+ heading.tabIndex=-1;
+ panel.append(heading,text('p','Open a question below to compare your work with its worked solution. The attempted count reflects the questions you marked.'));
+ const groups=session.parts||[{ids:session.ids,title:session.title,expired:session.expired}];
+ groups.forEach((part,i)=>{
+  const group=text('div','','review-section');
+  const attempted=part.ids.filter(id=>session.done[id]).length;
+  const title=session.parts?mockSectionNames[i]+' · '+part.title:part.title;
+  group.append(text('h3',title),text('p',attempted+' of '+part.ids.length+' marked as attempted. '+(part.expired?'Time expired.':'Section finished.')));
+  const questions=text('ol','','review-questions');
+  part.ids.forEach(id=>{
+   const item=text('li','','');
+   const open=btn(byId[id].title,()=>{moveToQuestion(id);el('questionTitle').focus();},'text-button');
+   item.append(open);
+   questions.append(item);
+  });
+  group.append(questions);
+  panel.append(group);
+ });
+}
+function renderSession(){
+ show('session');
+ const part=currentPart();
+ const waiting=Boolean(part&&!session.deadline&&!session.finished);
+ el('backButton').textContent=session.guided?'← Back to question bank':'← Back to practice exams';
+ el('sessionTitle').textContent=session.guided?byId[session.ids[0]].title:session.parts?session.title:session.id+' · '+session.title;
+ el('sessionMode').textContent=session.guided?'GUIDED PRACTICE':session.parts?'FULL MOCK EXAM':'TIMED PRACTICE EXAM';
+ el('sessionStatus').textContent=session.guided?'Hints and worked solutions available':session.finished?'Review':session.deadline?'Exam in progress':session.started?'Paused':'Ready to start';
+ el('timerPanel').hidden=session.guided||Boolean(session.parts&&session.finished);
+ const instructions=session.guided?'Try the question first, then use the hints, worked solution and review criteria to check your work.':session.parts?(session.finished?'Both sections are complete. Use the review below to revisit your work.':'Section '+(session.partIndex+1)+' of 2 · '+part.id+' '+part.title+'. Download the files below before starting. Hints and solutions open after both sections.'):'This exam has '+session.ids.length+' questions. Use the lab for SQL and supported Excel formulas, or download the files to work in your own tools.';
+ el('examInstructions').replaceChildren(text('div',instructions));
+ if(!session.guided){
+  const links=text('div','','file-links');
+  downloadLinks(links,allFiles());
+  el('examInstructions').append(links);
+ }
+ renderMockProgress();
+ renderReview();
+ el('questionNav').hidden=waiting;
+ el('questionSheet').hidden=waiting;
+ if(waiting)el('responseArea').replaceChildren();else renderQuestion();
+ updateTimer();
+}
+function updateTimer(){
+ if(!session||session.guided)return;
+ const n=remaining();
+ el('timer').textContent=displayTime(n);
+ el('startTimer').disabled=Boolean(session.deadline)||session.finished;
+ el('startTimer').textContent=session.started?'Resume ▶':session.parts?'Start Section '+(session.partIndex+1)+' ▶':'Start exam ▶';
+ el('pauseTimer').disabled=!session.deadline||session.finished;
+ el('finishExam').disabled=session.finished||Boolean(session.parts&&!session.started);
+ el('finishExam').textContent=session.parts&&session.partIndex===0?'Finish section':'Finish and review';
+ el('timerPanel').classList.toggle('expired',Boolean(session.expired));
+ if(session.deadline&&n===0)finish(true);
+}
+function startTimer(){
+ if(!locked()||session.deadline)return;
+ session.started=true;
+ session.deadline=Date.now()+session.remaining*1000;
+ store();
+ if(session.parts)renderSession();else{
+  el('sessionStatus').textContent='Exam in progress';
+  updateTimer();
+ }
+}
+function pauseTimer(){
+ if(!locked()||!session.deadline)return;
+ const time=remaining();
+ if(time===0){finish(true);return;}
+ session.remaining=time;
+ session.deadline=null;
+ store();
+ if(session.parts)renderSession();else{
+  el('sessionStatus').textContent='Paused';
+  updateTimer();
+ }
+}
+function finish(expired=false){
+ if(!locked())return;
+ session.remaining=remaining();
+ expired=expired||Boolean(session.deadline&&session.remaining===0);
+ session.deadline=null;
+ const part=currentPart();
+ if(part)part.expired=expired;
+ if(part&&session.partIndex===0){
+  session.partIndex=1;
+  const next=currentPart();
+  session.index=session.ids.indexOf(next.ids[0]);
+  session.remaining=next.seconds;
+  session.started=false;
+ }else{
+  session.finished=true;
+  session.expired=expired;
+ }
+ store();
+ renderSession();
+ el(session.finished?'reviewHeading':'sessionTitle').focus();
+}
 async function init(){
  try{
   const [c,p]=await Promise.all([fetch('assets/catalog.json?v=practice-82'),fetch('assets/practice.json?v=practice-82')]);if(!c.ok||!p.ok)throw Error();catalog=await c.json();practice=await p.json();
@@ -186,6 +341,7 @@ async function init(){
 el('examsTab').onclick=()=>{renderCards();show('home');};
 el('bankTab').onclick=openBank;
 el('openQuestionBank').onclick=openBank;
+el('openFullMock').onclick=newMock;
 el('materialsTab').onclick=()=>show('materials');
 for(const group of ['manipulation','regression'])el(group+'Filter').onclick=()=>showExamGroup(group);
 el('subjectFilter').onchange=resetBankPage;
@@ -201,5 +357,19 @@ el('clearFilters').onclick=()=>{
 for(const [id,step] of [['prevBankPage',-1],['nextBankPage',1]]){
  el(id).onclick=()=>{bankPage+=step;renderBank();el('bankList').querySelector('.bank-item')?.focus();};
 }
-el('startTimer').onclick=()=>{if(!session||session.finished)return;session.started=true;session.deadline=Date.now()+session.remaining*1000;store();el('sessionStatus').textContent='Exam in progress';updateTimer();};el('pauseTimer').onclick=()=>{session.remaining=remaining();session.deadline=null;store();el('sessionStatus').textContent='Pause';updateTimer();};el('finishExam').onclick=()=>finish();el('backButton').onclick=()=>{if(session.guided){openBank();return;}renderCards();show('home');el('examLibraryHeading').scrollIntoView();};el('showQuestionHint').onclick=()=>{el('questionHint').hidden=!el('questionHint').hidden;};el('nextQuestion').onclick=()=>{session.index=(session.index+1)%session.ids.length;store();renderQuestion();};
+el('startTimer').onclick=startTimer;
+el('pauseTimer').onclick=pauseTimer;
+el('finishExam').onclick=()=>finish();
+el('backButton').onclick=()=>{
+ if(session.guided){openBank();return;}
+ renderCards();
+ show('home');
+ if(locked()&&(session.started||session.partIndex>0))document.querySelector('.return-session')?.focus();
+ else el('examLibraryHeading').scrollIntoView();
+};
+el('showQuestionHint').onclick=()=>{el('questionHint').hidden=!el('questionHint').hidden;};
+el('nextQuestion').onclick=()=>{
+ const ids=activeQuestionIds();
+ moveToQuestion(ids[(ids.indexOf(session.ids[session.index])+1)%ids.length]);
+};
 init();

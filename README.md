@@ -10,6 +10,7 @@ An English-language browser-based exam-practice website for Data Analytics in Ac
 
 - 82 course-based questions: 40 SQL, 26 Excel/ETL and 16 regression questions.
 - Eighteen eight-minute data manipulation exams and eight five-minute regression practice exams. These are authored practice sets, not official exam promises.
+- Full mock mode pairs one data manipulation set and one regression set, with separate eight- and five-minute timers and a combined review.
 - Searchable question bank with subject and case filters.
 - Embedded SQL/Excel workspaces, hints, worked answers, numeric checks, self-assessment criteria, pause/resume timers and browser-local draft storage.
 - Complete Songs and Chinook databases; clearly labelled Movies and P-card subsets. Original Excel and CSV case files are available from Materials.

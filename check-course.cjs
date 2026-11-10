@@ -5,6 +5,58 @@ for(const q of practice.questions)for(const f of q.files)assert(fs.existsSync(pa
 for(const m of practice.materials){const b=fs.readFileSync(path.join(root,m.file));if(m.sha256)assert.equal(crypto.createHash('sha256').update(b).digest('hex'),m.sha256);}
 const ctx={};vm.createContext(ctx);vm.runInContext(fs.readFileSync(path.join(root,'exams.js'),'utf8').split('const store=')[0]+';this.sets=examSets;',ctx);assert.equal(ctx.sets.length,26);const ids=new Set(all.map(x=>x.id));for(const e of ctx.sets){assert(e.ids.every(x=>ids.has(x)));assert.equal(new Set(e.ids).size,e.ids.length);assert(e.ids.every(id=>id.startsWith("r")===(e.type==="regression")));assert.equal(e.ids.length,e.type==='regression'?4:5);assert.equal(e.seconds,e.type==='regression'?300:480);}
 assert.equal(new Set(ctx.sets.flatMap(e=>e.ids)).size,all.length);
+const examCode=fs.readFileSync(path.join(root,'exams.js'),'utf8');
+let time=10_000, saved;
+const element={classList:{toggle(){}},prepend(){},focus(){}};
+const mockContext=vm.createContext({
+ Date:{now:()=>time},
+ localStorage:{setItem(_key,value){saved=value;}},
+ document:{getElementById(){return element;},createElement(){return {};}}
+});
+vm.runInContext(examCode.split("el('examsTab').onclick=")[0]+
+ ';renderSession=()=>{};this.exam={newExam,newMock,single,startTimer,pauseTimer,finish,updateTimer,activeQuestionIds,locked,getSession:()=>session,setSession:value=>{session=value;},sets:examSets};',mockContext);
+const exam=mockContext.exam;
+exam.newExam(exam.sets[0]);
+exam.startTimer();
+time+=42_000;
+exam.pauseTimer();
+const paused=JSON.parse(saved);
+assert.equal(paused.remaining,438);
+exam.setSession(paused);
+exam.single('c2');
+exam.newExam(exam.sets[1]);
+exam.newMock();
+assert.equal(exam.getSession().id,'M01');
+assert.equal(exam.getSession().remaining,438);
+exam.startTimer();
+assert.equal(exam.getSession().deadline,time+438_000);
+exam.finish();
+exam.newMock();
+assert.equal(exam.activeQuestionIds().length,5);
+assert.equal(exam.getSession().remaining,480);
+exam.startTimer();
+exam.getSession().done[exam.activeQuestionIds()[0]]=true;
+time+=480_000;
+exam.updateTimer();
+assert.equal(exam.getSession().partIndex,1);
+assert.equal(exam.getSession().parts[0].expired,true);
+assert.equal(exam.getSession().remaining,300);
+assert.equal(exam.getSession().deadline,null);
+assert.equal(exam.activeQuestionIds().length,4);
+assert(exam.locked());
+exam.setSession(JSON.parse(saved));
+exam.single('c2');
+assert.equal(exam.getSession().id,'mock');
+exam.startTimer();
+exam.pauseTimer();
+assert.equal(exam.getSession().remaining,300);
+exam.startTimer();
+exam.finish();
+assert.equal(exam.getSession().parts[1].expired,false);
+assert.equal(exam.activeQuestionIds().length,9);
+assert.equal(Object.keys(exam.getSession().done).length,1);
+assert.equal(exam.locked(),false);
+console.log('Exam flow checks passed: paused attempts, reload, independent timers and combined review.');
 const t=practice.models.temperature.b,b=practice.models.interaction.b;
 const r=id=>practice.questions.find(q=>q.id===id);assert(Math.abs(r('r1').expected-(t[0]+70*t[1]))<1e-8);assert(Math.abs(r('r2').expected-10*t[1])<1e-8);assert(Math.abs(r('r4').expected-(b[2]+5000*b[3]))<1e-8);assert(Math.abs(r('r5').expected-(b[1]+b[3]))<1e-8);
 assert(Math.abs(r('r7').expected-20*t[1])<1e-8);
