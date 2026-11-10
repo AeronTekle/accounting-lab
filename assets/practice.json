@@ -256,6 +256,121 @@
         "Communicate uncertainty"
       ],
       "expected": null
+    },
+    {
+      "id": "r7",
+      "kind": "Regression",
+      "category": "Restaurant",
+      "title": "Compare predictions at two temperatures",
+      "prompt": "Using the temperature model, calculate the change in predicted daily sales when tmax rises from 60°F to 80°F. Enter the dollar difference to two decimals.",
+      "model": "temperature",
+      "answer": "151.59. The intercept cancels, leaving the slope multiplied by 20°F.",
+      "hint": "Subtract the prediction at 60°F from the prediction at 80°F.",
+      "files": [
+        "materials/restaurant.xlsm"
+      ],
+      "checks": [
+        "Use a 20°F difference",
+        "Report dollars",
+        "Explain why the intercept cancels"
+      ],
+      "expected": 151.59375303757568
+    },
+    {
+      "id": "r8",
+      "kind": "Regression",
+      "category": "Restaurant",
+      "title": "Read the game-day coefficient",
+      "prompt": "In the interaction model, what comparison does the coefficient on G represent? Explain how to estimate the game-day difference at a realistic value of L.",
+      "model": "interaction",
+      "answer": "The coefficient on G is the predicted difference when L=0. At a specified L, the difference is b_G + b_LG × L. Assess that combined effect at a value of L relevant to the question.",
+      "hint": "Set G to 0 and 1 while holding L constant.",
+      "files": [
+        "materials/restaurant.xlsm"
+      ],
+      "checks": [
+        "Identify the comparison at L=0",
+        "Include the interaction",
+        "Hold L constant"
+      ],
+      "expected": null
+    },
+    {
+      "id": "r9",
+      "kind": "Regression",
+      "category": "Restaurant",
+      "title": "Explain the intercept and extrapolation",
+      "prompt": "In the temperature model, explain the intercept. Is a prediction at tmax=0°F supported by the observed temperature range?",
+      "model": "temperature",
+      "answer": "The intercept is predicted daily sales at 0°F. The observed daily highs range from 28.94°F to 104°F, so 0°F requires extrapolation. The algebra still produces a number, but the sample provides limited evidence for that prediction.",
+      "hint": "Compare 0°F with the range shown under the model.",
+      "files": [
+        "materials/restaurant.xlsm"
+      ],
+      "checks": [
+        "Define the intercept",
+        "Use the observed range",
+        "Identify extrapolation"
+      ],
+      "expected": null
+    },
+    {
+      "id": "r10",
+      "kind": "Regression",
+      "category": "Restaurant",
+      "title": "Measure a change in prior sales on game days",
+      "prompt": "For a game day, calculate how much predicted sales change when L increases by $1,000. Report the change in dollars to two decimals.",
+      "model": "interaction",
+      "answer": "630.33. Multiply the game-day slope b_L + b_LG by 1,000.",
+      "hint": "Combine the terms that multiply L when G=1.",
+      "files": [
+        "materials/restaurant.xlsm"
+      ],
+      "checks": [
+        "Use the game-day slope",
+        "Multiply by 1,000",
+        "Keep G fixed"
+      ],
+      "expected": 630.3341319427154
+    },
+    {
+      "id": "r11",
+      "kind": "Regression",
+      "category": "Restaurant",
+      "title": "Predict a non-game day",
+      "prompt": "Use the interaction model to predict sales on a non-game day with L equal to $4,000. Give your answer in dollars to two decimals.",
+      "model": "interaction",
+      "answer": "3522.79. Set G=0, which removes both G terms. Add the intercept to b_L × 4,000.",
+      "hint": "Both the game-day term and the interaction vanish when G=0.",
+      "files": [
+        "materials/restaurant.xlsm"
+      ],
+      "checks": [
+        "Set G to zero",
+        "Include the intercept",
+        "Use the correct L value"
+      ],
+      "expected": 3522.7933205212266
+    },
+    {
+      "id": "r12",
+      "kind": "Regression",
+      "category": "Restaurant",
+      "title": "Design a fair forecast comparison",
+      "prompt": "How would you use the restaurant sales dates to compare the temperature and interaction models on forecast accuracy? Give one error measure and explain the split.",
+      "model": "temperature",
+      "answer": "Use an earlier training window and a later common test window, or rolling-origin evaluation. Fit both models on the same training dates, predict the same later dates using inputs available when each forecast was made, and compare mean absolute error in dollars.",
+      "hint": "Think about which dates would have been in the past when a prediction was made.",
+      "files": [
+        "materials/restaurant.xlsm"
+      ],
+      "checks": [
+        "Use chronological validation",
+        "Compare predictions on the same dates",
+        "Choose and explain an error measure",
+        "Use only information available at forecast time"
+      ],
+      "expected": null
     }
   ],
   "models": {
@@ -469,6 +584,64 @@
           ]
         ]
       },
+      "m4": {
+        "rows": 5,
+        "preview": [
+          [
+            "The Shawshank Redemption",
+            9.3
+          ],
+          [
+            "The Godfather",
+            9.2
+          ],
+          [
+            "The Godfather: Part II",
+            9.0
+          ],
+          [
+            "The Dark Knight",
+            9.0
+          ],
+          [
+            "Schindler's List",
+            8.9
+          ]
+        ]
+      },
+      "m5": {
+        "rows": 10,
+        "preview": [
+          [
+            2000,
+            53
+          ],
+          [
+            2001,
+            57
+          ],
+          [
+            2002,
+            57
+          ],
+          [
+            2003,
+            63
+          ],
+          [
+            2004,
+            76
+          ]
+        ]
+      },
+      "m6": {
+        "rows": 1,
+        "preview": [
+          [
+            "Christopher Nolan"
+          ]
+        ]
+      },
       "a1": {
         "rows": 1,
         "preview": [
@@ -529,6 +702,62 @@
             1339,
             "PHARMCO PRODUCTS INC",
             4630.0
+          ]
+        ]
+      },
+      "a4": {
+        "rows": 1,
+        "preview": [
+          [
+            64
+          ]
+        ]
+      },
+      "a5": {
+        "rows": 2,
+        "preview": [
+          [
+            6,
+            300.77
+          ],
+          [
+            7,
+            613939.52
+          ]
+        ]
+      },
+      "a6": {
+        "rows": 35,
+        "preview": [
+          [
+            "ADVANCED CIRCUITS",
+            "7/23/2014 0:00:00",
+            199.46,
+            2
+          ],
+          [
+            "AIRGAS CENTRAL",
+            "7/24/2014 0:00:00",
+            18.24,
+            2
+          ],
+          [
+            "ALLEGRA PRINT AND IMAGING",
+            "7/29/2014 0:00:00",
+            63.0,
+            4
+          ],
+          [
+            "AMERIPRIDE SERVICES",
+            "7/30/2014 0:00:00",
+            35.0,
+            3
+          ],
+          [
+            "AT&T DATA",
+            "7/25/2014 0:00:00",
+            30.0,
+            2
           ]
         ]
       }
