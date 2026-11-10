@@ -2,7 +2,7 @@
   "questions": [
     {
       "id": "f1",
-      "title": "Import og datatyper",
+      "title": "Import data with the correct types",
       "category": "NYC Film Permits",
       "kind": "Excel",
       "prompt": "Import the film-permit workbook. How many data records and columns are there? Explain why date/time fields must be recognised as dates, not text.",
@@ -19,7 +19,7 @@
     },
     {
       "id": "f2",
-      "title": "Filtrering og optælling",
+      "title": "Filter and count permits",
       "category": "NYC Film Permits",
       "kind": "Excel",
       "prompt": "How many Shooting Permit records are in Brooklyn? Show an Excel method, not just a number.",
@@ -36,7 +36,7 @@
     },
     {
       "id": "f3",
-      "title": "Varighed i timer",
+      "title": "Calculate permit duration in hours",
       "category": "NYC Film Permits",
       "kind": "Excel",
       "prompt": "Find the mean permit duration in hours for Shooting Permit records. Give the unrounded mean to two decimals and explain the Excel conversion.",
@@ -54,7 +54,7 @@
     },
     {
       "id": "t1",
-      "title": "Ryd op uden at gætte",
+      "title": "Resolve data quality issues",
       "category": "ETL Case 1",
       "kind": "Excel",
       "prompt": "Identify four data-quality problems in the balance-sheet CSV and explain what you would do before analysis.",
@@ -72,7 +72,7 @@
     },
     {
       "id": "j1",
-      "title": "Sammenkobl journaldata",
+      "title": "Join journal data",
       "category": "ETL Case 4",
       "kind": "Excel",
       "prompt": "Explain how to add BusinessUnit and account information to every journal line without dropping journal lines. Which identifiers should be used?",
@@ -90,7 +90,7 @@
     },
     {
       "id": "j2",
-      "title": "Bevar et revisionsspor",
+      "title": "Preserve an audit trail",
       "category": "ETL Case 4",
       "kind": "Excel",
       "prompt": "Why should the repeatable journal-data solution retain formulas rather than replace all outputs with pasted values?",
@@ -107,7 +107,7 @@
     },
     {
       "id": "i1",
-      "title": "Sammenlign to lønsystemer",
+      "title": "Compare two payroll systems",
       "category": "IntegrateCo",
       "kind": "Excel",
       "prompt": "Compare total gross wages in the supplied 2015 and 2016 extracts. Define the measure consistently, and compute 2016 minus 2015.",
@@ -126,7 +126,7 @@
     },
     {
       "id": "i2",
-      "title": "Manglende medarbejdernummer",
+      "title": "Investigate missing employee numbers",
       "category": "IntegrateCo",
       "kind": "Excel",
       "prompt": "How many 2016 rows have a missing Employee_Number, and what total Gross_Wages do those rows contain? What can you conclude?",
@@ -146,7 +146,7 @@
       "id": "r1",
       "kind": "Regression",
       "category": "Restaurant",
-      "title": "Forudsig salg",
+      "title": "Predict sales",
       "prompt": "Using the temperature model, predict daily sales when tmax is 70°F. Give dollars to two decimals.",
       "model": "temperature",
       "answer": "3255.87. Prediction = intercept + temperature coefficient × 70. Include the intercept. This is a fitted conditional mean, not a guaranteed outcome.",
@@ -165,7 +165,7 @@
       "id": "r2",
       "kind": "Regression",
       "category": "Restaurant",
-      "title": "Fortolk temperatur",
+      "title": "Interpret the temperature coefficient",
       "prompt": "Interpret the temperature coefficient. What change does the model predict for a 10°F increase? Does this demonstrate causality?",
       "model": "temperature",
       "answer": "The model associates a 1°F increase with 7.579688 additional dollars of predicted daily sales. A 10°F increase corresponds to 75.80. Observational association alone does not establish causality; season, holidays and other omitted factors may matter.",
@@ -184,7 +184,7 @@
       "id": "r3",
       "kind": "Regression",
       "category": "Restaurant",
-      "title": "Vurder statistisk evidens",
+      "title": "Assess statistical evidence",
       "prompt": "Using the reported p-value, assess the temperature slope at the 5% level. What does R² tell you, and what does it not tell you?",
       "model": "temperature",
       "answer": "The temperature p-value is 0.00766585; compare it with 0.05. The slope is statistically significant under the OLS assumptions. R²=0.0227 describes in-sample explained variation, not causal proof, a guarantee of forecast accuracy, or the probability the model is true.",
@@ -203,7 +203,7 @@
       "id": "r4",
       "kind": "Regression",
       "category": "Restaurant",
-      "title": "Kampdag med interaktion",
+      "title": "Compare game-day predictions",
       "prompt": "In the interaction model, let L=5000. Find predicted sales without a game and with a game, then the difference. For the numeric check, enter only the difference in dollars.",
       "model": "interaction",
       "answer": "No game: 4142.39. Game: 4583.12. Difference = b_G + b_LG × 5000 = 440.73. It is not just the game coefficient.",
@@ -222,7 +222,7 @@
       "id": "r5",
       "kind": "Regression",
       "category": "Restaurant",
-      "title": "Hældningen på en kampdag",
+      "title": "Calculate the game-day slope",
       "prompt": "What is the slope on L for game days? Explain how it differs from the slope on non-game days. Enter the game-day slope for the numeric check.",
       "model": "interaction",
       "answer": "Non-game slope: 0.619594460. Game-day slope: b_L + b_LG = 0.630334132. The interaction changes how current predicted sales relate to sales 364 days earlier. L is a sales amount, not elapsed days.",
@@ -241,7 +241,7 @@
       "id": "r6",
       "kind": "Regression",
       "category": "Restaurant",
-      "title": "Forudsig syv dage frem",
+      "title": "Forecast seven days ahead",
       "prompt": "Bob wants a sales forecast seven days after the last observed date. Explain what additional predictor information and validation you need before using these models for that forecast.",
       "model": "interaction",
       "answer": "Identify the future target date. For the interaction model, obtain sales 364 days before that target date and the scheduled game-day status. For the temperature model, obtain a forecast of tmax, not the realised future weather. Evaluate predictions on a chronological holdout and communicate forecast uncertainty. In-sample fit alone is insufficient. The case workbook does not justify inventing missing future inputs.",
@@ -390,16 +390,16 @@
       "note": "Original supplied file, unchanged."
     },
     {
-      "title": "Movies · 2.000-filmudsnit",
+      "title": "Movies · 2,000-film subset",
       "file": "assets/movies-practice.db",
       "origin": "SQL part 1 / CS50 Movies",
-      "note": "CS50 Movies · top 2.000 efter stemmetal; ikke hele databasen"
+      "note": "CS50 Movies · 2,000 films with the most votes"
     },
     {
-      "title": "P-cards · OSU-udsnit",
+      "title": "P-cards · OSU subset",
       "file": "assets/pcards-practice.db",
       "origin": "SQL part 2 / Pcards",
-      "note": "P-card case · første 2.000 OSU-rækker med Year=2014 efter ID"
+      "note": "P-card case · first 2,000 OSU rows for 2014 by ID"
     },
     {
       "title": "Songs full database",
