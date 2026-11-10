@@ -3,8 +3,8 @@ const $=id=>document.getElementById(id);
 const datasets={
  songs:{name:'Songs · Spotify',file:'assets/songs.db',meta:'100 songs · 2 tables',source:'CS50 Songs · SQL part 1',schema:{songs:'id INTEGER · name TEXT · artist_id INTEGER · danceability REAL · energy REAL · key INTEGER · loudness REAL · speechiness REAL · valence REAL · tempo REAL · duration_ms INTEGER',artists:'id INTEGER · name TEXT'}},
  chinook:{name:'Chinook · Music store',file:'assets/chinook.sqlite',meta:'412 invoices · 11 tables',source:'PwC Chinook · SQL part 1',schema:{Invoice:'InvoiceId INTEGER · CustomerId INTEGER · InvoiceDate DATETIME · BillingAddress TEXT · BillingCity TEXT · BillingState TEXT · BillingCountry TEXT · BillingPostalCode TEXT · Total NUMERIC',InvoiceLine:'InvoiceLineId INTEGER · InvoiceId INTEGER · TrackId INTEGER · UnitPrice NUMERIC · Quantity INTEGER',Customer:'CustomerId INTEGER · FirstName TEXT · LastName TEXT · Company TEXT · Address TEXT · City TEXT · State TEXT · Country TEXT · PostalCode TEXT · Phone TEXT · Fax TEXT · Email TEXT · SupportRepId INTEGER',Track:'TrackId INTEGER · Name TEXT · AlbumId INTEGER · MediaTypeId INTEGER · GenreId INTEGER · Composer TEXT · Milliseconds INTEGER · Bytes INTEGER · UnitPrice NUMERIC',Album:'AlbumId INTEGER · Title TEXT · ArtistId INTEGER',Artist:'ArtistId INTEGER · Name TEXT',Genre:'GenreId INTEGER · Name TEXT',Employee:'EmployeeId INTEGER · LastName TEXT · FirstName TEXT · Title TEXT · ReportsTo INTEGER · BirthDate DATETIME · HireDate DATETIME · Address TEXT · City TEXT · State TEXT · Country TEXT · PostalCode TEXT · Phone TEXT · Fax TEXT · Email TEXT',MediaType:'MediaTypeId INTEGER · Name TEXT',Playlist:'PlaylistId INTEGER · Name TEXT',PlaylistTrack:'PlaylistId INTEGER · TrackId INTEGER'}},
- employees:{name:'Employee codes · ETL',file:'assets/employees.json',meta:'597 employees · ETL case 3',source:'ETL Case 3 · Excel part 2'},
- payroll:{name:'Payroll · IntegrateCo 2015',file:'assets/payroll.json',meta:'4,981 payroll rows · 5 selected fields',source:'IntegrateCo 2015 · Excel part 3'}
+ employees:{name:'Employee codes · ETL',file:'assets/employees.json',download:'assets/employee-codes.csv',meta:'597 employees · ETL case 3',source:'ETL Case 3 · Excel part 2'},
+ payroll:{name:'Payroll · IntegrateCo 2015',file:'assets/payroll.json',download:'assets/payroll-practice.csv',meta:'4,981 payroll rows · 5 selected fields',source:'IntegrateCo 2015 · Excel part 3'}
 };
 const exercises={
  songs:[
@@ -47,6 +47,7 @@ const exercises={
  ]
 };
 if(window.COURSE_EXTRA){Object.assign(datasets,window.COURSE_EXTRA.datasets);Object.assign(exercises,window.COURSE_EXTRA.exercises);}
+function csv(headers,rows){return '\uFEFF'+[headers,...rows].map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');}
 let saved={};try{saved=JSON.parse(localStorage.getItem('accountingLab.v1')||'{}');}catch{}
 let state={studio:'sql',dataset:'songs',index:0,play:false,completed:new Set(saved.completed||[]),drafts:saved.drafts||{},last:null,worker:null,timer:null,working:false,data:null,loadId:0};
 const dataCache={};const fmt=new Intl.NumberFormat('en-US',{maximumFractionDigits:8});
@@ -174,7 +175,6 @@ function run(check=false,sample=0){
 }
 function passed(ex){state.completed.add(ex.id);persist();list();feedback('✓ Your result matches the reference. '+(ex.id==='p3'?'Review the source rows with zero hours.':'Can you explain why your method works?'),'success');}
 function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
-function csv(headers,rows){return '\uFEFF'+[headers,...rows].map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');}
 $('sqlTab').onclick=()=>{if(state.studio!=='sql')setStudio('sql');};$('excelTab').onclick=()=>{if(state.studio!=='excel')setStudio('excel');};
 $('dataset').onchange=()=>{remember();state.dataset=$('dataset').value;state.index=0;state.play=false;renderTask();renderContext();};
 $('playButton').onclick=()=>{remember();state.play=true;renderTask();};
@@ -191,10 +191,24 @@ $('solutionButton').onclick=()=>{$('solution').hidden=!$('solution').hidden;$('s
 $('useSolution').onclick=()=>{input().value=current().answer;$('formulaMode').value=current().mode||'rows';input().dispatchEvent(new Event('input'));input().focus();};
 $('resetButton').onclick=()=>{stop();delete state.drafts[key()];persist();renderTask();};
 $('sqlInput').oninput=()=>{updateLines();resetSamples();remember();};$('formulaInput').oninput=remember;$('formulaMode').onchange=()=>{stop();remember();clearResults();};
-for(const el of [$('sqlInput'),$('formulaInput')])el.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run();}if(e.key==='Tab'){e.preventDefault();el.setRangeText('  ',el.selectionStart,el.selectionEnd,'end');el.dispatchEvent(new Event('input'));}});
+for(const editor of [$('sqlInput'),$('formulaInput')]){
+ editor.addEventListener('keydown',event=>{
+  if((event.ctrlKey||event.metaKey)&&event.key==='Enter'){
+   event.preventDefault();
+   run();
+  }
+ });
+}
 $('sqlInput').onscroll=()=>{$('lineNumbers').scrollTop=$('sqlInput').scrollTop;};
 $('exportButton').onclick=()=>{if(state.last)download(new Blob([csv(state.last.headers,state.last.rows)],{type:'text/csv;charset=utf-8'}),'accounting-lab-results.csv');};
-$('downloadButton').onclick=()=>{const ds=datasets[state.dataset];if(state.studio==='sql'){const a=document.createElement('a');a.href=ds.file;a.download=ds.file.split('/').pop();a.click();}else if(state.data)download(new Blob([csv(state.data.headers,state.data.rows)],{type:'text/csv;charset=utf-8'}),state.dataset+'.csv');};
+$('downloadButton').onclick=()=>{
+ const dataset=datasets[state.dataset];
+ const file=dataset.download||dataset.file;
+ const link=document.createElement('a');
+ link.href=file;
+ link.download=file.split('/').pop();
+ link.click();
+};
 $('helpButton').onclick=()=>$('helpDialog').showModal();$('closeHelp').onclick=()=>$('helpDialog').close();$('startHelp').onclick=()=>$('helpDialog').close();$('helpDialog').addEventListener('click',e=>{if(e.target===$('helpDialog')){const r=$('helpDialog').getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)$('helpDialog').close();}});
 ['songs','chinook','movies','pcards'].forEach(id=>{const opt=document.createElement('option');opt.value=id;opt.textContent=datasets[id].name;$('dataset').append(opt);});
 renderTask();renderContext();
