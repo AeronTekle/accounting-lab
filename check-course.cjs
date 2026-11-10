@@ -2,6 +2,13 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 const root=path.join(__dirname,'dist'),catalog=JSON.parse(fs.readFileSync(path.join(root,'assets/catalog.json'))),practice=JSON.parse(fs.readFileSync(path.join(root,'assets/practice.json')));
 const all=[...Object.values(catalog.exercises).flat(),...practice.questions];assert.equal(all.length,82);assert.equal(new Set(all.map(x=>x.id)).size,all.length);for(const q of all){assert(q.title);assert(q.answer);}
 for(const q of practice.questions)for(const f of q.files)assert(fs.existsSync(path.join(root,f)),f);
+for(const dataset of Object.values(catalog.datasets)){
+ if(!dataset.download)continue;
+ const {headers,rows}=JSON.parse(fs.readFileSync(path.join(root,dataset.file),'utf8'));
+ const lines=fs.readFileSync(path.join(root,dataset.download),'utf8').replace(/^\uFEFF/,'').split('\r\n');
+ assert.equal(lines[0],headers.map(header=>'"'+header+'"').join(';'));
+ assert.equal(lines.length,rows.length+1);
+}
 for(const m of practice.materials){const b=fs.readFileSync(path.join(root,m.file));if(m.sha256)assert.equal(crypto.createHash('sha256').update(b).digest('hex'),m.sha256);}
 const ctx={};vm.createContext(ctx);vm.runInContext(fs.readFileSync(path.join(root,'exams.js'),'utf8').split('const store=')[0]+';this.sets=examSets;',ctx);assert.equal(ctx.sets.length,26);const ids=new Set(all.map(x=>x.id));for(const e of ctx.sets){assert(e.ids.every(x=>ids.has(x)));assert.equal(new Set(e.ids).size,e.ids.length);assert(e.ids.every(id=>id.startsWith("r")===(e.type==="regression")));assert.equal(e.ids.length,e.type==='regression'?4:5);assert.equal(e.seconds,e.type==='regression'?300:480);}
 assert.equal(new Set(ctx.sets.flatMap(e=>e.ids)).size,all.length);
@@ -10,12 +17,16 @@ let time=10_000, saved;
 const element={classList:{toggle(){}},prepend(){},focus(){}};
 const mockContext=vm.createContext({
  Date:{now:()=>time},
+ datasetCatalog:catalog,
  localStorage:{setItem(_key,value){saved=value;}},
  document:{getElementById(){return element;},createElement(){return {};}}
 });
 vm.runInContext(examCode.split("el('examsTab').onclick=")[0]+
- ';renderSession=()=>{};this.exam={newExam,newMock,single,startTimer,pauseTimer,finish,updateTimer,activeQuestionIds,locked,getSession:()=>session,setSession:value=>{session=value;},sets:examSets};',mockContext);
+ ';catalog=datasetCatalog;renderSession=()=>{};this.exam={filesFor,newExam,newMock,single,startTimer,pauseTimer,finish,updateTimer,activeQuestionIds,locked,getSession:()=>session,setSession:value=>{session=value;},sets:examSets};',mockContext);
 const exam=mockContext.exam;
+assert.equal(exam.filesFor({dataset:'payroll'})[0],'assets/payroll-practice.csv');
+assert.equal(exam.filesFor({dataset:'employees'})[0],'assets/employee-codes.csv');
+assert.equal(exam.filesFor({dataset:'chinook'})[0],'assets/chinook.sqlite');
 exam.newExam(exam.sets[0]);
 exam.startTimer();
 time+=42_000;

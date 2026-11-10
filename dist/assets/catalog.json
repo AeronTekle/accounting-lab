@@ -32,12 +32,14 @@
     "employees": {
       "name": "Employee codes · ETL",
       "file": "assets/employees.json",
+      "download": "assets/employee-codes.csv",
       "meta": "597 employees · ETL case 3",
       "source": "ETL Case 3 · Excel part 2"
     },
     "payroll": {
       "name": "Payroll · IntegrateCo 2015",
       "file": "assets/payroll.json",
+      "download": "assets/payroll-practice.csv",
       "meta": "4,981 payroll rows · 5 selected fields",
       "source": "IntegrateCo 2015 · Excel part 3"
     },

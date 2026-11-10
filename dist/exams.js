@@ -158,7 +158,11 @@ function resetBankPage(){
  renderBank();
 }
 function downloadLinks(container,files){container.replaceChildren();for(const file of [...new Set(files)]){const a=text('a',file.split('/').pop()+' ↓');a.href=file;a.download='';container.append(a);}}
-function filesFor(q){return q.files||[catalog.datasets[q.dataset].file];}
+function filesFor(q){
+ if(q.files)return q.files;
+ const dataset=catalog.datasets[q.dataset];
+ return [dataset.download||dataset.file];
+}
 function allFiles(){return [...new Set(session.ids.flatMap(id=>filesFor(byId[id])))];}
 const modelViews={
  temperature:['b₀ + b₁ × tmax','Sales is daily sales in dollars. tmax is the daily high temperature in °F. The observed range is 28.94–104 °F.'],
@@ -189,7 +193,7 @@ function renderQuestion(){
  });
  const area=el('responseArea');area.replaceChildren();
  if(q.dataset){
-  const frame=document.createElement('iframe');frame.title='Interactive workspace: '+q.title;frame.className='lab-frame';frame.src='index.html?v=practice-82&embed=1&dataset='+encodeURIComponent(q.dataset)+'&exercise='+encodeURIComponent(q.id)+'&attempt='+encodeURIComponent(session.attempt||'guided')+(lock?'&exam=1':'');area.append(frame);
+  const frame=document.createElement('iframe');frame.title='Interactive workspace: '+q.title;frame.className='lab-frame';frame.src='index.html?v=exam-downloads-1&embed=1&dataset='+encodeURIComponent(q.dataset)+'&exercise='+encodeURIComponent(q.id)+'&attempt='+encodeURIComponent(session.attempt||'guided')+(lock?'&exam=1':'');area.append(frame);
  }else{
   const label=text('label','YOUR METHOD AND EXPLANATION','response-label');label.htmlFor='writtenAnswer';const answer=document.createElement('textarea');answer.id='writtenAnswer';answer.className='scratch-answer';answer.placeholder='Write your calculation, method or interpretation here…';answer.value=session.answers[q.id]||'';answer.oninput=()=>{session.answers[q.id]=answer.value;store();};area.append(label,answer);
   if(q.expected!==null&&q.expected!==undefined&&!lock){const wrap=text('div','','numeric-check'),label=text('label','Check your numeric result','response-label');label.htmlFor='numericAnswer';const inp=document.createElement('input');inp.type='text';inp.inputMode='decimal';inp.id='numericAnswer';inp.className='numeric-answer';inp.placeholder='Enter your result';const result=text('span','','numeric-feedback');result.setAttribute('role','status');const button=btn('Check number',()=>{const val=Number(inp.value.trim().replace(',','.'));if(!inp.value.trim()||!Number.isFinite(val)){result.textContent='Enter a number without a thousands separator.';return;}const tolerance=q.id==='r5'?0.000001:q.id==='r16'?0.000051:0.011;result.textContent=Math.abs(val-q.expected)<=tolerance?'✓ The number is correct. Use the criteria below to review your explanation.':'The result differs. Check the model and the inputs requested in the question.';},'secondary-button');wrap.append(label,inp,button,result);area.append(wrap);}
@@ -256,8 +260,12 @@ function renderSession(){
  el('examInstructions').replaceChildren(text('div',instructions));
  if(!session.guided){
   const links=text('div','','file-links');
-  downloadLinks(links,allFiles());
+  const files=allFiles();
+  downloadLinks(links,files);
   el('examInstructions').append(links);
+  if(files.some(file=>file.startsWith('assets/')&&file.endsWith('.csv'))){
+   el('examInstructions').append(text('div','For the practice CSVs, open Data → From Text/CSV in Excel and select Semicolon. The headers and column order match the lab.'));
+  }
  }
  renderMockProgress();
  renderReview();
@@ -323,7 +331,7 @@ function finish(expired=false){
 }
 async function init(){
  try{
-  const [c,p]=await Promise.all([fetch('assets/catalog.json?v=practice-82'),fetch('assets/practice.json?v=practice-82')]);if(!c.ok||!p.ok)throw Error();catalog=await c.json();practice=await p.json();
+  const [c,p]=await Promise.all([fetch('assets/catalog.json?v=exam-downloads-1'),fetch('assets/practice.json?v=practice-82')]);if(!c.ok||!p.ok)throw Error();catalog=await c.json();practice=await p.json();
   for(const [dataset,qs] of Object.entries(catalog.exercises)){for(const q of qs)bank.push({...q,dataset,kind:catalog.datasets[dataset].schema?'SQL':'Excel',category:catalog.datasets[dataset].name,prompt:q.desc,answer:q.answer+'\n\n'+q.explain});}
   bank.push(...practice.questions);byId=Object.fromEntries(bank.map(q=>[q.id,q]));for(const ex of examSets)if(ex.ids.some(id=>!byId[id]))throw Error('Unknown exam question.');
   el('questionCount').textContent=bank.length;el('examCount').textContent=examSets.length;el('datasetCount').textContent=Object.keys(catalog.datasets).length;el('modelMethod').textContent=practice.modelMethod;

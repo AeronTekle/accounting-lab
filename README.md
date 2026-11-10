@@ -20,7 +20,7 @@ An English-language browser-based exam-practice website for Data Analytics in Ac
 
 Serve `dist/` with a static HTTP server. File URLs do not support the Worker and fetch workflow. All JavaScript, SQLite WebAssembly and datasets are hosted with the application; no external scripts, fonts or analytics are required.
 
-Run `node check.cjs` and `node check-course.cjs` for independent data, formula and course-content verification. Run `node build_catalog.cjs` after changing exercise definitions. Open `dist/exams.html` for the complete practice website, or `dist/index.html` for the standalone lab.
+Run `node check.cjs` and `node check-course.cjs` for independent data, formula and course-content verification. Run `node build_catalog.cjs` after changing exercise definitions or the Excel lab datasets. It rebuilds the catalog and the two Excel-ready CSV downloads used in the lab and before exams. Open `dist/exams.html` for the complete practice website, or `dist/index.html` for the standalone lab.
 
 Run `node check.cjs` for independent data and formula verification. It exercises all 22 supported functions, both SQL databases, every reference answer, all employee-code outputs and every gross-pay row. SQLite writes are blocked with `PRAGMA query_only`.
 
