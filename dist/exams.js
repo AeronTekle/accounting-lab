@@ -4,6 +4,25 @@ const sections=['home','bank','materials','session'];
 let catalog,practice,bank=[],byId={},session=null,bankPage=1;
 const bankPageSize=12;
 const nf=new Intl.NumberFormat('en-US',{maximumFractionDigits:6});
+const followUpSeconds=60;
+const followUps={
+ i2:{topic:'Missing payroll IDs',prompt:'A colleague suggests excluding all rows with a missing Employee_Number before reporting total gross wages. Would you do that? What would you check first?',points:[
+  'Keep the recorded wages in the total unless there is evidence that the transactions should be corrected or excluded.',
+  'Flag the affected rows separately and show how much the total would fall if they were excluded.',
+  'Reconcile the flagged wages to the payroll register and check another identifier against the employee master before drawing a conclusion.'
+ ]},
+ m13:{topic:'Duplicate rows after a join',prompt:'A director has two qualifying films. Two different directors also share the same name. Would SELECT DISTINCT name solve both problems? How would you verify your result?',points:[
+  'The join can produce multiple rows for one director when more than one film qualifies.',
+  'DISTINCT on the name merges different people with the same name. Deduplicate by person ID, then display the names.',
+  'Inspect person IDs in an intermediate result and check that each qualifying ID appears exactly once.'
+ ]},
+ r15:{topic:'Game days and sales',prompt:'The manager says game days caused the higher predicted sales. What else could explain the difference, and what comparison would you run to check it?',points:[
+  'The coefficient compares average sales on game and non-game days in this dataset.',
+  'If games cluster on busy days of the week, the weekday mix could explain part of the difference.',
+  'Compare game and non-game days on the same weekday, or add weekday controls. The adjusted comparison still describes an association.'
+ ]}
+};
+let followUpDeadline,followUpInterval;
 const examSets=[
  {id:'M01',title:'Employee Codes and Songs',type:'manipulation',seconds:480,ids:['e1','e2','e3','s2','s3'],desc:'Extract text, apply conditions and join related data.'},
  {id:'M02',title:'Payroll and Invoices',type:'manipulation',seconds:480,ids:['p1','p2','p3','c1','c2'],desc:'Calculate gross pay, weighted rates and totals.'},
@@ -56,6 +75,49 @@ function showExamGroup(group){
 }
 function remaining(){return session?.deadline?Math.max(0,Math.ceil((session.deadline-Date.now())/1000)):session?.remaining||0;}
 function displayTime(n){return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');}
+function stopFollowUpTimer(){
+ clearInterval(followUpInterval);
+}
+function updateFollowUpTimer(){
+ const seconds=Math.max(0,Math.ceil((followUpDeadline-Date.now())/1000));
+ el('followUpTimer').textContent=displayTime(seconds);
+ if(seconds===0){
+  stopFollowUpTimer();
+  el('followUpStatus').textContent='Time is up. Review your answer when ready.';
+  el('showFollowUpReview').textContent='Show review points';
+ }
+}
+function startFollowUp(){
+ stopFollowUpTimer();
+ el('followUpReview').hidden=true;
+ el('followUpPoints').querySelectorAll('input').forEach(input=>{input.checked=false;});
+ el('followUpClock').hidden=false;
+ el('followUpStatus').textContent='';
+ el('showFollowUpReview').textContent='I’ve finished speaking';
+ el('showFollowUpReview').hidden=false;
+ followUpDeadline=Date.now()+followUpSeconds*1000;
+ updateFollowUpTimer();
+ followUpInterval=setInterval(updateFollowUpTimer,250);
+ el('followUpTitle').focus();
+}
+function openFollowUp(){
+ const q=byId[session.ids[session.index]], followUp=followUps[q.id];
+ if(locked()||!followUp)return;
+ el('followUpContext').textContent=q.kind+' · '+q.title;
+ el('followUpPrompt').textContent=followUp.prompt;
+ const points=followUp.points.map(point=>{
+  const label=text('label',point);
+  const input=document.createElement('input');
+  input.type='checkbox';
+  label.prepend(input);
+  const item=text('li','');
+  item.append(label);
+  return item;
+ });
+ el('followUpPoints').replaceChildren(...points);
+ el('followUpDialog').showModal();
+ startFollowUp();
+}
 function locked(){return session&&!session.guided&&!session.finished;}
 function currentPart(){return session.parts?.[session.partIndex];}
 function activeQuestionIds(){return locked()&&currentPart()?currentPart().ids:session.ids;}
@@ -200,6 +262,7 @@ function renderQuestion(){
  }
  el('answerDetails').hidden=lock;el('answerDetails').open=false;el('questionHint').hidden=true;el('questionHint').textContent=q.hint||'Check the data, method and units.';el('showQuestionHint').hidden=lock;el('questionAnswer').textContent=q.answer;el('answerChecks').replaceChildren();(q.checks||['Check the output values and rows','Explain why your method works','Use the specified dataset']).forEach(x=>el('answerChecks').append(text('li',x)));el('doneCheckbox').checked=!!session.done[q.id];el('doneCheckbox').onchange=()=>{session.done[q.id]=el('doneCheckbox').checked;store();renderNavMarks();};
  el('nextQuestion').textContent=position<activeIds.length-1?'Next question →':'First question ↺';
+ el('openFollowUp').hidden=lock||!followUps[questionId];
  if(lock&&!q.dataset)area.append(text('p','You can see hints, worked solutions and review criteria after finishing the exam.','locked-note'));
 }
 function renderNavMarks(){
@@ -334,6 +397,11 @@ async function init(){
   const [c,p]=await Promise.all([fetch('assets/catalog.json?v=exam-downloads-1'),fetch('assets/practice.json?v=practice-82')]);if(!c.ok||!p.ok)throw Error();catalog=await c.json();practice=await p.json();
   for(const [dataset,qs] of Object.entries(catalog.exercises)){for(const q of qs)bank.push({...q,dataset,kind:catalog.datasets[dataset].schema?'SQL':'Excel',category:catalog.datasets[dataset].name,prompt:q.desc,answer:q.answer+'\n\n'+q.explain});}
   bank.push(...practice.questions);byId=Object.fromEntries(bank.map(q=>[q.id,q]));for(const ex of examSets)if(ex.ids.some(id=>!byId[id]))throw Error('Unknown exam question.');
+  for(const [id,followUp] of Object.entries(followUps)){
+   const link=text('a',byId[id].kind+' · '+followUp.topic+' ↗','secondary-button');
+   link.href='exams.html?question='+encodeURIComponent(id);
+   el('followUpExamples').append(link);
+  }
   el('questionCount').textContent=bank.length;el('examCount').textContent=examSets.length;el('datasetCount').textContent=Object.keys(catalog.datasets).length;el('modelMethod').textContent=practice.modelMethod;
   for(const m of practice.materials){const a=text('a','','material-card');a.href=m.file;a.download='';a.append(text('strong',m.title+' ↓'),text('small',m.note),text('small','Source: '+m.origin));el('materialList').append(a);}
   try{const old=JSON.parse(localStorage.getItem('accountingLab.exam.v1')||'null');if(old&&old.ids?.every(id=>byId[id])&&old.index>=0&&old.index<old.ids.length){
@@ -376,6 +444,20 @@ el('backButton').onclick=()=>{
  else el('examLibraryHeading').scrollIntoView();
 };
 el('showQuestionHint').onclick=()=>{el('questionHint').hidden=!el('questionHint').hidden;};
+el('openFollowUp').onclick=openFollowUp;
+el('followUpDialog').onclose=()=>{
+ stopFollowUpTimer();
+ el('openFollowUp').focus();
+};
+el('retryFollowUp').onclick=startFollowUp;
+el('showFollowUpReview').onclick=()=>{
+ stopFollowUpTimer();
+ el('followUpClock').hidden=true;
+ el('followUpStatus').textContent='';
+ el('showFollowUpReview').hidden=true;
+ el('followUpReview').hidden=false;
+ el('followUpReviewTitle').focus();
+};
 el('nextQuestion').onclick=()=>{
  const ids=activeQuestionIds();
  moveToQuestion(ids[(ids.indexOf(session.ids[session.index])+1)%ids.length]);

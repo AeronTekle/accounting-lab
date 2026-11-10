@@ -11,6 +11,7 @@ An English-language browser-based exam-practice website for Data Analytics in Ac
 - 82 course-based questions: 40 SQL, 26 Excel/ETL and 16 regression questions.
 - Eighteen eight-minute data manipulation exams and eight five-minute regression practice exams. These are authored practice sets, not official exam promises.
 - Full mock mode pairs one data manipulation set and one regression set, with separate eight- and five-minute timers and a combined review.
+- Examiner follow-ups for three course questions, with 60 seconds to answer aloud and a checklist for self-review. Available in guided practice and after timed exams.
 - Searchable question bank with subject and case filters.
 - Embedded SQL/Excel workspaces, hints, worked answers, numeric checks, self-assessment criteria, pause/resume timers and browser-local draft storage.
 - Complete Songs and Chinook databases; clearly labelled Movies and P-card subsets. Original Excel and CSV case files are available from Materials.
@@ -41,7 +42,9 @@ Additional source mappings, original-file hashes, exact subset definitions and v
 
 ## Distinctive functionality
 
-The site's proposed improvement is an integrated execution workspace: students can run actual read-only SQLite queries and a limited set of Excel-style formulas immediately within practice questions. The checker compares output values rather than requiring identical source code. SQL answers can use alternative queries; ordering is checked only when requested, and duplicate rows are preserved during comparison. Excel exercises check every supplied source row or a single aggregate, as appropriate.
+The [Examiner Follow-up Mode](https://aerontekle.github.io/accounting-lab/exams.html?question=r15) lets students rehearse a second step of the oral exam. After solving an Excel, SQL or regression exercise, students answer a course-specific question aloud and check whether they explained their method or a limitation.
+
+The site also includes an integrated execution workspace: students can run actual read-only SQLite queries and a limited set of Excel-style formulas immediately within practice questions. The checker compares output values rather than requiring identical source code. SQL answers can use alternative queries; ordering is checked only when requested, and duplicate rows are preserved during comparison. Excel exercises check every supplied source row or a single aggregate, as appropriate.
 
 The Chinook exercise shows a real invoice before and after joining to its line items. Its two-sample challenge also runs the same student query on two pairs of invoices. SUM(DISTINCT Total) matches the first pair at $5.94 and undercounts the second pair, which contains two separate $1.98 invoices. The challenge reveals those rows and accepts supported queries that produce the requested output on both samples. Students can also download the same practice data for Excel or a SQLite editor and compare their work with the worked solution.
 
