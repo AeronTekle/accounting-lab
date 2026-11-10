@@ -52,3 +52,15 @@
  .topbar { flex-wrap: wrap; height: auto; padding-block: 12px; }
  .topbar nav { width: 100%; }
 }
+
+.mock-progress { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; list-style: none; margin: 16px 0; padding: 0; }
+.mock-step { display: grid; gap: 5px; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; }
+.mock-step[aria-current="step"] { background: #eaf0df; border-color: #7a9b64; }
+.mock-step span { color: #4e6250; font-size: 12px; }
+.attempt-message { margin: 0 0 8px; font-weight: 700; }
+.review-section { margin-top: 14px; }
+.review-section h3 { margin: 0 0 4px; font-size: 15px; }
+.review-section p { margin: 0; }
+.review-questions { display: flex; flex-wrap: wrap; gap: 4px 18px; padding-left: 22px; }
+.review-questions .text-button { padding-inline: 0; text-align: left; text-decoration: underline; }
+@media (max-width: 480px) { .mock-progress { grid-template-columns: 1fr; } }
