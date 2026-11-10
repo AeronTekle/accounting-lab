@@ -9,12 +9,12 @@
 
 ## Content and behaviour
 
-- 32 distinct course-based questions: 12 SQL, 14 Excel/ETL, six regression.
-- Nine complete authored practice sets: six Excel/SQL exams (five questions each), three regression exams (four questions each).
+- 56 distinct course-based questions: 24 SQL, 20 Excel/ETL and 12 regression.
+- 18 authored practice sets: 12 Excel/SQL exams (five questions each) and six regression exams (four questions each). Every question appears in at least one set.
 - Original downloaded case files are byte-preserved; source hashes are recorded. Movies and P-cards use explicitly defined 2,000-record subsets; their checked answers use those exact subsets.
 - Restaurant models were calculated from the supplied workbook, not invented. The authoring script documents aggregation, date joins, ordinary least squares and standard-error assumptions.
 - All 22 supported formula functions and the six original interactive exercise answers passed the independent checks in node check.cjs.
-- All question IDs, exam compositions, downloadable files, original hashes, regression arithmetic, six added SQL answers and subset database integrity passed node check-course.cjs.
+- All question IDs, exam compositions, downloadable files, original hashes, regression arithmetic, twelve additional SQL answers and subset database integrity passed node check-course.cjs.
 - node demonstrate-improvement.cjs confirms that an alternative correct SQL query returns 2328.60, whereas the invoice-line duplication query returns 20848.62. This is functional evidence, not evidence of improved learning or a promised grade.
 
 ## Initial browser and publication checks

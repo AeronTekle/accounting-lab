@@ -98,6 +98,39 @@
         "hint": "Match songs.artist_id to artists.id. The artist name is in artists.name.",
         "explain": "Join the tables by ID and filter by artist name. An equivalent subquery also works.",
         "ordered": false
+      },
+      {
+        "id": "s4",
+        "title": "Find the most danceable songs",
+        "skill": "ORDER BY · LIMIT",
+        "desc": "Return name and danceability for the five highest-scoring songs. Sort by danceability descending, then id ascending for ties.",
+        "starter": "SELECT name, danceability FROM songs",
+        "answer": "SELECT name, danceability FROM songs ORDER BY danceability DESC, id LIMIT 5;",
+        "hint": "Sort before limiting to five.",
+        "explain": "The secondary sort makes the top five reproducible.",
+        "ordered": true
+      },
+      {
+        "id": "s5",
+        "title": "Average energy across the song list",
+        "skill": "AVG",
+        "desc": "Return the average energy of all songs as one number. Keep the full precision.",
+        "starter": "SELECT energy FROM songs",
+        "answer": "SELECT AVG(energy) FROM songs;",
+        "hint": "Use AVG on the energy column.",
+        "explain": "Each song contributes one energy value to the mean.",
+        "ordered": false
+      },
+      {
+        "id": "s6",
+        "title": "Count songs by artist",
+        "skill": "JOIN · GROUP BY",
+        "desc": "Return artist name and song count for every artist represented in the song list. Sort by count descending, artist name ascending, then artist ID ascending.",
+        "starter": "SELECT a.name FROM artists AS a",
+        "answer": "SELECT a.name, COUNT(*) AS SongCount FROM songs s JOIN artists a ON s.artist_id=a.id GROUP BY a.id,a.name ORDER BY SongCount DESC,a.name,a.id;",
+        "hint": "Join artist ID to song artist_id. Group by artist ID and name.",
+        "explain": "The artist ID keeps separate artists distinct even if names match.",
+        "ordered": true
       }
     ],
     "chinook": [
@@ -133,6 +166,39 @@
         "hint": "Use GROUP BY to group invoices by country and ORDER BY SUM(Total) DESC to rank them.",
         "explain": "Grouping and summing gives one row per country. The secondary sort breaks ties consistently.",
         "ordered": true
+      },
+      {
+        "id": "c4",
+        "title": "Summarise invoice values by customer",
+        "skill": "GROUP BY · SUM",
+        "desc": "Return CustomerId and total invoice value for each customer with invoices. Use one row per customer. Row order is optional.",
+        "starter": "SELECT CustomerId, Total FROM Invoice",
+        "answer": "SELECT CustomerId, SUM(Total) FROM Invoice GROUP BY CustomerId;",
+        "hint": "Invoice already has one row per invoice. Group by CustomerId.",
+        "explain": "This measures billed value by customer without repeating invoice totals.",
+        "ordered": false
+      },
+      {
+        "id": "c5",
+        "title": "Find the five most recent invoices",
+        "skill": "ORDER BY · LIMIT",
+        "desc": "Return InvoiceId, InvoiceDate and Total for the five most recent invoices. Sort by date descending and InvoiceId descending for ties.",
+        "starter": "SELECT InvoiceId, InvoiceDate, Total FROM Invoice",
+        "answer": "SELECT InvoiceId, InvoiceDate, Total FROM Invoice ORDER BY InvoiceDate DESC, InvoiceId DESC LIMIT 5;",
+        "hint": "Use ORDER BY on both fields before LIMIT.",
+        "explain": "InvoiceId determines which invoice comes first on a shared date.",
+        "ordered": true
+      },
+      {
+        "id": "c6",
+        "title": "Count unique billed customers by country",
+        "skill": "COUNT DISTINCT",
+        "desc": "Return BillingCountry and the number of distinct CustomerId values for each country. Row order is optional.",
+        "starter": "SELECT BillingCountry, CustomerId FROM Invoice",
+        "answer": "SELECT BillingCountry, COUNT(DISTINCT CustomerId) FROM Invoice GROUP BY BillingCountry;",
+        "hint": "Count distinct customers within each billing country.",
+        "explain": "The unit being counted is the customer ID, so repeat invoices do not inflate the count.",
+        "ordered": false
       }
     ],
     "employees": [
@@ -168,6 +234,39 @@
         "mode": "rows",
         "hint": "RIGHT(A2,1) returns o for a code ending in Mo. Use OR to test for both M and Mo.",
         "explain": "The dataset contains 181 Mo codes, 158 M codes and 258 W codes. We is also a valid suffix. A production system should flag invalid codes separately."
+      },
+      {
+        "id": "e4",
+        "title": "Extract the code before the hyphen",
+        "skill": "LEFT · FIND",
+        "desc": "Return the portion of EmployeeCode before its first hyphen. Use column A and fill down.",
+        "starter": "=LEFT(A2,3)",
+        "answer": "=LEFT(A2,FIND(\"-\",A2)-1)",
+        "mode": "rows",
+        "hint": "Use FIND to locate the hyphen, then subtract one.",
+        "explain": "Japan177-3Mo becomes Japan177. The extracted prefix can vary in length."
+      },
+      {
+        "id": "e5",
+        "title": "Build uppercase employee initials",
+        "skill": "LEFT · UPPER",
+        "desc": "Return two uppercase initials, using the first character of FirstName in B and LastName in C. Use no space. Fill down.",
+        "starter": "=LEFT(B2,1)",
+        "answer": "=UPPER(LEFT(B2,1)&LEFT(C2,1))",
+        "mode": "rows",
+        "hint": "Use LEFT for each initial and UPPER for the combined result.",
+        "explain": "Carl Rodriguez becomes CR. Initials are useful labels, but multiple employees can share them."
+      },
+      {
+        "id": "e6",
+        "title": "Measure employee code length",
+        "skill": "LEN",
+        "desc": "Count the characters in each EmployeeCode in column A, including the hyphen and pay-frequency suffix. Fill down.",
+        "starter": "=A2",
+        "answer": "=LEN(A2)",
+        "mode": "rows",
+        "hint": "LEN counts all characters in a cell.",
+        "explain": "The lengths help you see why a single fixed-width extraction can fail."
       }
     ],
     "payroll": [
@@ -203,6 +302,39 @@
         "mode": "summary",
         "hint": "Include overtime in both totals, then divide total pay by total hours.",
         "explain": "$1,086,734.19 divided by 32,878.75 hours gives $33.05 per hour. Seven rows have pay and zero hours. The total retains their pay amounts, which warrant a closer look before drawing a business conclusion."
+      },
+      {
+        "id": "p4",
+        "title": "Calculate total overtime pay",
+        "skill": "SUM · OVERTIME",
+        "desc": "Calculate total OT_Pay in column D over rows 2 through 4,982. Return one number.",
+        "starter": "=D2",
+        "answer": "=SUM(D2:D4982)",
+        "mode": "summary",
+        "hint": "Add all values in D2:D4982.",
+        "explain": "This isolates the overtime component of gross pay."
+      },
+      {
+        "id": "p5",
+        "title": "Calculate overtime as a share of hours",
+        "skill": "SUM · RATIO",
+        "desc": "Divide total OT_Hrs in B by total hours in A and B, using rows 2 through 4,982. Return a decimal fraction with full precision.",
+        "starter": "=SUM(B2:B4982)",
+        "answer": "=SUM(B2:B4982)/SUM(A2:B4982)",
+        "mode": "summary",
+        "hint": "Add both hours columns in the denominator.",
+        "explain": "The fraction uses all hours. Multiply by 100 only when presenting it as a percentage."
+      },
+      {
+        "id": "p6",
+        "title": "Flag paid rows with zero hours",
+        "skill": "IF · AND",
+        "desc": "Return \"Review\" when regular plus overtime hours are zero and regular plus overtime pay is nonzero. Otherwise return \"OK\". Hours are in A and B, pay in C and D. Fill down.",
+        "starter": "=IF(A2=0,\"Review\",\"OK\")",
+        "answer": "=IF(AND(A2+B2=0,C2+D2<>0),\"Review\",\"OK\")",
+        "mode": "rows",
+        "hint": "Test both conditions together with AND.",
+        "explain": "The rule flags seven rows for follow-up. A flag alone does not establish a payroll error."
       }
     ],
     "movies": [
@@ -236,6 +368,39 @@
         "starter": "SELECT p.name FROM people p\n-- Complete the query",
         "hint": "Connect movies, stars and people. An IN subquery avoids repeating person IDs.",
         "skill": "RELATIONSHIPS",
+        "explain": "The checker uses the downloadable course subset. Results can differ on the full course database.",
+        "ordered": false
+      },
+      {
+        "id": "m4",
+        "title": "Find top-rated films with substantial vote counts",
+        "desc": "Return title and rating for the five highest-rated films with at least 50,000 votes. Sort by rating descending, then movie ID ascending.",
+        "answer": "SELECT m.title,r.rating FROM movies m JOIN ratings r ON r.movie_id=m.id WHERE r.votes>=50000 ORDER BY r.rating DESC,m.id LIMIT 5;",
+        "starter": "SELECT m.title,r.rating FROM movies m JOIN ratings r ON r.movie_id=m.id\n-- Complete the query",
+        "hint": "Filter on votes before ranking by rating.",
+        "skill": "JOIN · ORDER BY",
+        "explain": "The checker uses the downloadable course subset. Results can differ on the full course database.",
+        "ordered": true
+      },
+      {
+        "id": "m5",
+        "title": "Count films released in each year",
+        "desc": "Return year and film count for releases from 2000 through 2009 inclusive. Sort by year ascending.",
+        "answer": "SELECT year,COUNT(*) FROM movies WHERE year BETWEEN 2000 AND 2009 GROUP BY year ORDER BY year;",
+        "starter": "SELECT year,COUNT(*) FROM movies\n-- Complete the query",
+        "hint": "Apply the year range before grouping.",
+        "skill": "BETWEEN · GROUP BY",
+        "explain": "The checker uses the downloadable course subset. Results can differ on the full course database.",
+        "ordered": true
+      },
+      {
+        "id": "m6",
+        "title": "Find the directors of Inception",
+        "desc": "Return the names of directors credited on Inception (2010). Row order is optional.",
+        "answer": "SELECT p.name FROM movies m JOIN directors d ON d.movie_id=m.id JOIN people p ON p.id=d.person_id WHERE m.title='Inception' AND m.year=2010;",
+        "starter": "SELECT p.name FROM movies m JOIN directors d ON d.movie_id=m.id JOIN people p ON p.id=d.person_id\n-- Complete the query",
+        "hint": "Follow movies.id to directors.movie_id and people.id to directors.person_id.",
+        "skill": "THREE-TABLE JOIN",
         "explain": "The checker uses the downloadable course subset. Results can differ on the full course database.",
         "ordered": false
       }
@@ -273,6 +438,39 @@
         "skill": "ORDER BY · LIMIT",
         "explain": "The checker uses the downloadable course subset. Results can differ on the full course database.",
         "ordered": true
+      },
+      {
+        "id": "a4",
+        "title": "Separate credits from purchases",
+        "desc": "Return the number of transactions whose Amount is negative as one number.",
+        "answer": "SELECT COUNT(*) FROM pcards WHERE Amount<0;",
+        "starter": "SELECT COUNT(*) FROM pcards\n-- Complete the query",
+        "hint": "Use Amount < 0 to identify credits.",
+        "skill": "WHERE · COUNT",
+        "explain": "The checker uses the downloadable course subset. Results can differ on the full course database.",
+        "ordered": false
+      },
+      {
+        "id": "a5",
+        "title": "Compare net spend by month",
+        "desc": "Return Month and net Amount for each observed month in the subset. Include credits and sort by Month ascending.",
+        "answer": "SELECT Month,SUM(Amount) FROM pcards GROUP BY Month ORDER BY Month;",
+        "starter": "SELECT Month,SUM(Amount) FROM pcards\n-- Complete the query",
+        "hint": "Group by Month and sum signed amounts.",
+        "skill": "GROUP BY · SUM",
+        "explain": "The checker uses the downloadable course subset. Results can differ on the full course database.",
+        "ordered": true
+      },
+      {
+        "id": "a6",
+        "title": "Find potential duplicate charge groups",
+        "desc": "Return Vendor, TransactionDate, Amount and the count for groups with more than one positive charge sharing those three fields. Row order is optional.",
+        "answer": "SELECT Vendor,TransactionDate,Amount,COUNT(*) FROM pcards WHERE Amount>0 GROUP BY Vendor,TransactionDate,Amount HAVING COUNT(*)>1;",
+        "starter": "SELECT Vendor,TransactionDate,Amount,COUNT(*) FROM pcards\n-- Complete the query",
+        "hint": "Group the three fields, then apply HAVING to the group count. Identical fields are a flag for review.",
+        "skill": "GROUP BY · HAVING",
+        "explain": "The checker uses the downloadable course subset. Results can differ on the full course database.",
+        "ordered": false
       }
     ]
   }

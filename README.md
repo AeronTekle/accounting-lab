@@ -8,8 +8,9 @@ An English-language browser-based exam-practice website for Data Analytics in Ac
 
 ## What is included
 
-- 32 course-based questions: 12 SQL, 14 Excel/ETL and 6 regression questions.
-- Six eight-minute Excel/SQL practice exams and three five-minute regression practice exams. These are authored practice sets, not official exam promises.
+- 56 course-based questions: 24 SQL, 20 Excel/ETL and 12 regression questions.
+- Twelve eight-minute Excel/SQL practice exams and six five-minute regression practice exams. These are authored practice sets, not official exam promises.
+- Searchable question bank with subject and case filters.
 - Embedded SQL/Excel workspaces, hints, worked answers, numeric checks, self-assessment criteria, pause/resume timers and browser-local draft storage.
 - Complete Songs and Chinook databases; clearly labelled Movies and P-card subsets. Original Excel and CSV case files are available from Materials.
 - Restaurant OLS output fitted from the supplied workbook, with coefficients, standard errors, p-values and explicit assumptions.

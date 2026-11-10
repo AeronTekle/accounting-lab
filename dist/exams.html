@@ -1,8 +1,57 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#193c34"><meta name="description" content="Practice exams, a question bank, regression exercises and course materials for Data Analytics in Accounting."><title>Accounting Lab | Practice Exams</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="exams.css"></head><body>
-<header class="topbar"><a href="exams.html" class="brand"><span class="brand-icon">a<span>l</span></span><span>Accounting <b>Lab</b><small>DATA ANALYTICS IN ACCOUNTING</small></span></a><nav aria-label="Main navigation"><button id="examsTab" class="nav-button active">Practice exams</button><button id="bankTab" class="nav-button">Question bank</button><button id="materialsTab" class="nav-button">Materials</button><a class="nav-button" href="index.html">SQL / Excel lab ↗</a></nav></header>
-<main class="exam-main"><div id="loading" role="status">Loading practice exercises…</div><section id="home" hidden><div class="exam-hero"><span class="eyebrow">EXAM PRACTICE</span><h1>Practise for your exam</h1><p>Try a timed exam, explore the question bank or run your solutions in the lab.</p><div class="hero-stats"><span><b id="questionCount">32</b> course-based questions</span><span><b>9</b> practice exams</span><span><b>6</b> interactive datasets</span></div></div><div class="exam-notice">These practice sets use the supplied course materials and follow the timing on the instructor's practice site. Regression questions use models fitted to the restaurant case data.</div><h2 class="section-title">Data manipulation <span>Excel + SQL · 8 minutes</span></h2><div id="manipulationCards" class="exam-cards"></div><h2 class="section-title">Data interpretation <span>Regression · 5 minutes</span></h2><div id="regressionCards" class="exam-cards"></div><section class="improvement-note"><div><span class="eyebrow">FEATURED EXERCISE</span><h2>Will your query still work?</h2></div><p>Run the same SQL query on two samples from the course database and see how an apparently correct answer can hide a flawed method. <a href="exams.html?question=c2">Open the Chinook exercise</a>.</p></section></section>
-<section id="bank" hidden><span class="eyebrow">CHOOSE A SKILL</span><h1 class="section-h1">Question bank</h1><p class="section-description">Filter by subject and practise one question at a time with hints and worked solutions.</p><div class="bank-filters"><label>Subject<select id="subjectFilter"><option value="all">All subjects</option><option>Excel</option><option>SQL</option><option>Regression</option></select></label><label>Search<input id="questionSearch" type="search" placeholder="E.g. join, temperature or payroll" aria-label="Search the question bank"></label></div><div id="bankCount" class="eyebrow"></div><div id="bankList" class="bank-list"></div></section>
+<a class="skip" href="#main">Skip to main content</a>
+<header class="topbar"><a href="exams.html" class="brand"><span class="brand-icon">a<span>l</span></span><span>Accounting <b>Lab</b><small>DATA ANALYTICS IN ACCOUNTING</small></span></a><nav aria-label="Main navigation"><button id="examsTab" class="nav-button active">Practice exams</button><button id="bankTab" class="nav-button">Question bank</button><button id="materialsTab" class="nav-button">Materials</button><a class="nav-button" href="index.html">Open lab ↗</a></nav></header>
+<main id="main" class="exam-main">
+<div id="loading" role="status">Loading practice exercises…</div>
+<section id="home" hidden>
+  <div class="home-intro">
+    <div class="exam-hero">
+      <span class="eyebrow">DATA ANALYTICS IN ACCOUNTING</span>
+      <h1>Practise for your exam</h1>
+      <p>Choose a timed practice set or work through individual Excel, SQL and regression questions at your own pace.</p>
+      <div class="hero-actions">
+        <a class="primary-button" href="#examLibrary">Browse timed exams ↓</a>
+        <button id="openQuestionBank" class="secondary-button" type="button">Browse questions</button>
+      </div>
+      <div class="hero-stats"><span><b id="questionCount"></b> questions</span><span><b id="examCount"></b> timed exams</span><span><b id="datasetCount"></b> interactive datasets</span></div>
+    </div>
+    <aside class="featured-practice">
+      <span class="eyebrow">FEATURED SQL CHALLENGE</span>
+      <h2>Will your query still work?</h2>
+      <p>Run the same query on two Chinook samples. See how a method can return the right total on one sample and fail on the next.</p>
+      <a href="exams.html?question=c2">Try the Chinook challenge ↗</a>
+    </aside>
+  </div>
+  <section id="examLibrary" aria-labelledby="examLibraryHeading">
+    <h2 id="examLibraryHeading" class="section-title">Timed practice exams</h2>
+    <p class="section-description">Choose a subject below. Open a set to read the instructions and download the files before starting the timer.</p>
+    <div class="exam-switch" role="group" aria-label="Exam subject">
+      <button id="manipulationFilter" class="secondary-button" type="button" aria-pressed="true">Data manipulation</button>
+      <button id="regressionFilter" class="secondary-button" type="button" aria-pressed="false">Regression</button>
+    </div>
+    <div id="manipulationCards" class="exam-cards"></div>
+    <div id="regressionCards" class="exam-cards" hidden></div>
+  </section>
+</section>
+<section id="bank" hidden>
+  <span class="eyebrow">GUIDED PRACTICE</span>
+  <h1 class="section-h1" id="bankHeading" tabindex="-1">Question bank</h1>
+  <p class="section-description">Find an exercise by topic, course case or keyword. Open any question for hints and a worked solution.</p>
+  <div class="bank-filters">
+    <label for="questionSearch">Search<input id="questionSearch" type="search" placeholder="E.g. invoice, payroll or temperature"></label>
+    <label for="subjectFilter">Subject<select id="subjectFilter"><option value="all">All subjects</option><option>Excel</option><option>SQL</option><option>Regression</option></select></label>
+    <label for="caseFilter">Course case<select id="caseFilter"><option value="all">All cases</option></select></label>
+    <button id="clearFilters" class="text-button" type="button">Clear filters</button>
+  </div>
+  <p id="bankCount" class="bank-count" role="status"></p>
+  <div id="bankList" class="bank-list"></div>
+  <nav id="bankPages" class="bank-pages" aria-label="Question bank pages" hidden>
+    <button id="prevBankPage" class="secondary-button" type="button">← Previous</button>
+    <span id="bankPageLabel"></span>
+    <button id="nextBankPage" class="secondary-button" type="button">Next →</button>
+  </nav>
+</section>
 <section id="materials" hidden><span class="eyebrow">COURSE DATA</span><h1 class="section-h1">Materials and methods</h1><p class="section-description">Download the files before starting an exam. Answers for database subsets apply to the corresponding downloads.</p><div id="materialList" class="material-list"></div><section class="method-note"><h2>How were the regression models fitted?</h2><p id="modelMethod"></p><p>These OLS models use the supplied restaurant data and conventional OLS standard errors. Use the results to practise interpretation. The models use observed sales dates only.</p><a href="assets/practice.json" download>Download model coefficients and reference results (JSON) ↓</a></section></section>
-<section id="session" hidden><div class="session-heading"><button id="backButton" class="text-button">← Back to overview</button><span id="sessionMode" class="eyebrow"></span></div><div class="session-title"><h1 id="sessionTitle"></h1><span id="sessionStatus" class="session-status"></span></div><div id="examInstructions" class="exam-notice"></div><div id="timerPanel" class="timer-panel"><div><span class="eyebrow">TIME REMAINING</span><strong id="timer" role="timer">08:00</strong></div><div class="timer-actions"><button id="startTimer" class="primary-button">Start exam ▶</button><button id="pauseTimer" class="secondary-button" disabled>Pause</button><button id="finishExam" class="secondary-button">Finish and review</button></div><p>Download and open the required files before starting. Data import counts towards the time limit. Hints, worked solutions and result checks are available during review.</p></div><div id="questionNav" class="question-nav"></div><article class="question-sheet"><div class="question-heading"><span id="questionLabel" class="eyebrow"></span><span id="questionCategory" class="skill-tag"></span></div><h2 id="questionTitle"></h2><p id="questionPrompt"></p><div id="questionFiles" class="file-links"></div><div id="regressionOutput" hidden></div><div id="responseArea"></div><div id="questionHint" hidden class="hint-box"></div><details id="answerDetails" class="answer-details"><summary>Show worked solution and review criteria</summary><pre id="questionAnswer"></pre><ul id="answerChecks"></ul></details><div id="questionActions" class="question-actions"><button id="showQuestionHint" class="secondary-button">Show hint</button><label class="self-mark"><input type="checkbox" id="doneCheckbox"> I have attempted this question</label><button id="nextQuestion" class="primary-button">Next question →</button></div></article><section id="reviewSummary" class="review-summary" hidden></section></section>
+<section id="session" hidden><div class="session-heading"><button id="backButton" class="text-button">← Back to practice exams</button><span id="sessionMode" class="eyebrow"></span></div><div class="session-title"><h1 id="sessionTitle" tabindex="-1"></h1><span id="sessionStatus" class="session-status"></span></div><div id="examInstructions" class="exam-notice"></div><div id="timerPanel" class="timer-panel"><div><span class="eyebrow">TIME REMAINING</span><strong id="timer" role="timer">08:00</strong></div><div class="timer-actions"><button id="startTimer" class="primary-button">Start exam ▶</button><button id="pauseTimer" class="secondary-button" disabled>Pause</button><button id="finishExam" class="secondary-button">Finish and review</button></div><p>Download and open the required files before starting. Data import counts towards the time limit. Hints, worked solutions and result checks are available during review.</p></div><div id="questionNav" class="question-nav"></div><article class="question-sheet"><div class="question-heading"><span id="questionLabel" class="eyebrow"></span><span id="questionCategory" class="skill-tag"></span></div><h2 id="questionTitle"></h2><p id="questionPrompt"></p><div id="questionFiles" class="file-links"></div><div id="regressionOutput" hidden></div><div id="responseArea"></div><div id="questionHint" hidden class="hint-box"></div><details id="answerDetails" class="answer-details"><summary>Show worked solution and review criteria</summary><pre id="questionAnswer"></pre><ul id="answerChecks"></ul></details><div id="questionActions" class="question-actions"><button id="showQuestionHint" class="secondary-button">Show hint</button><label class="self-mark"><input type="checkbox" id="doneCheckbox"> I have attempted this question</label><button id="nextQuestion" class="primary-button">Next question →</button></div></article><section id="reviewSummary" class="review-summary" hidden></section></section>
 <footer class="exam-footer"><a href="https://github.com/AeronTekle/accounting-lab" target="_blank" rel="noopener">Source code on GitHub ↗</a><span>Course-based exercises · Your work is saved in this browser</span></footer></main>
 <script src="exams.js" defer></script></body></html>
