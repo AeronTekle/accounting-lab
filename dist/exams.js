@@ -4,6 +4,7 @@ const sections=['home','bank','exams','oral','materials','session'];
 let catalog,practice,bank=[],byId={},session=null,bankPage=1;
 let activeView='home',restoringLocation=false;
 let workspaceObserver;
+let oralSubject='Excel';
 const bankPageSize=12;
 const nf=new Intl.NumberFormat('en-US',{maximumFractionDigits:6});
 const followUpSeconds=60;
@@ -22,6 +23,111 @@ const followUps={
   'The coefficient compares average sales on game and non-game days in this dataset.',
   'If games cluster on busy days of the week, the weekday mix could explain part of the difference.',
   'Compare game and non-game days on the same weekday, or add weekday controls. The adjusted comparison still describes an association.'
+ ]},
+ e2:{topic:'Variable-length employee codes',prompt:'Your formula works on Japan177-3Mo. What could go wrong if you used the same fixed character positions for every employee code? Give two examples of what you would test.',points:[
+  'The prefix before the hyphen varies in length, so the plant does not always start at the same character.',
+  'Plant IDs can have one or two digits, and pay-frequency suffixes can have one or two characters.',
+  'Test both short and long plant IDs with M, Mo, W and We suffixes, and compare the extracted number with the source code.'
+ ]},
+ p3:{topic:'Weighted pay per hour',prompt:'A colleague calculates each row’s pay per hour and then averages those rates. Why can that differ from your company-wide figure? What would you do with rows that have pay but zero hours?',points:[
+  'An unweighted mean gives each row equal weight even when the rows contain different numbers of hours.',
+  'Company-wide pay per hour divides total regular and overtime pay by total regular and overtime hours.',
+  'A paid row with zero hours has no finite individual rate. Flag and investigate it, while retaining its recorded pay in the requested company total.'
+ ]},
+ p6:{topic:'Investigating zero-hour pay',prompt:'Your rule has flagged paid rows with zero hours. Would you remove those rows before presenting payroll costs? Explain what evidence you would request.',points:[
+  'The rule identifies a combination of recorded values that needs review.',
+  'Ask for the payroll register and adjustment or payment documentation to establish why pay was recorded without hours.',
+  'Keep the recorded amounts in the total pending evidence and document any supported correction separately.'
+ ]},
+ f3:{topic:'Duration calculations and rounding',prompt:'You have the mean duration for all Shooting Permit records. A colleague instead averages only Brooklyn records and rounds each duration to a whole hour first. What has changed?',points:[
+  'Restricting the records to Brooklyn changes the population being averaged.',
+  'Rounding every duration before taking the mean can change the result. Use unrounded durations and round the final mean.',
+  'Calculate end time minus start time and multiply by 24 because Excel stores date differences in days.'
+ ]},
+ f4:{topic:'Missing values stored as text',prompt:'A student uses COUNTBLANK and reports that no ZIP codes are missing. How would you investigate the disagreement with your answer?',points:[
+  'Inspect the raw ZipCode values and identify the text N/A used for missing ZIP codes in this source.',
+  'COUNTBLANK does not count cells containing the text N/A. Count or filter the marker explicitly.',
+  'Keep the definition of a missing value explicit and distinguish it from a present but invalid ZIP code.'
+ ]},
+ j1:{topic:'Keeping journal lines during a join',prompt:'After you add business-unit information, the journal contains more rows than before. What is the likely problem, and how would you check that you preserved every original line?',points:[
+  'Repeated BusinessUnitID values in the reference table can match one journal line more than once.',
+  'Check reference-key uniqueness and investigate duplicate keys before merging. Use a left join to retain unmatched journal lines.',
+  'Reconcile row counts and totals and inspect unmatched IDs. JENumber alone cannot identify a unique journal line.'
+ ]},
+ i1:{topic:'Comparing payroll definitions',prompt:'A colleague adds a separate overtime estimate to the 2016 Gross_Wages column to make it comparable with 2015. Would that improve the comparison? Explain how you would reconcile the two years.',points:[
+  'Gross_Wages already includes overtime in the 2016 extract, so adding overtime again would double-count it.',
+  'Use Reg_Pay plus OT_Pay in 2015 and Gross_Wages in 2016 for the same six-month period.',
+  'Reconcile the totals at the appropriate aggregation level and explain that different row structures do not imply different pay definitions.'
+ ]},
+ c2:{topic:'Invoice totals after a join',prompt:'The join repeats invoice totals, so a colleague suggests SUM(DISTINCT Total). Would that always fix the revenue calculation? Explain what happens when two invoices have the same total.',points:[
+  'An invoice-to-lines join can repeat one invoice total once for each line.',
+  'DISTINCT Total removes repeated amounts, including amounts belonging to different invoices, and can understate revenue.',
+  'Sum the invoice table at one row per InvoiceId, or deduplicate by invoice ID before summing. Check invoice counts and totals.'
+ ]},
+ c6:{topic:'Distinct customers across countries',prompt:'Suppose one customer has invoices billed to two different countries. How should that customer appear in your country counts? Can you add those counts to find the number of unique customers overall?',points:[
+  'COUNT(DISTINCT CustomerId) counts that customer once in each billing-country group where they have an invoice.',
+  'Adding the group counts can count the same customer more than once across countries.',
+  'Calculate the overall distinct customer count directly across all invoices when that is the requested measure.'
+ ]},
+ s4:{topic:'Ties in a top-five ranking',prompt:'Two songs tie for the fifth-highest danceability score. Why did the question specify a second sort field, and how would your answer change if the requirement were to include every song tied at fifth?',points:[
+  'Sorting by ID after danceability makes the choice between equal scores deterministic.',
+  'The current task requests exactly five rows, so LIMIT 5 with the stated secondary sort is appropriate.',
+  'Including all songs tied at the fifth score is a different requirement and may produce more than five rows.'
+ ]},
+ s6:{topic:'Artists with no matching songs',prompt:'You are now asked to include every artist, even artists with no songs in this list. What join and counting choices would need to change?',points:[
+  'Start from artists and use a left join to songs so artists with no matching song remain.',
+  'Count the matched song ID. COUNT(*) would count the retained unmatched row as one.',
+  'Group by artist ID as well as the displayed name so different artists with the same name stay separate.'
+ ]},
+ m2:{topic:'What an average film rating represents',prompt:'Your average gives each film equal weight. A colleague wants films with more votes to count more. Would that measure the same thing, and can either result describe every film in the full database?',points:[
+  'AVG(rating) gives each matched film equal weight, regardless of its number of votes.',
+  'Weighting by votes gives more influence to films with more votes and answers a different question.',
+  'The calculation uses the provided 2,000-film subset, so its result should be described as applying to that subset.'
+ ]},
+ a1:{topic:'Limits of a spending threshold',prompt:'A reviewer says every purchase above 5,000 is fraudulent and every purchase below it is safe. What can your query establish, and what extra checks would you suggest?',points:[
+  'The query identifies transactions strictly above the selected threshold.',
+  'The threshold alone cannot establish whether a transaction is legitimate. Review receipts, approval and purchasing purpose.',
+  'Review other patterns, such as repeated smaller purchases to the same vendor, as additional flags requiring supporting evidence.'
+ ]},
+ a6:{topic:'Potential duplicate charges',prompt:'Two positive charges share a vendor, date and amount. What would you need to see before concluding that the same purchase was charged twice?',points:[
+  'Matching vendor, date and amount identifies a group for review, but separate legitimate purchases can share those fields.',
+  'Compare transaction IDs, receipts and invoice or order references to establish whether both charges relate to the same purchase.',
+  'Check for a later credit or reversal and document the evidence before proposing an adjustment.'
+ ]},
+ r1:{topic:'Temperature units in a prediction',prompt:'The manager gives you a temperature of 20 degrees Celsius. Can you insert 20 into this regression? Explain how you would produce a prediction using the model as fitted.',points:[
+  'The model uses Fahrenheit, so inserting 20 would represent 20 degrees Fahrenheit.',
+  'Convert 20 degrees Celsius to 68 degrees Fahrenheit before applying the fitted equation.',
+  'Include the intercept and interpret the result as predicted daily sales at that temperature.'
+ ]},
+ r3:{topic:'Significance and forecasting value',prompt:'The temperature slope is statistically significant, but R-squared is small. Would you recommend using the model for sales forecasting on that evidence alone? How would you assess it?',points:[
+  'The p-value addresses statistical evidence about the slope under the model assumptions.',
+  'R-squared describes the share of variation explained in the fitted sample. A small p-value does not guarantee accurate forecasts.',
+  'Test forecasts on later dates using inputs available at forecast time, and compare prediction errors with a suitable benchmark.'
+ ]},
+ r4:{topic:'An interaction changes the comparison',prompt:'A colleague reports the coefficient on G as the game-day difference when L is 5,000. What term have they missed, and why does the difference depend on L?',points:[
+  'Switching G from zero to one changes both the G term and the L times G term.',
+  'The difference at L equal to 5,000 is the G coefficient plus 5,000 times the interaction coefficient.',
+  'Hold L fixed for the comparison. The G coefficient by itself describes the difference when L equals zero.'
+ ]},
+ r6:{topic:'Information available at forecast time',prompt:'Someone evaluates next week’s forecast using the temperature that was actually observed next week. Why could that make the forecasting exercise misleading?',points:[
+  'The realised future temperature is unavailable when the forecast is made.',
+  'Use a temperature forecast available at that time, and check that the lagged-sales and scheduled-game inputs are also available.',
+  'Including information learned after the forecast date leaks future information and can make the evaluation look too favourable.'
+ ]},
+ r9:{topic:'Predictions outside the observed range',prompt:'The equation produces a sales prediction at 0 degrees Fahrenheit. Does being able to calculate it make that prediction well supported by the restaurant data?',points:[
+  'The observed daily highs range from 28.94 to 104 degrees Fahrenheit, so zero is outside the fitted sample range.',
+  'The prediction extrapolates the fitted relationship beyond the temperatures observed.',
+  'Explain that limitation and seek evidence covering colder conditions before relying on the prediction.'
+ ]},
+ r12:{topic:'Choosing a forecast test period',prompt:'A student randomly mixes early and late restaurant dates into training and test sets. Why would you prefer a chronological comparison for this forecasting task, and how would you keep the model comparison fair?',points:[
+  'Forecasting uses past information to predict later dates, so the evaluation should preserve that time order.',
+  'Fit the models using the same earlier training dates and compare predictions on the same later test dates.',
+  'Use only inputs available at forecast time and compare the same error measure, such as mean absolute error in dollars.'
+ ]},
+ r14:{topic:'The slope of a curved relationship',prompt:'The squared-temperature coefficient is negative. Does that mean a one-degree increase always reduces predicted sales? Explain how you would find the effect at a particular temperature.',points:[
+  'A negative squared coefficient makes the fitted curve concave, but the slope can still be positive at some temperatures.',
+  'At a temperature t, the local slope is the linear-temperature coefficient plus twice the squared coefficient times t.',
+  'Evaluate the slope at the specified temperature and interpret it within the observed temperature range.'
  ]}
 };
 let followUpDeadline,followUpInterval;
@@ -65,6 +171,7 @@ function show(id){
   if(navView===view)el(name).setAttribute('aria-current','page');else el(name).removeAttribute('aria-current');
  }
  if(id==='bank')renderBank();
+ if(id==='oral')renderOral();
  syncLocation();
 }
 function syncLocation(replace=false){
@@ -106,8 +213,22 @@ function openExams(){
  el('examLibraryHeading').focus();
 }
 function openOral(){
+ if(activeView==='session'&&session?.returnView==='oral')oralSubject=byId[session.ids[0]].kind;
  show('oral');
  el('oralPracticeTitle').focus();
+}
+function renderOral(){
+ const entries=Object.entries(followUps).filter(([id])=>byId[id].kind===oralSubject);
+ el('oralSubjectChoices').querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.subject===oralSubject)));
+ el('oralCount').textContent=entries.length+' '+oralSubject+' exercises · '+Object.keys(followUps).length+' oral exercises in total';
+ const cards=entries.map(([id,followUp])=>{
+  const q=byId[id],card=text('article','','oral-card');
+  const open=btn('Open exercise →',()=>{single(id,[id]);el('sessionTitle').focus();},'primary-button');
+  open.setAttribute('aria-label','Open '+q.kind+' oral exercise '+followUp.topic);
+  card.append(text('span',q.kind,'eyebrow'),text('h2',followUp.topic),text('p',q.title),open);
+  return card;
+ });
+ el('followUpExamples').replaceChildren(...cards);
 }
 function showExamGroup(group){
  for(const name of ['manipulation','regression']){
@@ -477,12 +598,11 @@ async function init(){
   clearTimeout(loadTimeout);
   for(const [dataset,qs] of Object.entries(catalog.exercises)){for(const q of qs)bank.push({...q,dataset,kind:catalog.datasets[dataset].schema?'SQL':'Excel',category:catalog.datasets[dataset].name,prompt:q.desc,answer:q.answer+'\n\n'+q.explain});}
   bank.push(...practice.questions);byId=Object.fromEntries(bank.map(q=>[q.id,q]));for(const ex of examSets)if(ex.ids.some(id=>!byId[id]))throw Error('Unknown exam question.');
-  for(const [id,followUp] of Object.entries(followUps)){
-   const q=byId[id],card=text('article','','oral-card');
-   const open=btn('Open exercise →',()=>{single(id,[id]);el('sessionTitle').focus();},'primary-button');
-   open.setAttribute('aria-label','Open '+q.kind+' oral exercise '+followUp.topic);
-   card.append(text('span',q.kind,'eyebrow'),text('h2',followUp.topic),text('p',q.title),open);
-   el('followUpExamples').append(card);
+  for(const subject of ['Excel','SQL','Regression']){
+   const count=Object.keys(followUps).filter(id=>byId[id].kind===subject).length;
+   const button=btn(subject+' · '+count,()=>{oralSubject=subject;renderOral();},'subject-choice');
+   button.dataset.subject=subject;
+   el('oralSubjectChoices').append(button);
   }
   for(const subject of ['all','Excel','SQL','Regression']){
    const count=bank.filter(q=>subject==='all'||q.kind===subject).length;

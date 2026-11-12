@@ -20,6 +20,7 @@ vm.runInContext(code + `
  byId=questions;
  renderCards=()=>{};
  renderBank=()=>{};
+ renderOral=()=>{};
  renderSession=()=>show('session');
  this.getSession=()=>session;
  this.save=store;

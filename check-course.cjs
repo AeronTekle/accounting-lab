@@ -10,7 +10,19 @@ for(const dataset of Object.values(catalog.datasets)){
  assert.equal(lines.length,rows.length+1);
 }
 for(const m of practice.materials){const b=fs.readFileSync(path.join(root,m.file));if(m.sha256)assert.equal(crypto.createHash('sha256').update(b).digest('hex'),m.sha256);}
-const ctx={};vm.createContext(ctx);vm.runInContext(fs.readFileSync(path.join(root,'exams.js'),'utf8').split('const store=')[0]+';this.sets=examSets;',ctx);assert.equal(ctx.sets.length,26);const ids=new Set(all.map(x=>x.id));for(const e of ctx.sets){assert(e.ids.every(x=>ids.has(x)));assert.equal(new Set(e.ids).size,e.ids.length);assert(e.ids.every(id=>id.startsWith("r")===(e.type==="regression")));assert.equal(e.ids.length,e.type==='regression'?4:5);assert.equal(e.seconds,e.type==='regression'?300:480);}
+const ctx={};vm.createContext(ctx);vm.runInContext(fs.readFileSync(path.join(root,'exams.js'),'utf8').split('const store=')[0]+';this.sets=examSets;this.followUps=followUps;',ctx);assert.equal(Object.keys(ctx.followUps).length,24);
+const questionKinds=Object.fromEntries([
+ ...Object.entries(catalog.exercises).flatMap(([dataset,questions])=>questions.map(q=>[q.id,catalog.datasets[dataset].schema?'SQL':'Excel'])),
+ ...practice.questions.map(q=>[q.id,q.kind])
+]);
+for(const kind of ['Excel','SQL','Regression'])assert.equal(Object.keys(ctx.followUps).filter(id=>questionKinds[id]===kind).length,8);
+for(const [id,followUp] of Object.entries(ctx.followUps)){
+ assert(questionKinds[id],id);
+ assert(followUp.topic&&followUp.prompt);
+ assert.equal(followUp.points.length,3,id);
+ assert.equal(new Set(followUp.points).size,3,id);
+}
+assert.equal(ctx.sets.length,26);const ids=new Set(all.map(x=>x.id));for(const e of ctx.sets){assert(e.ids.every(x=>ids.has(x)));assert.equal(new Set(e.ids).size,e.ids.length);assert(e.ids.every(id=>id.startsWith("r")===(e.type==="regression")));assert.equal(e.ids.length,e.type==='regression'?4:5);assert.equal(e.seconds,e.type==='regression'?300:480);}
 assert.equal(new Set(ctx.sets.flatMap(e=>e.ids)).size,all.length);
 const examCode=fs.readFileSync(path.join(root,'exams.js'),'utf8');
 let time=10_000, saved;

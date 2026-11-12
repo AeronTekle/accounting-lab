@@ -67,3 +67,7 @@ An individual timed set initially exposed its questions before Start and while p
 ## Simpler browsing
 
 The home page now offers three study routes. Topic practice, timed exams, oral practice and course files have separate navigation destinations. Topic practice has subject buttons and case/search filters. Previous and Next move through the filtered questions and retain guided drafts. Oral exercises return to the oral page. The embedded lab uses the outer question’s hint and solution controls and adjusts its height to its content.
+
+## Expanded oral practice
+
+The oral library now contains 24 authored follow-ups, with eight each for Excel, SQL and regression. Subject buttons keep the list to eight exercises at a time. New prompts cover variable-length codes, weighted payroll rates, missing-value markers, journal joins, invoice totals, distinct counting, ranking ties, audit flags, forecast inputs, extrapolation and nonlinear temperature effects. Each is linked to its original exercise and has three specific review criteria. Course checks validate all 24 question IDs, the eight-per-subject distribution and the three distinct criteria per prompt. The static loading fallback retains its three examples.
