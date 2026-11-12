@@ -6,6 +6,8 @@ let activeView='home',restoringLocation=false;
 let workspaceObserver;
 let oralSubject='Excel';
 let replaySelection;
+let examGroup='manipulation',examPage=1;
+const examPageSize=6;
 const bankPageSize=12;
 const nf=new Intl.NumberFormat('en-US',{maximumFractionDigits:6});
 const followUpSeconds=60;
@@ -160,6 +162,7 @@ const examSets=[
  {id:'R07',title:'Prior-Sales Forecast and Temperature',type:'regression',seconds:300,ids:['r13','r14','r6','r12'],desc:'Produce a seven-day forecast, interpret curvature and plan a forecast test.'},
  {id:'R08',title:'Game Days and Home-Game Effects',type:'regression',seconds:300,ids:['r15','r16','r8','r11'],desc:'Compare game-day sales and interpret the slope for home games.'}
 ];
+if(globalThis.LIBRARY_EXTRA)examSets.push(...globalThis.LIBRARY_EXTRA.examSets);
 const store=()=>{try{localStorage.setItem('accountingLab.exam.v1',JSON.stringify(session));}catch{}};
 function text(tag,content,cls){const x=document.createElement(tag);x.textContent=content;if(cls)x.className=cls;return x;}
 function btn(label,action,cls='primary-button'){const b=text('button',label,cls);b.onclick=action;return b;}
@@ -235,11 +238,9 @@ function renderOral(){
  el('followUpExamples').replaceChildren(...cards);
 }
 function showExamGroup(group){
- for(const name of ['manipulation','regression']){
-  const selected=name===group;
-  el(name+'Cards').hidden=!selected;
-  el(name+'Filter').setAttribute('aria-pressed',String(selected));
- }
+ examGroup=group;
+ examPage=1;
+ renderCards();
 }
 function remaining(){return session?.deadline?Math.max(0,Math.ceil((session.deadline-Date.now())/1000)):session?.remaining||0;}
 function displayTime(n){return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');}
@@ -307,13 +308,18 @@ function protectAttempt(message){
 }
 function renderCards(){
  renderReplayHistory();
+ const pages=Math.ceil(examSets.filter(ex=>ex.type===examGroup).length/examPageSize);
+ examPage=Math.min(examPage,pages);
  for(const group of ['manipulation','regression']){
   const container=el(group+'Cards');
   const sets=examSets.filter(ex=>ex.type===group);
   const label=group==='manipulation'?'Excel and SQL':'Regression';
   el(group+'Filter').textContent=label+' ('+sets.length+')';
+  el(group+'Filter').setAttribute('aria-pressed',String(group===examGroup));
+  container.hidden=group!==examGroup;
   container.replaceChildren();
-  for(const ex of sets){
+  const offset=group===examGroup?(examPage-1)*examPageSize:0;
+  for(const ex of sets.slice(offset,offset+examPageSize)){
    const card=text('article','','exam-card');
    const open=btn('Open exam ↗',()=>newExam(ex),'secondary-button');
    open.setAttribute('aria-label','Open exam '+ex.id+' '+ex.title);
@@ -321,6 +327,9 @@ function renderCards(){
    container.append(card);
   }
  }
+ el('examPageLabel').textContent='Page '+examPage+' of '+pages;
+ el('previousExamPage').disabled=examPage===1;
+ el('nextExamPage').disabled=examPage===pages;
  document.querySelector('.return-session')?.remove();
  if(session&&!session.guided&&!session.finished){
   el('home').prepend(btn((session.started||session.partIndex>0?'Resume: ':'Open: ')+session.title,()=>{
@@ -449,7 +458,7 @@ function renderQuestion(){
  });
  const area=el('responseArea');area.replaceChildren();
  if(q.dataset){
-  const frame=document.createElement('iframe');frame.title='Interactive workspace: '+q.title;frame.className='lab-frame';frame.src='index.html?v=exam-replay-1&embed=1&dataset='+encodeURIComponent(q.dataset)+'&exercise='+encodeURIComponent(q.id)+'&attempt='+encodeURIComponent(session.attempt||'guided')+(lock?'&exam=1':'');
+  const frame=document.createElement('iframe');frame.title='Interactive workspace: '+q.title;frame.className='lab-frame';frame.src='index.html?v=library-440-1&embed=1&dataset='+encodeURIComponent(q.dataset)+'&exercise='+encodeURIComponent(q.id)+'&attempt='+encodeURIComponent(session.attempt||'guided')+(lock?'&exam=1':'');
   frame.onload=()=>{
    if(!frame.isConnected)return;
    const resize=()=>{frame.style.height=Math.ceil(frame.contentDocument.body.getBoundingClientRect().height+2)+'px';};
@@ -470,7 +479,7 @@ function renderQuestion(){
   area.append(frame);
  }else{
   const label=text('label','YOUR METHOD AND EXPLANATION','response-label');label.htmlFor='writtenAnswer';const answer=document.createElement('textarea');answer.id='writtenAnswer';answer.className='scratch-answer';answer.placeholder='Write your calculation, method or interpretation here…';answer.value=session.answers[q.id]||'';answer.oninput=()=>{session.answers[q.id]=answer.value;store();};area.append(label,answer);
-  if(q.expected!==null&&q.expected!==undefined&&!lock){const wrap=text('div','','numeric-check'),label=text('label','Check your numeric result','response-label');label.htmlFor='numericAnswer';const inp=document.createElement('input');inp.type='text';inp.inputMode='decimal';inp.id='numericAnswer';inp.className='numeric-answer';inp.placeholder='Enter your result';const result=text('span','','numeric-feedback');result.setAttribute('role','status');const button=btn('Check number',()=>{const val=numericValue(inp.value);if(!inp.value.trim()||!Number.isFinite(val)){result.textContent='Enter a number, for example 1436.30 or 1,436.30.';return;}const tolerance=q.id==='r5'?0.000001:q.id==='r16'?0.000051:0.011;result.textContent=Math.abs(val-q.expected)<=tolerance?'✓ The number is correct. Use the criteria below to review your explanation.':'The result differs. Check the model and the inputs requested in the question.';},'secondary-button');wrap.append(label,inp,button,result);area.append(wrap);}
+  if(q.expected!==null&&q.expected!==undefined&&!lock){const wrap=text('div','','numeric-check'),label=text('label','Check your numeric result','response-label');label.htmlFor='numericAnswer';const inp=document.createElement('input');inp.type='text';inp.inputMode='decimal';inp.id='numericAnswer';inp.className='numeric-answer';inp.placeholder='Enter your result';const result=text('span','','numeric-feedback');result.setAttribute('role','status');const button=btn('Check number',()=>{const val=numericValue(inp.value);if(!inp.value.trim()||!Number.isFinite(val)){result.textContent='Enter a number, for example 1436.30 or 1,436.30.';return;}const tolerance=q.tolerance??(q.id==='r5'?0.000001:q.id==='r16'?0.000051:0.011);result.textContent=Math.abs(val-q.expected)<=tolerance?'✓ The number is correct. Use the criteria below to review your explanation.':'The result differs. Check the model and the inputs requested in the question.';},'secondary-button');wrap.append(label,inp,button,result);area.append(wrap);}
  }
  el('answerDetails').hidden=lock;el('answerDetails').open=false;el('questionHint').hidden=true;el('questionHint').textContent=q.hint||'Check the data, method and units.';el('showQuestionHint').hidden=lock;el('questionAnswer').textContent=q.answer;el('answerChecks').replaceChildren();(q.checks||['Check the output values and rows','Explain why your method works','Use the specified dataset']).forEach(x=>el('answerChecks').append(text('li',x)));el('doneCheckbox').checked=!!session.done[q.id];el('doneCheckbox').onchange=()=>{session.done[q.id]=el('doneCheckbox').checked;store();renderNavMarks();};
  el('nextQuestion').textContent=position<activeIds.length-1?'Next question →':'First question ↺';
@@ -733,10 +742,10 @@ async function init(){
  let loadTimedOut=false;
  const loadTimeout=setTimeout(()=>{loadTimedOut=true;controller.abort();},12000);
  try{
-  const [c,p]=await Promise.all([fetch('assets/catalog.json?v=exam-downloads-1',{signal:controller.signal}),fetch('assets/practice.json?v=submission-review-1',{signal:controller.signal})]);if(!c.ok||!p.ok)throw Error();catalog=await c.json();practice=await p.json();
+  const [c,p]=await Promise.all([fetch('assets/catalog.json?v=library-440-1',{signal:controller.signal}),fetch('assets/practice.json?v=submission-review-1',{signal:controller.signal})]);if(!c.ok||!p.ok)throw Error();catalog=await c.json();practice=await p.json();
   clearTimeout(loadTimeout);
   for(const [dataset,qs] of Object.entries(catalog.exercises)){for(const q of qs)bank.push({...q,dataset,kind:catalog.datasets[dataset].schema?'SQL':'Excel',category:catalog.datasets[dataset].name,prompt:q.desc,answer:q.answer+'\n\n'+q.explain});}
-  bank.push(...practice.questions);byId=Object.fromEntries(bank.map(q=>[q.id,q]));for(const ex of examSets)if(ex.ids.some(id=>!byId[id]))throw Error('Unknown exam question.');
+  bank.push(...practice.questions,...(globalThis.LIBRARY_EXTRA?.questions||[]));byId=Object.fromEntries(bank.map(q=>[q.id,q]));for(const ex of examSets)if(ex.ids.some(id=>!byId[id]))throw Error('Unknown exam question.');
   for(const subject of ['Excel','SQL','Regression']){
    const count=Object.keys(followUps).filter(id=>byId[id].kind===subject).length;
    const button=btn(subject+' · '+count,()=>{oralSubject=subject;renderOral();},'subject-choice');
@@ -788,6 +797,9 @@ el('openOralPractice').onclick=openOral;
 el('openFullMock').onclick=newMock;
 el('materialsTab').onclick=()=>show('materials');
 for(const group of ['manipulation','regression'])el(group+'Filter').onclick=()=>showExamGroup(group);
+for(const [id,step] of [['previousExamPage',-1],['nextExamPage',1]]){
+ el(id).onclick=()=>{examPage+=step;renderCards();el(examGroup+'Cards').querySelector('button')?.focus();};
+}
 el('subjectFilter').onchange=resetBankPage;
 el('caseFilter').onchange=resetBankPage;
 el('questionSearch').oninput=resetBankPage;

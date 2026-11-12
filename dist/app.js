@@ -47,6 +47,7 @@ const exercises={
  ]
 };
 if(window.COURSE_EXTRA){Object.assign(datasets,window.COURSE_EXTRA.datasets);Object.assign(exercises,window.COURSE_EXTRA.exercises);}
+if(globalThis.LIBRARY_EXTRA){for(const [dataset,questions] of Object.entries(globalThis.LIBRARY_EXTRA.exercises))exercises[dataset].push(...questions);}
 function csv(headers,rows){return '\uFEFF'+[headers,...rows].map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');}
 let saved={};try{saved=JSON.parse(localStorage.getItem('accountingLab.v1')||'{}');}catch{}
 let state={studio:'sql',dataset:'songs',index:0,play:false,completed:new Set(saved.completed||[]),drafts:saved.drafts||{},last:null,worker:null,timer:null,working:false,data:null,loadId:0};

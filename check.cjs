@@ -2,7 +2,7 @@ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),asse
 const dir=path.join(__dirname,'dist');
 require(path.join(dir,'formula.js'));
 const {compileFormula:compile,calculate:calc,functions}=globalThis.FormulaLab;
-const context={window:{}};vm.createContext(context);vm.runInContext(fs.readFileSync(path.join(dir,"course-extra.js"),"utf8"),context);vm.runInContext(fs.readFileSync(path.join(dir,'app.js'),'utf8').split('let saved={}')[0]+';this.exercises=exercises;this.datasets=datasets;',context);
+const context={window:{}};vm.createContext(context);vm.runInContext(fs.readFileSync(path.join(dir,"course-extra.js"),"utf8"),context);vm.runInContext(fs.readFileSync(path.join(dir,'library-extra.js'),'utf8'),context);vm.runInContext(fs.readFileSync(path.join(dir,'app.js'),'utf8').split('let saved={}')[0]+';this.exercises=exercises;this.datasets=datasets;',context);
 const employee=JSON.parse(fs.readFileSync(path.join(dir,'assets/employees.json'))),payroll=JSON.parse(fs.readFileSync(path.join(dir,'assets/payroll.json')));
 function run(s,data=employee,i=0){return calc(compile(s),data,i);}
 let checks=0;function equal(a,b){assert.deepEqual(a,b);checks++;}
@@ -58,5 +58,5 @@ assert.throws(()=>run('=AVERAGE("a")'),/DIV/);
 
 }
  assert.throws(()=>db.exec('DELETE FROM '+(dataset==='songs'?'songs':'Invoice')),/readonly/);db.close();}
- console.log(checks+' independent data/function checks passed; all '+functions.length+' supported functions covered; 18 SQL solutions executed using bundled SQLite.');
+ console.log(checks+' independent data/function checks passed; all '+functions.length+' supported functions covered; '+['songs','chinook'].reduce((n,id)=>n+context.exercises[id].length,0)+' SQL solutions executed using bundled SQLite.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

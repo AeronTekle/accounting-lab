@@ -9,8 +9,8 @@
 
 ## Content and behaviour
 
-- 82 distinct course-based questions: 40 SQL, 26 Excel/ETL and 16 regression.
-- 26 authored practice sets: 18 data manipulation exams (five questions each) and eight regression exams (four questions each). Every question appears in at least one set.
+- 440 course-based questions and variants: 200 SQL, 200 Excel/ETL and 40 regression.
+- 112 authored practice sets: 98 data manipulation exams (five questions each) and 14 regression exams (four questions each). Every question appears in at least one set.
 - Original downloaded case files are byte-preserved; source hashes are recorded. Movies and P-cards use explicitly defined 2,000-record subsets; their checked answers use those exact subsets.
 - Restaurant models were calculated from the supplied workbook, not invented. The authoring script documents aggregation, date joins, ordinary least squares and standard-error assumptions.
 - All 22 supported formula functions and the 12 employee-code/payroll exercise answers passed the independent checks in node check.cjs.
@@ -79,3 +79,9 @@ New timed attempts record SQL and formula submissions through messages validated
 The review table shows viewing time, run counts, the latest result or a no-work status. A replay dialog compares saved versions and opens a chosen version in guided practice. An archive on the timed-exam page keeps the five latest completed replays in this browser. Existing attempts without replay data retain their normal review. `node check-replay.cjs` verifies timing segments, deadlines, duplicate messages, run snapshots, interruptions, legacy sessions and archive retention.
 
 Live replay verification recorded two Excel runs and three SQL runs in M02. The SQL sequence contained an invalid-column error, the join query returning 20,848.62 and the corrected query returning 2,328.60. The review displayed three untouched questions. Selecting the incorrect query in replay restored its exact text in guided practice. A second regression attempt retained its written explanation after refresh. Both completed attempts remained available in the recent-replay archive. The standalone Excel sandbox also continued to calculate SUM(1,2) as 3.
+
+## Expanded question library
+
+The library now contains 200 Excel/ETL questions, 200 SQL questions and 40 regression questions. Added questions vary filters, aggregation levels, source rows, thresholds and model inputs within the supplied cases. Eighty additional data manipulation sets pair three questions from one workbook with two questions from one SQL database. Six additional regression sets use the already verified restaurant models. Timed sets are paginated six per page.
+
+`build_library.py` computes all added SQL answers with SQLite and compares their complete results with independently constructed pandas calculations. It also calculates the workbook answers from the unchanged source workbooks. A zero-hours payroll group has an undefined hourly rate and uses a written explanation. Added regression answers use the original fitted coefficients. `check-library.cjs` compares all 160 new SQL results from the browser's bundled SQLite engine with the checked source results and verifies the final subject counts.
