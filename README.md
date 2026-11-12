@@ -23,7 +23,7 @@ An English-language browser-based exam-practice website for Data Analytics in Ac
 
 Serve `dist/` with a static HTTP server. File URLs do not support the Worker and fetch workflow. All JavaScript, SQLite WebAssembly and datasets are hosted with the application; no external scripts, fonts or analytics are required.
 
-Run `node check.cjs`, `node check-course.cjs` `node check-loading.cjs` `node check-navigation.cjs` and `node check-replay.cjs` for independent data, formula and course-content verification. Run `node build_catalog.cjs` after changing exercise definitions or the Excel lab datasets. It rebuilds the catalog and the two Excel-ready CSV downloads used in the lab and before exams. Open `dist/exams.html` for the complete practice website, or `dist/index.html` for the standalone lab.
+Run `node check.cjs`, `node check-course.cjs`, `node check-loading.cjs`, `node check-navigation.cjs` and `node check-replay.cjs` for independent data, formula and course-content verification. Run `node build_catalog.cjs` after changing exercise definitions or the Excel lab datasets. It rebuilds the catalog and the two Excel-ready CSV downloads used in the lab and before exams. Open `dist/exams.html` for the complete practice website, or `dist/index.html` for the standalone lab.
 
 Run `node check.cjs` for independent data and formula verification. It exercises all 22 supported functions, both SQL databases, every reference answer, all employee-code outputs and every gross-pay row. SQLite writes are blocked with `PRAGMA query_only`.
 
@@ -43,6 +43,8 @@ The bank covers the eight Songs tasks and 13 Movies tasks supplied with the cour
 Additional source mappings, original-file hashes, exact subset definitions and verified values are in `dist/assets/practice.json`. Movies contains the 2,000 highest-vote films and their original ratings/people/relationship records. P-cards contains the first 2,000 OSU records with Year=2014 ordered by ID. Numeric answers are tied to those files, not the full databases.
 
 ## Distinctive functionality
+
+Exam Replay records the student’s submitted SQL/formulas, output checks and time spent viewing questions during a timed exam. After finishing, the student can compare earlier and later attempts, see which questions have no recorded work and reopen a saved attempt in guided practice. In live verification, it preserved an erroneous join total of 20,848.62 beside the corrected total of 2,328.60. The five latest completed replays are stored in this browser.
 
 The [Examiner Follow-up Mode](https://aerontekle.github.io/accounting-lab/exams.html?question=r15) lets students rehearse a second step of the oral exam. After solving an Excel, SQL or regression exercise, students answer a course-specific question aloud and check whether they explained their method or a limitation.
 
