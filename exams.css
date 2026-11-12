@@ -116,3 +116,13 @@
 }
 .follow-up-points input { margin: 4px 0 0; accent-color: var(--ink); }
 .follow-up-dialog button, #openFollowUp { min-height: 44px; }
+
+.load-fallback { padding: 22px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.load-fallback h1 { font: 32px Georgia, serif; }
+.load-fallback h2 { margin-top: 26px; font-size: 20px; }
+.load-fallback p, .load-fallback li, .load-fallback summary { font-size: 14px; color: #405544; }
+.load-fallback a { display: inline-block; padding: 8px 0; }
+.load-fallback article { border-top: 1px solid var(--line); padding: 12px 0; }
+.load-fallback summary, .saved-work summary { cursor: pointer; }
+.saved-work { max-width: 620px; font-size: 12px; color: #405544; }
+.saved-work p { line-height: 1.7; }
