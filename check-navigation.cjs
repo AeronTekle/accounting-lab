@@ -1,3 +1,4 @@
+require('./dist/replay.js');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
@@ -10,6 +11,7 @@ let saved;
 const entries = [];
 const element = {hidden: false, classList: {toggle() {}}, setAttribute() {}, removeAttribute() {}, focus() {}, prepend() {}};
 const context = vm.createContext({
+ ExamReplay:globalThis.ExamReplay,
  Date, URL, URLSearchParams, questions,
  location: {get href() {return url.href;}, get search() {return url.search;}},
  history: Object.fromEntries(['pushState', 'replaceState'].map(method => [method, (_state, _unused, value) => {url = new URL(value); entries.push(method);} ])),

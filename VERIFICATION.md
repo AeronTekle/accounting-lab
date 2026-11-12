@@ -71,3 +71,9 @@ The home page now offers three study routes. Topic practice, timed exams, oral p
 ## Expanded oral practice
 
 The oral library now contains 24 authored follow-ups, with eight each for Excel, SQL and regression. Subject buttons keep the list to eight exercises at a time. New prompts cover variable-length codes, weighted payroll rates, missing-value markers, journal joins, invoice totals, distinct counting, ranking ties, audit flags, forecast inputs, extrapolation and nonlinear temperature effects. Each is linked to its original exercise and has three specific review criteria. Course checks validate all 24 question IDs, the eight-per-subject distribution and the three distinct criteria per prompt. The static loading fallback retains its three examples.
+
+## Exam replay
+
+New timed attempts record SQL and formula submissions through messages validated against the active embedded workspace, origin, question and attempt. Result comparisons use the same output checks as guided practice, with their outcomes shown after finishing. Query text, formula mode and short output previews are retained as separate run snapshots. Written answers and unsubmitted editor text appear as drafts. Viewing time excludes pauses, other site pages and hidden browser tabs and is capped at the section deadline. A restored page begins a fresh viewing segment. Detailed records are available for attempts created after the update.
+
+The review table shows viewing time, run counts, the latest result or a no-work status. A replay dialog compares saved versions and opens a chosen version in guided practice. An archive on the timed-exam page keeps the five latest completed replays in this browser. Existing attempts without replay data retain their normal review. `node check-replay.cjs` verifies timing segments, deadlines, duplicate messages, run snapshots, interruptions, legacy sessions and archive retention.

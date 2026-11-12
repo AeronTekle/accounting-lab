@@ -1,3 +1,4 @@
+require('./dist/replay.js');
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),vm=require('node:vm'),crypto=require('node:crypto');
 const root=path.join(__dirname,'dist'),catalog=JSON.parse(fs.readFileSync(path.join(root,'assets/catalog.json'))),practice=JSON.parse(fs.readFileSync(path.join(root,'assets/practice.json')));
 const all=[...Object.values(catalog.exercises).flat(),...practice.questions];assert.equal(all.length,82);assert.equal(new Set(all.map(x=>x.id)).size,all.length);for(const q of all){assert(q.title);assert(q.answer);}
@@ -28,6 +29,7 @@ const examCode=fs.readFileSync(path.join(root,'exams.js'),'utf8');
 let time=10_000, saved;
 const element={classList:{toggle(){}},prepend(){},focus(){}};
 const mockContext=vm.createContext({
+ ExamReplay:globalThis.ExamReplay,
  Date:{now:()=>time},
  datasetCatalog:catalog,
  localStorage:{setItem(_key,value){saved=value;}},

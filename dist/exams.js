@@ -5,6 +5,7 @@ let catalog,practice,bank=[],byId={},session=null,bankPage=1;
 let activeView='home',restoringLocation=false;
 let workspaceObserver;
 let oralSubject='Excel';
+let replaySelection;
 const bankPageSize=12;
 const nf=new Intl.NumberFormat('en-US',{maximumFractionDigits:6});
 const followUpSeconds=60;
@@ -163,6 +164,7 @@ const store=()=>{try{localStorage.setItem('accountingLab.exam.v1',JSON.stringify
 function text(tag,content,cls){const x=document.createElement(tag);x.textContent=content;if(cls)x.className=cls;return x;}
 function btn(label,action,cls='primary-button'){const b=text('button',label,cls);b.onclick=action;return b;}
 function show(id){
+ checkpointReplay();
  activeView=id;
  for(const section of sections)el(section).hidden=section!==id;
  const navView=id==='session'?(session.guided?session.returnView||'bank':'exams'):id;
@@ -173,6 +175,8 @@ function show(id){
  if(id==='bank')renderBank();
  if(id==='oral')renderOral();
  syncLocation();
+ checkpointReplay();
+ store();
 }
 function syncLocation(replace=false){
  if(restoringLocation)return;
@@ -286,7 +290,11 @@ function locked(){return session&&!session.guided&&!session.finished;}
 function currentPart(){return session.parts?.[session.partIndex];}
 function activeQuestionIds(){return locked()&&currentPart()?currentPart().ids:session.ids;}
 function moveToQuestion(id){
+ captureReplayDraft();
+ checkpointReplay();
+ ExamReplay.interrupt(session);
  session.index=session.ids.indexOf(id);
+ checkpointReplay();
  store();
  renderQuestion();
 }
@@ -298,6 +306,7 @@ function protectAttempt(message){
  return true;
 }
 function renderCards(){
+ renderReplayHistory();
  for(const group of ['manipulation','regression']){
   const container=el(group+'Cards');
   const sets=examSets.filter(ex=>ex.type===group);
@@ -322,7 +331,7 @@ function renderCards(){
 }
 function newExam(ex){
  if(protectAttempt('Resume or finish your current attempt before opening another exam.'))return;
- session={attempt:String(Date.now()),id:ex.id,title:ex.title,ids:ex.ids,remaining:ex.seconds,deadline:null,index:0,answers:{},done:{},finished:false,guided:false};
+ session={attempt:String(Date.now()),id:ex.id,title:ex.title,ids:ex.ids,remaining:ex.seconds,deadline:null,index:0,answers:{},done:{},finished:false,guided:false,replay:ExamReplay.create()};
  store();
  renderSession();
  el('sessionTitle').focus();
@@ -334,7 +343,7 @@ function newMock(){
   const {id,title,ids,seconds}=sets[Math.floor(Math.random()*sets.length)];
   return {id,title,ids,seconds};
  });
- session={attempt:String(Date.now()),id:'mock',title:'Full mock exam',parts,partIndex:0,ids:parts.flatMap(part=>part.ids),remaining:parts[0].seconds,deadline:null,index:0,answers:{},done:{},finished:false,guided:false};
+ session={attempt:String(Date.now()),id:'mock',title:'Full mock exam',parts,partIndex:0,ids:parts.flatMap(part=>part.ids),remaining:parts[0].seconds,deadline:null,index:0,answers:{},done:{},finished:false,guided:false,replay:ExamReplay.create()};
  store();
  renderSession();
  el('sessionTitle').focus();
@@ -440,13 +449,23 @@ function renderQuestion(){
  });
  const area=el('responseArea');area.replaceChildren();
  if(q.dataset){
-  const frame=document.createElement('iframe');frame.title='Interactive workspace: '+q.title;frame.className='lab-frame';frame.src='index.html?v=simple-browsing-1&embed=1&dataset='+encodeURIComponent(q.dataset)+'&exercise='+encodeURIComponent(q.id)+'&attempt='+encodeURIComponent(session.attempt||'guided')+(lock?'&exam=1':'');
+  const frame=document.createElement('iframe');frame.title='Interactive workspace: '+q.title;frame.className='lab-frame';frame.src='index.html?v=exam-replay-1&embed=1&dataset='+encodeURIComponent(q.dataset)+'&exercise='+encodeURIComponent(q.id)+'&attempt='+encodeURIComponent(session.attempt||'guided')+(lock?'&exam=1':'');
   frame.onload=()=>{
    if(!frame.isConnected)return;
    const resize=()=>{frame.style.height=Math.ceil(frame.contentDocument.body.getBoundingClientRect().height+2)+'px';};
    resize();
    workspaceObserver=new ResizeObserver(resize);
    workspaceObserver.observe(frame.contentDocument.body);
+   const draft=session.practiceDraft;
+   if(draft?.questionId===q.id){
+    const doc=frame.contentDocument;
+    const editor=doc.getElementById(draft.kind==='sql'?'sqlInput':'formulaInput');
+    doc.getElementById('formulaMode').value=draft.mode||'rows';
+    editor.value=draft.text;
+    editor.dispatchEvent(new frame.contentWindow.Event('input'));
+    delete session.practiceDraft;
+    store();
+   }
   };
   area.append(frame);
  }else{
@@ -487,6 +506,113 @@ function renderMockProgress(){
   progress.append(item);
  });
 }
+function checkpointReplay(allowFocus=true){
+ if(!session||session.guided)return;
+ ExamReplay.checkpoint(session,session.ids[session.index],allowFocus&&activeView==='session'&&!document.hidden&&!session.finished&&Boolean(session.deadline));
+}
+function captureReplayDraft(){
+ if(!session?.replay||session.guided||session.finished)return;
+ const id=session.ids[session.index];
+ const q=byId[id];
+ if(!q)return;
+ if(!q.dataset){
+  ExamReplay.draft(session,id,{text:session.answers[id]||'',kind:'written'});
+  return;
+ }
+ const frame=el('responseArea').querySelector('iframe');
+ const doc=frame?.contentDocument;
+ const kind=q.kind==='SQL'?'sql':'excel';
+ const editor=doc?.getElementById(kind==='sql'?'sqlInput':'formulaInput');
+ if(editor&&editor.value.trim()!== (kind==='sql'?'SELECT':'=')){
+  ExamReplay.draft(session,id,{text:editor.value,kind,mode:doc.getElementById('formulaMode').value});
+ }
+}
+function replayStatus(event){
+ return {running:'Running',correct:'Result matched',incorrect:'Result differed',error:'Calculation error',interrupted:'Interrupted',executed:'Ran without a check'}[event.status]||'Recorded';
+}
+function renderReplayTable(panel,attempt){
+ panel.append(text('h3','Exam replay'));
+ if(!attempt.replay){panel.append(text('p','Detailed replay is available for exams taken after this update.'));return;}
+ panel.append(text('p','Time below measures how long each question was visible while the timer ran. SQL and formula matches are checked against the practice data. Written explanations use self-review.'));
+ if(attempt.replaySaved===false)panel.append(text('p','This browser could not save a replay copy. Your current review is still available.'));
+ const wrap=text('div','','replay-table-wrap'),table=document.createElement('table');
+ const head=document.createElement('thead'),header=document.createElement('tr');
+ ['Question','Time viewing','Runs','Latest result',''].forEach(label=>header.append(text('th',label)));
+ head.append(header);table.append(head);
+ const body=document.createElement('tbody');
+ attempt.ids.forEach(id=>{
+  const events=attempt.replay.events.filter(event=>event.questionId===id);
+  const latest=events.at(-1);
+  const hasDraft=Boolean(attempt.replay.drafts[id]?.text.trim()||attempt.answers[id]?.trim());
+  const status=latest?replayStatus(latest):attempt.done[id]?'Marked attempted':hasDraft?'Draft saved':'No work recorded';
+  const row=document.createElement('tr');
+  row.append(text('td',byId[id]?.title||id),text('td',displayTime(Math.round((attempt.replay.times[id]||0)/1000))),text('td',String(events.length)),text('td',status));
+  const action=document.createElement('td');
+  const open=btn('Replay',()=>openReplay(attempt,id),'secondary-button');
+  open.setAttribute('aria-label','Replay '+(byId[id]?.title||id));
+  action.append(open);row.append(action);body.append(row);
+ });
+ table.append(body);wrap.append(table);panel.append(wrap);
+}
+function renderReplayHistory(){
+ const container=el('recentReplays');
+ const records=ExamReplay.history().filter(attempt=>attempt.ids.every(id=>byId[id]));
+ container.hidden=records.length===0;
+ container.replaceChildren();
+ if(!records.length)return;
+ container.append(text('h2','Recent exam replays'),text('p','Your five latest completed exams are kept in this browser.'));
+ records.forEach(attempt=>{
+  const label=attempt.title+' · '+new Date(attempt.replay.finishedAt).toLocaleString();
+  const details=document.createElement('details');
+  details.append(text('summary',label));
+  const panel=document.createElement('div');renderReplayTable(panel,attempt);details.append(panel);container.append(details);
+ });
+}
+function openReplay(attempt,questionId){
+ replaySelection={attempt,questionId};
+ el('replayTitle').textContent=byId[questionId]?.title||questionId;
+ const events=attempt.replay.events.filter(event=>event.questionId===questionId);
+ for(const side of ['before','after']){
+  const select=el('replay'+side+'Select');select.replaceChildren();
+  events.forEach((event,index)=>select.append(new Option('Attempt '+(index+1)+' · '+replayStatus(event),String(index))));
+  const draft=attempt.replay.drafts[questionId];
+  if(draft?.text.trim()&&!events.some(event=>event.text===draft.text&&event.mode===draft.mode))select.append(new Option(draft.kind==='written'?'Saved written answer':'Final unsubmitted draft','draft'));
+  if(!select.options.length)select.append(new Option('No submission recorded','none'));
+  select.value=side==='before'?select.options[0].value:select.options[select.options.length-1].value;
+ }
+ el('replayNote').textContent='Select two saved versions to compare. Output previews show up to three rows or calculations.';
+ renderReplayVersions();
+ el('replayDialog').showModal();
+ el('replayTitle').focus();
+}
+function selectedReplayVersion(side){
+ const {attempt,questionId}=replaySelection;
+ const value=el('replay'+side+'Select').value;
+ if(value==='draft')return {...attempt.replay.drafts[questionId],status:'draft',summary:'Saved draft, not submitted for calculation.'};
+ return attempt.replay.events.filter(event=>event.questionId===questionId)[Number(value)];
+}
+function renderReplayVersions(){
+ for(const side of ['before','after']){
+  const event=selectedReplayVersion(side);
+  el('replay'+side+'Code').textContent=event?.text||'No work was recorded in this question. Work done in downloaded files is outside this replay.';
+  el('replay'+side+'Output').textContent=event?.summary||'';
+  el('replay'+side+'Practice').disabled=!event?.text.trim();
+ }
+}
+function practiseReplay(side){
+ if(locked()&&(session.started||session.partIndex>0)){el('replayNote').textContent='Finish your current exam before practising a saved attempt.';return;}
+ const event=selectedReplayVersion(side),id=replaySelection.questionId;
+ if(!event)return;
+ el('replayDialog').close();
+ single(id);
+ if(event.kind==='written'){
+  session.answers[id]=event.text;store();renderQuestion();
+ }else{
+  session.practiceDraft={questionId:id,text:event.text,mode:event.mode,kind:event.kind};
+  store();renderQuestion();
+ }
+ el('questionTitle').focus();
+}
 function renderReview(){
  const panel=el('reviewSummary');
  panel.hidden=!session.finished;
@@ -512,6 +638,7 @@ function renderReview(){
   group.append(questions);
   panel.append(group);
  });
+ renderReplayTable(panel,session);
 }
 function renderSession(){
  show('session');
@@ -542,6 +669,8 @@ function renderSession(){
 }
 function updateTimer(){
  if(!session||session.guided)return;
+ checkpointReplay();
+ if(session.deadline)store();
  const n=remaining();
  el('timer').textContent=displayTime(n);
  el('startTimer').disabled=Boolean(session.deadline)||session.finished;
@@ -556,20 +685,28 @@ function startTimer(){
  if(!locked()||session.deadline)return;
  session.started=true;
  session.deadline=Date.now()+session.remaining*1000;
+ checkpointReplay();
  store();
  renderSession();
 }
 function pauseTimer(){
  if(!locked()||!session.deadline)return;
+ captureReplayDraft();
+ checkpointReplay();
+ ExamReplay.interrupt(session);
  const time=remaining();
  if(time===0){finish(true);return;}
  session.remaining=time;
  session.deadline=null;
+ checkpointReplay();
  store();
  renderSession();
 }
 function finish(expired=false){
  if(!locked())return;
+ captureReplayDraft();
+ checkpointReplay();
+ ExamReplay.interrupt(session);
  session.remaining=remaining();
  expired=expired||Boolean(session.deadline&&session.remaining===0);
  session.deadline=null;
@@ -584,7 +721,9 @@ function finish(expired=false){
  }else{
   session.finished=true;
   session.expired=expired;
+  session.replaySaved=ExamReplay.complete(session);
  }
+ checkpointReplay();
  store();
  renderSession();
  el(session.finished?'reviewHeading':'sessionTitle').focus();
@@ -621,6 +760,7 @@ async function init(){
    const exam=examSets.find(set=>set.id===old.id);
    if(exam)old.title=exam.title;
    session=old;
+   if(session.replay)session.replay.focus=null;
   }}catch{}
   restoreLocation();
   if(session?.deadline&&remaining()===0)finish(true);
@@ -633,6 +773,10 @@ async function init(){
   el('loading').textContent=loadTimedOut?'Loading took too long. Use the materials below or reload the practice page.':'The interactive questions could not load. Use the materials below or reload the practice page.';
   console.error(error);
  }finally{clearTimeout(loadTimeout);}
+}
+for(const side of ['before','after']){
+ el('replay'+side+'Select').onchange=renderReplayVersions;
+ el('replay'+side+'Practice').onclick=()=>practiseReplay(side);
 }
 el('examsTab').onclick=()=>{renderCards();show('home');el('homeHeading').focus();};
 el('bankTab').onclick=openBank;
@@ -685,5 +829,15 @@ el('nextQuestion').onclick=()=>{
  moveToQuestion(ids[(ids.indexOf(session.ids[session.index])+1)%ids.length]);
 };
 el('previousQuestion').onclick=()=>moveGuided(-1);
+window.addEventListener('message',event=>{
+ const frame=el('responseArea').querySelector('iframe');
+ const data=event.data;
+ if(event.origin!==location.origin||event.source!==frame?.contentWindow||data?.type!=='accountingLab.replay')return;
+ if(!locked()||!session.deadline||remaining()===0||data.attempt!==session.attempt||data.questionId!==session.ids[session.index])return;
+ ExamReplay.record(session,data);
+ store();
+});
+document.addEventListener('visibilitychange',()=>{captureReplayDraft();checkpointReplay();store();});
+window.addEventListener('pagehide',()=>{captureReplayDraft();checkpointReplay(false);store();});
 window.addEventListener('popstate',restoreLocation);
 init();

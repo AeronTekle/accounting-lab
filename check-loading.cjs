@@ -1,3 +1,4 @@
+require('./dist/replay.js');
 const fs = require('node:fs');
 const vm = require('node:vm');
 const assert = require('node:assert/strict');
@@ -14,6 +15,7 @@ async function check(mode) {
  const succeeds = mode === 'success' || mode === 'slow';
  const element = () => ({ hidden: false, dataset: {}, append() {}, replaceChildren() {}, setAttribute() {} });
  const context = vm.createContext({
+  ExamReplay:globalThis.ExamReplay,
   AbortController, URLSearchParams,
   document: { getElementById: id => elements[id] ||= element(), createElement: element },
   localStorage: { getItem: () => null },
