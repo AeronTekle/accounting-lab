@@ -11,7 +11,7 @@ const followUps={
   'Flag the affected rows separately and show how much the total would fall if they were excluded.',
   'Reconcile the flagged wages to the payroll register and check another identifier against the employee master before drawing a conclusion.'
  ]},
- m13:{topic:'Duplicate rows after a join',prompt:'A director has two qualifying films. Two different directors also share the same name. Would SELECT DISTINCT name solve both problems? How would you verify your result?',points:[
+ m13:{topic:'Duplicate rows after a join',prompt:'Suppose a director has two qualifying films. Two different directors also share the same name. Would SELECT DISTINCT name solve both problems? How would you verify your result?',points:[
   'The join can produce multiple rows for one director when more than one film qualifies.',
   'DISTINCT on the name merges different people with the same name. Deduplicate by person ID, then display the names.',
   'Inspect person IDs in an intermediate result and check that each qualifying ID appears exactly once.'
@@ -393,8 +393,12 @@ function finish(expired=false){
  el(session.finished?'reviewHeading':'sessionTitle').focus();
 }
 async function init(){
+ const controller=new AbortController();
+ let loadTimedOut=false;
+ const loadTimeout=setTimeout(()=>{loadTimedOut=true;controller.abort();},12000);
  try{
-  const [c,p]=await Promise.all([fetch('assets/catalog.json?v=exam-downloads-1'),fetch('assets/practice.json?v=practice-82')]);if(!c.ok||!p.ok)throw Error();catalog=await c.json();practice=await p.json();
+  const [c,p]=await Promise.all([fetch('assets/catalog.json?v=exam-downloads-1',{signal:controller.signal}),fetch('assets/practice.json?v=submission-review-1',{signal:controller.signal})]);if(!c.ok||!p.ok)throw Error();catalog=await c.json();practice=await p.json();
+  clearTimeout(loadTimeout);
   for(const [dataset,qs] of Object.entries(catalog.exercises)){for(const q of qs)bank.push({...q,dataset,kind:catalog.datasets[dataset].schema?'SQL':'Excel',category:catalog.datasets[dataset].name,prompt:q.desc,answer:q.answer+'\n\n'+q.explain});}
   bank.push(...practice.questions);byId=Object.fromEntries(bank.map(q=>[q.id,q]));for(const ex of examSets)if(ex.ids.some(id=>!byId[id]))throw Error('Unknown exam question.');
   for(const [id,followUp] of Object.entries(followUps)){
@@ -409,10 +413,17 @@ async function init(){
    if(exam)old.title=exam.title;
    session=old;
   }}catch{}
-  renderCards();el('loading').hidden=true;const params=new URLSearchParams(location.search);if(byId[params.get('question')])single(params.get('question'));else show(params.get('view')==='materials'?'materials':params.get('view')==='bank'?'bank':'home');
+  renderCards();const params=new URLSearchParams(location.search);if(byId[params.get('question')])single(params.get('question'));else show(params.get('view')==='materials'?'materials':params.get('view')==='bank'?'bank':'home');
   if(session?.deadline&&remaining()===0)finish(true);
+  el('loading').hidden=true;
+  el('loadFallback').hidden=true;
   setInterval(updateTimer,1000);
- }catch(error){el('loading').textContent='Could not load the practice content. Reload the page to try again.';console.error(error);}
+ }catch(error){
+  controller.abort();
+  el('loading').hidden=false;
+  el('loading').textContent=loadTimedOut?'Loading took too long. Use the materials below or reload the practice page.':'The interactive questions could not load. Use the materials below or reload the practice page.';
+  console.error(error);
+ }finally{clearTimeout(loadTimeout);}
 }
 el('examsTab').onclick=()=>{renderCards();show('home');};
 el('bankTab').onclick=openBank;

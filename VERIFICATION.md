@@ -13,15 +13,42 @@
 - 26 authored practice sets: 18 data manipulation exams (five questions each) and eight regression exams (four questions each). Every question appears in at least one set.
 - Original downloaded case files are byte-preserved; source hashes are recorded. Movies and P-cards use explicitly defined 2,000-record subsets; their checked answers use those exact subsets.
 - Restaurant models were calculated from the supplied workbook, not invented. The authoring script documents aggregation, date joins, ordinary least squares and standard-error assumptions.
-- All 22 supported formula functions and the six original interactive exercise answers passed the independent checks in node check.cjs.
+- All 22 supported formula functions and the 12 employee-code/payroll exercise answers passed the independent checks in node check.cjs.
 - All question IDs, exam compositions, downloadable files, original hashes, regression arithmetic, 22 additional SQL answers and subset database integrity passed node check-course.cjs.
 - node demonstrate-improvement.cjs confirms that an alternative correct SQL query returns 2328.60, whereas the invoice-line duplication query returns 20848.62. This is functional evidence, not evidence of improved learning or a promised grade.
 
-## Initial browser and publication checks
+## Submission review on 12 November 2026
 
-Local browser checks exercised question-bank filtering, the embedded exam workspace, hidden review controls during practice exams, start/pause, timer persistence after navigation/refresh, review mode, and regression output. The earlier studio tests checked actual SQL execution, wrong-answer feedback, alternative/correct results, row-wise Excel calculations, the 33.05 payroll result and CSV download.
+`node check.cjs`, `node check-course.cjs` and `node demonstrate-improvement.cjs` passed. `node check-loading.cjs` checks the static fallback, successful and delayed content loading, HTTP failure, invalid JSON and a pending request aborted at the 12-second deadline. The static fallback includes course-file links and the three original exercises with their follow-ups and review points.
 
-The browser service disconnected during the final hosting configuration. GitHub Pages remains disabled; its deployable gh-pages branch is prepared. A CDN publication outside Sites was used instead. HTTPS checks then fetched the two HTML pages, scripts, styles, Worker files, WebAssembly, four databases, JSON data/catalog/model files and representative original workbooks. All 22 requested files returned HTTP 200 and exactly matched local bytes. See host-verification.json. Live browser interaction was not repeated after the outage. The CDN may show its standard confirmation page on first opening.
+A separate Python audit read the actual published workbooks using pandas, compared ten workbooks/CSV files and the two complete SQL databases byte-for-byte with the original uploaded ZIP, and checked the employee and payroll JSON rows against the source worksheets. It executed all 40 SQL reference queries and independently checked the director result by person ID. The six regression models were refitted from the restaurant sales, weather and game worksheets using QR decomposition, checking coefficients, standard errors, p-values and R² against the displayed output on 312 dates. The existing formula checks cover every supplied employee-code and payroll row.
+
+| Source calculation | Verified result |
+| --- | --- |
+| 2015 gross wages | $1,086,734.19 |
+| 2016 gross wages | $1,352,789.75 |
+| Wage increase | $266,055.56 |
+| Missing Employee_Number in 2016 | 68 rows, $32,951.29 gross wages |
+| Gross wages per hour, 2015 and 2016 | $33.05 and $33.20 |
+| Brooklyn shooting permits | 10,367 |
+| Mean shooting-permit duration | 16.98 hours |
+| Game-day difference in the simple regression | $1,436.30 |
+
+The permit-duration prompt was clarified to request calculation from unrounded durations and a final mean reported to two decimals. No numerical answer changed during this review.
+
+## Follow-up mapping and evidence
+
+| Exercise | Follow-up tests | Review criterion |
+| --- | --- | --- |
+| i2, missing employee numbers | Whether incomplete identification justifies removing recorded wages | Retain and flag the wages pending reconciliation |
+| m13, qualifying directors | Duplicate join rows and different people sharing a name | Deduplicate by person ID before displaying names |
+| r15, game-day sales | A possible weekday explanation for the group difference | Investigate weekday composition and avoid claiming causality |
+
+These are authored prompts with self-review criteria. The 60-second limit is a practice design choice. The teacher’s page labels its exercises as oral exam practice, but these follow-ups are not presented as official examiner questions. No educational-effectiveness study or student feedback has been invented.
+
+## Browser storage
+
+`accountingLab.v1` holds completed exercise IDs and SQL/formula drafts, including calculation mode and attempt-specific draft keys. `accountingLab.exam.v1` holds the current exam session, written answers, attempted-question marks, question selection and timer state. Follow-up timer and checklist state are held in memory. The exam-page footer and lab help describe browser storage. Clearing site storage removes saved drafts and progress.
 
 ## Practical limits
 

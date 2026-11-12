@@ -1,8 +1,33 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#193c34"><meta name="description" content="Practice exams, a question bank, regression exercises and course materials for Data Analytics in Accounting."><title>Accounting Lab | Practice Exams</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="exams.css?v=examiner-follow-up-1"></head><body>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#193c34"><meta name="description" content="Practice exams, a question bank, regression exercises and course materials for Data Analytics in Accounting."><title>Accounting Lab | Practice Exams</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="exams.css?v=submission-review-1"></head><body>
 <a class="skip" href="#main">Skip to main content</a>
 <header class="topbar"><a href="exams.html" class="brand"><span class="brand-icon">a<span>l</span></span><span>Accounting <b>Lab</b><small>DATA ANALYTICS IN ACCOUNTING</small></span></a><nav aria-label="Main navigation"><button id="examsTab" class="nav-button active">Practice exams</button><button id="bankTab" class="nav-button">Question bank</button><button id="materialsTab" class="nav-button">Materials</button><a class="nav-button" href="index.html">Open lab ↗</a></nav></header>
 <main id="main" class="exam-main">
-<div id="loading" role="status">Loading practice exercises…</div>
+<div id="loading" role="status">Loading interactive exercises…</div>
+<section id="loadFallback" class="load-fallback" aria-labelledby="fallbackTitle">
+<h1 id="fallbackTitle">Accounting Lab practice materials</h1>
+<p>Downloads and three oral practice examples are available while the interactive questions load.</p>
+<noscript><p><strong>JavaScript is disabled.</strong> Enable it for interactive exercises and timers, or practise using the examples and downloads below.</p><style>#loading{display:none}</style></noscript>
+<a class="secondary-button" href="exams.html">Reload practice page</a>
+<h2>Course files</h2><ul class="fallback-downloads">
+<li><a href="materials/film.xlsx" download>NYC Film Permits</a></li>
+<li><a href="materials/etl-case1.csv" download>ETL Case 1</a></li>
+<li><a href="materials/etl-case2.xlsx" download>ETL Case 2</a></li>
+<li><a href="materials/etl-case3.xlsx" download>ETL Case 3</a></li>
+<li><a href="materials/journal.xlsx" download>ETL Case 4 Journal entries</a></li>
+<li><a href="materials/payroll2015.xlsx" download>IntegrateCo 2015</a></li>
+<li><a href="materials/payroll2016.xlsx" download>IntegrateCo 2016</a></li>
+<li><a href="materials/jobcodes.csv" download>IntegrateCo job codes</a></li>
+<li><a href="materials/locations.csv" download>IntegrateCo locations</a></li>
+<li><a href="materials/restaurant.xlsm" download>Restaurant regression source workbook</a></li>
+<li><a href="assets/movies-practice.db" download>Movies · 2,000-film subset</a></li>
+<li><a href="assets/pcards-practice.db" download>P-cards · OSU subset</a></li>
+<li><a href="assets/songs.db" download>Songs full database</a></li>
+<li><a href="assets/chinook.sqlite" download>Chinook full database</a></li>
+</ul><h2>Oral practice examples</h2><p>Complete the original exercise, then answer its follow-up aloud. Take up to one minute before checking the review points.</p>
+<article><h3>Investigate missing employee numbers</h3><p>How many 2016 rows have a missing Employee_Number, and what total Gross_Wages do those rows contain? What can you conclude?</p><p><strong>Examiner follow-up</strong> A colleague suggests excluding all rows with a missing Employee_Number before reporting total gross wages. Would you do that? What would you check first?</p><details><summary>Review points</summary><ul><li>Keep the recorded wages in the total unless there is evidence that the transactions should be corrected or excluded.</li><li>Flag the affected rows separately and show how much the total would fall if they were excluded.</li><li>Reconcile the flagged wages to the payroll register and check another identifier against the employee master before drawing a conclusion.</li></ul></details></article>
+<article><h3>Find directors of films rated 8.0 or higher</h3><p>Return the names of people who directed at least one film rated 8.0 or higher. Include each person ID once. Row order is optional.</p><p><strong>Examiner follow-up</strong> Suppose a director has two qualifying films. Two different directors also share the same name. Would SELECT DISTINCT name solve both problems? How would you verify your result?</p><details><summary>Review points</summary><ul><li>The join can produce multiple rows for one director when more than one film qualifies.</li><li>DISTINCT on the name merges different people with the same name. Deduplicate by person ID, then display the names.</li><li>Inspect person IDs in an intermediate result and check that each qualifying ID appears exactly once.</li></ul></details></article>
+<article><h3>Compare sales on game and non-game days</h3><p>Use the game-day model to find the predicted dollar difference between a game day and a non-game day. Give the difference to two decimals and explain what it measures.</p><p><strong>Examiner follow-up</strong> The manager says game days caused the higher predicted sales. What else could explain the difference, and what comparison would you run to check it?</p><details><summary>Review points</summary><ul><li>The coefficient compares average sales on game and non-game days in this dataset.</li><li>If games cluster on busy days of the week, the weekday mix could explain part of the difference.</li><li>Compare game and non-game days on the same weekday, or add weekday controls. The adjusted comparison still describes an association.</li></ul></details></article>
+</section>
 <section id="home" hidden>
   <div class="home-intro">
     <div class="exam-hero">
@@ -80,5 +105,5 @@
     <button id="retryFollowUp" class="secondary-button" type="button">Try again</button>
   </section>
 </dialog>
-<footer class="exam-footer"><a href="https://github.com/AeronTekle/accounting-lab" target="_blank" rel="noopener">Source code on GitHub ↗</a><span>Course-based exercises · Your work is saved in this browser</span></footer></main>
-<script src="exams.js?v=examiner-follow-up-1" defer></script></body></html>
+<footer class="exam-footer"><a href="https://github.com/AeronTekle/accounting-lab" target="_blank" rel="noopener">Source code on GitHub ↗</a><details class="saved-work"><summary>What is saved in this browser?</summary><p>This browser stores written answers, SQL and formula drafts, the questions marked as attempted or completed, and the current exam’s question selection and timer state. Follow-up checklists are temporary. Browser storage can be cleared in your browser settings, and work stays with this browser profile on this device.</p></details></footer></main>
+<script src="exams.js?v=submission-review-1" defer></script></body></html>

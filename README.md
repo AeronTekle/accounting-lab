@@ -12,6 +12,7 @@ An English-language browser-based exam-practice website for Data Analytics in Ac
 - Eighteen eight-minute data manipulation exams and eight five-minute regression practice exams. These are authored practice sets, not official exam promises.
 - Full mock mode pairs one data manipulation set and one regression set, with separate eight- and five-minute timers and a combined review.
 - Examiner follow-ups for three course questions, with 60 seconds to answer aloud and a checklist for self-review. Available in guided practice and after timed exams.
+- Static downloads and three oral practice examples remain accessible when JavaScript is disabled or content loading fails. Interactive content requests time out after 12 seconds.
 - Searchable question bank with subject and case filters.
 - Embedded SQL/Excel workspaces, hints, worked answers, numeric checks, self-assessment criteria, pause/resume timers and browser-local draft storage.
 - Complete Songs and Chinook databases; clearly labelled Movies and P-card subsets. Original Excel and CSV case files are available from Materials.
@@ -21,7 +22,7 @@ An English-language browser-based exam-practice website for Data Analytics in Ac
 
 Serve `dist/` with a static HTTP server. File URLs do not support the Worker and fetch workflow. All JavaScript, SQLite WebAssembly and datasets are hosted with the application; no external scripts, fonts or analytics are required.
 
-Run `node check.cjs` and `node check-course.cjs` for independent data, formula and course-content verification. Run `node build_catalog.cjs` after changing exercise definitions or the Excel lab datasets. It rebuilds the catalog and the two Excel-ready CSV downloads used in the lab and before exams. Open `dist/exams.html` for the complete practice website, or `dist/index.html` for the standalone lab.
+Run `node check.cjs`, `node check-course.cjs` and `node check-loading.cjs` for independent data, formula and course-content verification. Run `node build_catalog.cjs` after changing exercise definitions or the Excel lab datasets. It rebuilds the catalog and the two Excel-ready CSV downloads used in the lab and before exams. Open `dist/exams.html` for the complete practice website, or `dist/index.html` for the standalone lab.
 
 Run `node check.cjs` for independent data and formula verification. It exercises all 22 supported functions, both SQL databases, every reference answer, all employee-code outputs and every gross-pay row. SQLite writes are blocked with `PRAGMA query_only`.
 

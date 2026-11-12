@@ -39,7 +39,7 @@
       "title": "Calculate permit duration in hours",
       "category": "NYC Film Permits",
       "kind": "Excel",
-      "prompt": "Find the mean permit duration in hours for Shooting Permit records. Give the unrounded mean to two decimals and explain the Excel conversion.",
+      "prompt": "Find the mean permit duration in hours for Shooting Permit records. Calculate from unrounded durations, report the mean to two decimals and explain the Excel conversion.",
       "answer": "16.98 hours. In a helper column use =(EndDateTime-StartDateTime)*24; Excel date differences are days. Filter EventType=\"Shooting Permit\", then average the helper. Do not average only Brooklyn for this question.",
       "hint": "Excel date differences are measured in days.",
       "files": [
