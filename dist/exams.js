@@ -352,7 +352,7 @@ function renderReview(){
 function renderSession(){
  show('session');
  const part=currentPart();
- const waiting=Boolean(part&&!session.deadline&&!session.finished);
+ const waiting=!session.guided&&!session.finished&&!session.deadline;
  el('backButton').textContent=session.guided?'← Back to question bank':'← Back to practice exams';
  el('sessionTitle').textContent=session.guided?byId[session.ids[0]].title:session.parts?session.title:session.id+' · '+session.title;
  el('sessionMode').textContent=session.guided?'GUIDED PRACTICE':session.parts?'FULL MOCK EXAM':'TIMED PRACTICE EXAM';
@@ -393,10 +393,7 @@ function startTimer(){
  session.started=true;
  session.deadline=Date.now()+session.remaining*1000;
  store();
- if(session.parts)renderSession();else{
-  el('sessionStatus').textContent='Exam in progress';
-  updateTimer();
- }
+ renderSession();
 }
 function pauseTimer(){
  if(!locked()||!session.deadline)return;
@@ -405,10 +402,7 @@ function pauseTimer(){
  session.remaining=time;
  session.deadline=null;
  store();
- if(session.parts)renderSession();else{
-  el('sessionStatus').textContent='Paused';
-  updateTimer();
- }
+ renderSession();
 }
 function finish(expired=false){
  if(!locked())return;
