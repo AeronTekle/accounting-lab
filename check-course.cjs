@@ -1,8 +1,9 @@
 require('./dist/library-extra.js');
+require('./dist/coverage-extra.js');
 require('./dist/replay.js');
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),vm=require('node:vm'),crypto=require('node:crypto');
 const root=path.join(__dirname,'dist'),catalog=JSON.parse(fs.readFileSync(path.join(root,'assets/catalog.json'))),practice=JSON.parse(fs.readFileSync(path.join(root,'assets/practice.json')));
-const all=[...Object.values(catalog.exercises).flat(),...practice.questions,...globalThis.LIBRARY_EXTRA.questions];assert.equal(all.length,440);assert.equal(new Set(all.map(x=>x.id)).size,all.length);for(const q of all){assert(q.title);assert(q.answer);}
+const all=[...Object.values(catalog.exercises).flat(),...practice.questions,...globalThis.LIBRARY_EXTRA.questions,...globalThis.COURSE_COVERAGE.questions];assert.equal(all.length,851);assert.equal(new Set(all.map(x=>x.id)).size,all.length);for(const q of all){assert(q.title);assert(q.answer);}
 for(const q of practice.questions)for(const f of q.files)assert(fs.existsSync(path.join(root,f)),f);
 for(const dataset of Object.values(catalog.datasets)){
  if(!dataset.download)continue;
@@ -12,7 +13,7 @@ for(const dataset of Object.values(catalog.datasets)){
  assert.equal(lines.length,rows.length+1);
 }
 for(const m of practice.materials){const b=fs.readFileSync(path.join(root,m.file));if(m.sha256)assert.equal(crypto.createHash('sha256').update(b).digest('hex'),m.sha256);}
-const ctx={LIBRARY_EXTRA:globalThis.LIBRARY_EXTRA};vm.createContext(ctx);vm.runInContext(fs.readFileSync(path.join(root,'exams.js'),'utf8').split('const store=')[0]+';this.sets=examSets;this.followUps=followUps;',ctx);assert.equal(Object.keys(ctx.followUps).length,24);
+const ctx={COURSE_COVERAGE:globalThis.COURSE_COVERAGE, LIBRARY_EXTRA:globalThis.LIBRARY_EXTRA};vm.createContext(ctx);vm.runInContext(fs.readFileSync(path.join(root,'exams.js'),'utf8').split('const store=')[0]+';this.sets=examSets;this.followUps=followUps;',ctx);assert.equal(Object.keys(ctx.followUps).length,24);
 const questionKinds=Object.fromEntries([
  ...Object.entries(catalog.exercises).flatMap(([dataset,questions])=>questions.map(q=>[q.id,catalog.datasets[dataset].schema?'SQL':'Excel'])),
  ...practice.questions.map(q=>[q.id,q.kind])
@@ -24,7 +25,7 @@ for(const [id,followUp] of Object.entries(ctx.followUps)){
  assert.equal(followUp.points.length,3,id);
  assert.equal(new Set(followUp.points).size,3,id);
 }
-assert.equal(ctx.sets.length,112);const ids=new Set(all.map(x=>x.id));for(const e of ctx.sets){assert(e.ids.every(x=>ids.has(x)));assert.equal(new Set(e.ids).size,e.ids.length);assert(e.ids.every(id=>id.startsWith("r")===(e.type==="regression")));assert.equal(e.ids.length,e.type==='regression'?4:5);assert.equal(e.seconds,e.type==='regression'?300:480);}
+assert.equal(ctx.sets.length,844);const ids=new Set(all.map(x=>x.id));for(const e of ctx.sets){assert(e.ids.every(x=>ids.has(x)));assert.equal(new Set(e.ids).size,e.ids.length);assert(e.ids.every(id=>id.startsWith("r")===(e.type==="regression")));assert.equal(e.ids.length,e.type==='regression'?4:5);assert.equal(e.seconds,e.type==='regression'?300:480);}
 assert.equal(new Set(ctx.sets.flatMap(e=>e.ids)).size,all.length);
 const examCode=fs.readFileSync(path.join(root,'exams.js'),'utf8');
 let time=10_000, saved;
@@ -97,4 +98,4 @@ assert.equal(r('r16').expected.toFixed(4),'-0.0405');
 assert.match(r('f4').answer,/11 missing ZIP codes recorded as the text N\/A/);
 assert.match(r('i3').answer,/33\.05.*33\.20/);
 assert.equal(practice.models.temperature.n,312);assert.equal(practice.verification.film_records,33502);assert.equal(practice.verification.brooklyn_shoots,10367);assert.equal(practice.verification.phantom_rows,68);
-(async()=>{const init=require(path.join(root,'assets/sql-wasm.js')),SQL=await init({locateFile:f=>path.join(root,'assets',f)});for(const name of ['movies','pcards']){const db=new SQL.Database(fs.readFileSync(path.join(root,catalog.datasets[name].file)));for(const q of catalog.exercises[name].filter(q=>!q.expanded)){const out=db.exec(q.answer)[0];assert(out,q.id);assert.equal(out.values.length,practice.verification.sql[q.id].rows);assert.deepEqual(out.values.slice(0,5),practice.verification.sql[q.id].preview);}assert.equal(db.exec('PRAGMA integrity_check')[0].values[0][0],'ok');db.close();}console.log('Course checks passed: 440 unique questions, 112 complete exams, original-file hashes, regression arithmetic, 22 extra SQL answers and SQLite integrity.');})().catch(e=>{console.error(e);process.exitCode=1;});
+(async()=>{const init=require(path.join(root,'assets/sql-wasm.js')),SQL=await init({locateFile:f=>path.join(root,'assets',f)});for(const name of ['movies','pcards']){const db=new SQL.Database(fs.readFileSync(path.join(root,catalog.datasets[name].file)));for(const q of catalog.exercises[name].filter(q=>!q.expanded&&!q.coverage)){const out=db.exec(q.answer)[0];assert(out,q.id);assert.equal(out.values.length,practice.verification.sql[q.id].rows);assert.deepEqual(out.values.slice(0,5),practice.verification.sql[q.id].preview);}assert.equal(db.exec('PRAGMA integrity_check')[0].values[0][0],'ok');db.close();}console.log('Course checks passed: 851 unique questions, 844 complete exams, original-file hashes, regression arithmetic, 22 extra SQL answers and SQLite integrity.');})().catch(e=>{console.error(e);process.exitCode=1;});

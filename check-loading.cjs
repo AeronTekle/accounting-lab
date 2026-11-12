@@ -1,4 +1,5 @@
 require('./dist/library-extra.js');
+require('./dist/coverage-extra.js');
 require('./dist/replay.js');
 const fs = require('node:fs');
 const vm = require('node:vm');
@@ -17,7 +18,7 @@ async function check(mode) {
  const element = () => ({ hidden: false, dataset: {}, append() {}, replaceChildren() {}, setAttribute() {} });
  const context = vm.createContext({
   ExamReplay:globalThis.ExamReplay,
- LIBRARY_EXTRA:globalThis.LIBRARY_EXTRA,
+ COURSE_COVERAGE:globalThis.COURSE_COVERAGE, LIBRARY_EXTRA:globalThis.LIBRARY_EXTRA,
   AbortController, URLSearchParams,
   document: { getElementById: id => elements[id] ||= element(), createElement: element },
   localStorage: { getItem: () => null },

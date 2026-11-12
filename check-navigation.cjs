@@ -1,4 +1,5 @@
 require('./dist/library-extra.js');
+require('./dist/coverage-extra.js');
 require('./dist/replay.js');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -6,14 +7,14 @@ const vm = require('node:vm');
 const code = fs.readFileSync('dist/exams.js', 'utf8').split("el('examsTab').onclick=")[0];
 const catalog = JSON.parse(fs.readFileSync('dist/assets/catalog.json', 'utf8'));
 const practice = JSON.parse(fs.readFileSync('dist/assets/practice.json', 'utf8'));
-const questions = Object.fromEntries([...Object.values(catalog.exercises).flat(), ...practice.questions,...globalThis.LIBRARY_EXTRA.questions].map(q => [q.id, q]));
+const questions = Object.fromEntries([...Object.values(catalog.exercises).flat(), ...practice.questions,...globalThis.LIBRARY_EXTRA.questions,...globalThis.COURSE_COVERAGE.questions].map(q => [q.id, q]));
 let url = new URL('https://example.test/exams.html?question=r15');
 let saved;
 const entries = [];
 const element = {hidden: false, classList: {toggle() {}}, setAttribute() {}, removeAttribute() {}, focus() {}, prepend() {}};
 const context = vm.createContext({
  ExamReplay:globalThis.ExamReplay,
- LIBRARY_EXTRA:globalThis.LIBRARY_EXTRA,
+ COURSE_COVERAGE:globalThis.COURSE_COVERAGE, LIBRARY_EXTRA:globalThis.LIBRARY_EXTRA,
  Date, URL, URLSearchParams, questions,
  location: {get href() {return url.href;}, get search() {return url.search;}},
  history: Object.fromEntries(['pushState', 'replaceState'].map(method => [method, (_state, _unused, value) => {url = new URL(value); entries.push(method);} ])),

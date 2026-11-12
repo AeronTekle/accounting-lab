@@ -1,0 +1,5576 @@
+{
+  "checked": "2026-11-12",
+  "source": "https://exam-studio.raz-b4c.workers.dev/",
+  "basis": "Skill-family equivalence, not identical questions, contexts, numerical results or difficulty. Representative local tasks cover each published topic within its source family. Different reduced database samples remain explicitly labelled.",
+  "teacher": {
+    "manipulationQuestions": 400,
+    "manipulationExams": 800,
+    "regressionQuestions": 120,
+    "regressionExams": 30
+  },
+  "ours": {
+    "questions": 851,
+    "Excel": 359,
+    "SQL": 332,
+    "Regression": 160,
+    "manipulationExams": 800,
+    "regressionExams": 44
+  },
+  "topicRepresentatives": {
+    "film": {
+      "import": "w1001",
+      "filter": "w1004",
+      "sort": "w1004",
+      "conditional_count": "f2",
+      "count": "f2",
+      "summary": "w1032",
+      "aggregate": "f3",
+      "date_arithmetic": "w1024",
+      "date_filter": "w1025",
+      "ranking": "w1025",
+      "text_filter": "w1006",
+      "two_dimensions": "w1007"
+    },
+    "codes": {
+      "text_extraction": "e2",
+      "numeric_conversion": "e2",
+      "numeric_condition": "w1040",
+      "classification": "w1042",
+      "count": "w1043",
+      "filter": "w1048",
+      "sort": "w1048",
+      "summary": "w1044"
+    },
+    "journal": {
+      "merge": "w1049",
+      "composite_matching": "w1052",
+      "enriched_field": "w1051",
+      "count": "w1056",
+      "filter": "w1072",
+      "summary": "w1060"
+    },
+    "songs": {
+      "aggregate": "sc1001",
+      "filter": "sx101",
+      "group_by": "sc1002",
+      "having": "sc1009",
+      "join": "sc1014",
+      "pattern_filter": "sc1013",
+      "sort": "sx101"
+    },
+    "movies": {
+      "aggregate": "mc1001",
+      "filter": "mc1029",
+      "group_by": "mc1023",
+      "having": "mc1003",
+      "join": "m6",
+      "distinct": "m12",
+      "pattern_filter": "m10",
+      "relationship_chain": "m16",
+      "sort": "mc1002"
+    },
+    "chinook": {
+      "aggregate": "cc1019",
+      "filter": "cc1025",
+      "group_by": "cc1021",
+      "having": "cc1030",
+      "join": "cc1003",
+      "sort": "cc1027"
+    },
+    "pcards": {
+      "aggregate": "ap1001",
+      "filter": "ap1013",
+      "group_by": "ac1005",
+      "having": "ac1027",
+      "pattern_filter": "ac1015",
+      "refund": "ap1006",
+      "sort": "ac1026",
+      "two_dimensions": "ap1012"
+    },
+    "pay15": {
+      "import": "w1002",
+      "text_extraction": "w1073",
+      "numeric_conversion": "w1074",
+      "numeric_condition": "w1077",
+      "calculation": "w1079",
+      "rate": "w1078",
+      "summary": "w1080",
+      "filter": "w1083",
+      "ranking": "w1080",
+      "sort": "w1097",
+      "aggregate": "w1096",
+      "count": "w1081",
+      "two_dimensions": "w1108",
+      "two_measures": "w1082",
+      "date_arithmetic": "w1116",
+      "date_grouping": "w1112"
+    },
+    "pay16": {
+      "import": "w1003",
+      "text_extraction": "w1117",
+      "numeric_conversion": "w1118",
+      "numeric_condition": "w1121",
+      "calculation": "w1123",
+      "rate": "w1122",
+      "summary": "w1124",
+      "filter": "w1127",
+      "ranking": "w1124",
+      "sort": "w1141",
+      "aggregate": "w1140",
+      "count": "w1125",
+      "two_dimensions": "w1152",
+      "two_measures": "w1126"
+    }
+  },
+  "manipulation": [
+    {
+      "teacherId": "Q001",
+      "source": "film",
+      "topics": [
+        "import"
+      ],
+      "equivalents": [
+        "w1001"
+      ]
+    },
+    {
+      "teacherId": "Q002",
+      "source": "film",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "w1004"
+      ]
+    },
+    {
+      "teacherId": "Q003",
+      "source": "film",
+      "topics": [
+        "conditional_count"
+      ],
+      "equivalents": [
+        "f2"
+      ]
+    },
+    {
+      "teacherId": "Q004",
+      "source": "film",
+      "topics": [
+        "summary",
+        "filter"
+      ],
+      "equivalents": [
+        "w1032",
+        "w1004"
+      ]
+    },
+    {
+      "teacherId": "Q005",
+      "source": "film",
+      "topics": [
+        "summary",
+        "two_dimensions"
+      ],
+      "equivalents": [
+        "w1032",
+        "w1007"
+      ]
+    },
+    {
+      "teacherId": "Q006",
+      "source": "film",
+      "topics": [
+        "date_arithmetic",
+        "filter"
+      ],
+      "equivalents": [
+        "w1024",
+        "w1004"
+      ]
+    },
+    {
+      "teacherId": "Q007",
+      "source": "film",
+      "topics": [
+        "date_arithmetic",
+        "sort"
+      ],
+      "equivalents": [
+        "w1024",
+        "w1004"
+      ]
+    },
+    {
+      "teacherId": "Q008",
+      "source": "film",
+      "topics": [
+        "text_filter",
+        "count"
+      ],
+      "equivalents": [
+        "w1006",
+        "f2"
+      ]
+    },
+    {
+      "teacherId": "Q009",
+      "source": "film",
+      "topics": [
+        "date_filter",
+        "count"
+      ],
+      "equivalents": [
+        "w1025",
+        "f2"
+      ]
+    },
+    {
+      "teacherId": "Q010",
+      "source": "film",
+      "topics": [
+        "date_arithmetic",
+        "aggregate"
+      ],
+      "equivalents": [
+        "w1024",
+        "f3"
+      ]
+    },
+    {
+      "teacherId": "Q011",
+      "source": "film",
+      "topics": [
+        "summary",
+        "ranking"
+      ],
+      "equivalents": [
+        "w1032",
+        "w1025"
+      ]
+    },
+    {
+      "teacherId": "Q012",
+      "source": "film",
+      "topics": [
+        "summary",
+        "count"
+      ],
+      "equivalents": [
+        "w1032",
+        "f2"
+      ]
+    },
+    {
+      "teacherId": "Q013",
+      "source": "film",
+      "topics": [
+        "aggregate",
+        "ranking"
+      ],
+      "equivalents": [
+        "f3",
+        "w1025"
+      ]
+    },
+    {
+      "teacherId": "Q014",
+      "source": "film",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "w1004"
+      ]
+    },
+    {
+      "teacherId": "Q015",
+      "source": "film",
+      "topics": [
+        "conditional_count"
+      ],
+      "equivalents": [
+        "f2"
+      ]
+    },
+    {
+      "teacherId": "Q016",
+      "source": "film",
+      "topics": [
+        "summary",
+        "filter"
+      ],
+      "equivalents": [
+        "w1032",
+        "w1004"
+      ]
+    },
+    {
+      "teacherId": "Q017",
+      "source": "film",
+      "topics": [
+        "summary",
+        "two_dimensions"
+      ],
+      "equivalents": [
+        "w1032",
+        "w1007"
+      ]
+    },
+    {
+      "teacherId": "Q018",
+      "source": "film",
+      "topics": [
+        "date_arithmetic",
+        "filter"
+      ],
+      "equivalents": [
+        "w1024",
+        "w1004"
+      ]
+    },
+    {
+      "teacherId": "Q019",
+      "source": "film",
+      "topics": [
+        "date_arithmetic",
+        "sort"
+      ],
+      "equivalents": [
+        "w1024",
+        "w1004"
+      ]
+    },
+    {
+      "teacherId": "Q020",
+      "source": "film",
+      "topics": [
+        "text_filter",
+        "count"
+      ],
+      "equivalents": [
+        "w1006",
+        "f2"
+      ]
+    },
+    {
+      "teacherId": "Q021",
+      "source": "film",
+      "topics": [
+        "date_filter",
+        "count"
+      ],
+      "equivalents": [
+        "w1025",
+        "f2"
+      ]
+    },
+    {
+      "teacherId": "Q022",
+      "source": "film",
+      "topics": [
+        "date_arithmetic",
+        "aggregate"
+      ],
+      "equivalents": [
+        "w1024",
+        "f3"
+      ]
+    },
+    {
+      "teacherId": "Q023",
+      "source": "film",
+      "topics": [
+        "summary",
+        "ranking"
+      ],
+      "equivalents": [
+        "w1032",
+        "w1025"
+      ]
+    },
+    {
+      "teacherId": "Q024",
+      "source": "film",
+      "topics": [
+        "summary",
+        "count"
+      ],
+      "equivalents": [
+        "w1032",
+        "f2"
+      ]
+    },
+    {
+      "teacherId": "Q025",
+      "source": "film",
+      "topics": [
+        "aggregate",
+        "ranking"
+      ],
+      "equivalents": [
+        "f3",
+        "w1025"
+      ]
+    },
+    {
+      "teacherId": "Q026",
+      "source": "film",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "w1004"
+      ]
+    },
+    {
+      "teacherId": "Q027",
+      "source": "film",
+      "topics": [
+        "conditional_count"
+      ],
+      "equivalents": [
+        "f2"
+      ]
+    },
+    {
+      "teacherId": "Q028",
+      "source": "film",
+      "topics": [
+        "summary",
+        "filter"
+      ],
+      "equivalents": [
+        "w1032",
+        "w1004"
+      ]
+    },
+    {
+      "teacherId": "Q029",
+      "source": "film",
+      "topics": [
+        "summary",
+        "two_dimensions"
+      ],
+      "equivalents": [
+        "w1032",
+        "w1007"
+      ]
+    },
+    {
+      "teacherId": "Q030",
+      "source": "film",
+      "topics": [
+        "date_arithmetic",
+        "filter"
+      ],
+      "equivalents": [
+        "w1024",
+        "w1004"
+      ]
+    },
+    {
+      "teacherId": "Q031",
+      "source": "film",
+      "topics": [
+        "date_arithmetic",
+        "sort"
+      ],
+      "equivalents": [
+        "w1024",
+        "w1004"
+      ]
+    },
+    {
+      "teacherId": "Q032",
+      "source": "film",
+      "topics": [
+        "text_filter",
+        "count"
+      ],
+      "equivalents": [
+        "w1006",
+        "f2"
+      ]
+    },
+    {
+      "teacherId": "Q033",
+      "source": "film",
+      "topics": [
+        "date_filter",
+        "count"
+      ],
+      "equivalents": [
+        "w1025",
+        "f2"
+      ]
+    },
+    {
+      "teacherId": "Q034",
+      "source": "film",
+      "topics": [
+        "date_arithmetic",
+        "aggregate"
+      ],
+      "equivalents": [
+        "w1024",
+        "f3"
+      ]
+    },
+    {
+      "teacherId": "Q035",
+      "source": "film",
+      "topics": [
+        "summary",
+        "ranking"
+      ],
+      "equivalents": [
+        "w1032",
+        "w1025"
+      ]
+    },
+    {
+      "teacherId": "Q036",
+      "source": "film",
+      "topics": [
+        "summary",
+        "count"
+      ],
+      "equivalents": [
+        "w1032",
+        "f2"
+      ]
+    },
+    {
+      "teacherId": "Q037",
+      "source": "film",
+      "topics": [
+        "aggregate",
+        "ranking"
+      ],
+      "equivalents": [
+        "f3",
+        "w1025"
+      ]
+    },
+    {
+      "teacherId": "Q038",
+      "source": "film",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "w1004"
+      ]
+    },
+    {
+      "teacherId": "Q039",
+      "source": "film",
+      "topics": [
+        "conditional_count"
+      ],
+      "equivalents": [
+        "f2"
+      ]
+    },
+    {
+      "teacherId": "Q040",
+      "source": "film",
+      "topics": [
+        "summary",
+        "filter"
+      ],
+      "equivalents": [
+        "w1032",
+        "w1004"
+      ]
+    },
+    {
+      "teacherId": "Q041",
+      "source": "film",
+      "topics": [
+        "summary",
+        "two_dimensions"
+      ],
+      "equivalents": [
+        "w1032",
+        "w1007"
+      ]
+    },
+    {
+      "teacherId": "Q042",
+      "source": "film",
+      "topics": [
+        "date_arithmetic",
+        "filter"
+      ],
+      "equivalents": [
+        "w1024",
+        "w1004"
+      ]
+    },
+    {
+      "teacherId": "Q043",
+      "source": "film",
+      "topics": [
+        "date_arithmetic",
+        "sort"
+      ],
+      "equivalents": [
+        "w1024",
+        "w1004"
+      ]
+    },
+    {
+      "teacherId": "Q044",
+      "source": "film",
+      "topics": [
+        "text_filter",
+        "count"
+      ],
+      "equivalents": [
+        "w1006",
+        "f2"
+      ]
+    },
+    {
+      "teacherId": "Q045",
+      "source": "film",
+      "topics": [
+        "date_filter",
+        "count"
+      ],
+      "equivalents": [
+        "w1025",
+        "f2"
+      ]
+    },
+    {
+      "teacherId": "Q046",
+      "source": "film",
+      "topics": [
+        "date_arithmetic",
+        "aggregate"
+      ],
+      "equivalents": [
+        "w1024",
+        "f3"
+      ]
+    },
+    {
+      "teacherId": "Q047",
+      "source": "film",
+      "topics": [
+        "summary",
+        "ranking"
+      ],
+      "equivalents": [
+        "w1032",
+        "w1025"
+      ]
+    },
+    {
+      "teacherId": "Q048",
+      "source": "film",
+      "topics": [
+        "summary",
+        "count"
+      ],
+      "equivalents": [
+        "w1032",
+        "f2"
+      ]
+    },
+    {
+      "teacherId": "Q049",
+      "source": "film",
+      "topics": [
+        "aggregate",
+        "ranking"
+      ],
+      "equivalents": [
+        "f3",
+        "w1025"
+      ]
+    },
+    {
+      "teacherId": "Q050",
+      "source": "film",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "w1004"
+      ]
+    },
+    {
+      "teacherId": "Q051",
+      "source": "film",
+      "topics": [
+        "conditional_count"
+      ],
+      "equivalents": [
+        "f2"
+      ]
+    },
+    {
+      "teacherId": "Q052",
+      "source": "film",
+      "topics": [
+        "summary",
+        "filter"
+      ],
+      "equivalents": [
+        "w1032",
+        "w1004"
+      ]
+    },
+    {
+      "teacherId": "Q053",
+      "source": "film",
+      "topics": [
+        "summary",
+        "two_dimensions"
+      ],
+      "equivalents": [
+        "w1032",
+        "w1007"
+      ]
+    },
+    {
+      "teacherId": "Q054",
+      "source": "film",
+      "topics": [
+        "date_arithmetic",
+        "filter"
+      ],
+      "equivalents": [
+        "w1024",
+        "w1004"
+      ]
+    },
+    {
+      "teacherId": "Q055",
+      "source": "film",
+      "topics": [
+        "date_arithmetic",
+        "sort"
+      ],
+      "equivalents": [
+        "w1024",
+        "w1004"
+      ]
+    },
+    {
+      "teacherId": "Q056",
+      "source": "film",
+      "topics": [
+        "text_filter",
+        "count"
+      ],
+      "equivalents": [
+        "w1006",
+        "f2"
+      ]
+    },
+    {
+      "teacherId": "Q057",
+      "source": "film",
+      "topics": [
+        "date_arithmetic",
+        "aggregate"
+      ],
+      "equivalents": [
+        "w1024",
+        "f3"
+      ]
+    },
+    {
+      "teacherId": "Q058",
+      "source": "film",
+      "topics": [
+        "summary",
+        "count"
+      ],
+      "equivalents": [
+        "w1032",
+        "f2"
+      ]
+    },
+    {
+      "teacherId": "Q059",
+      "source": "film",
+      "topics": [
+        "aggregate",
+        "ranking"
+      ],
+      "equivalents": [
+        "f3",
+        "w1025"
+      ]
+    },
+    {
+      "teacherId": "Q060",
+      "source": "film",
+      "topics": [
+        "summary",
+        "two_dimensions"
+      ],
+      "equivalents": [
+        "w1032",
+        "w1007"
+      ]
+    },
+    {
+      "teacherId": "Q061",
+      "source": "codes",
+      "topics": [
+        "text_extraction",
+        "numeric_conversion"
+      ],
+      "equivalents": [
+        "e2"
+      ]
+    },
+    {
+      "teacherId": "Q062",
+      "source": "codes",
+      "topics": [
+        "numeric_condition"
+      ],
+      "equivalents": [
+        "w1040"
+      ]
+    },
+    {
+      "teacherId": "Q063",
+      "source": "codes",
+      "topics": [
+        "numeric_condition"
+      ],
+      "equivalents": [
+        "w1040"
+      ]
+    },
+    {
+      "teacherId": "Q064",
+      "source": "codes",
+      "topics": [
+        "numeric_condition"
+      ],
+      "equivalents": [
+        "w1040"
+      ]
+    },
+    {
+      "teacherId": "Q065",
+      "source": "codes",
+      "topics": [
+        "numeric_condition"
+      ],
+      "equivalents": [
+        "w1040"
+      ]
+    },
+    {
+      "teacherId": "Q066",
+      "source": "codes",
+      "topics": [
+        "numeric_condition",
+        "count"
+      ],
+      "equivalents": [
+        "w1040",
+        "w1043"
+      ]
+    },
+    {
+      "teacherId": "Q067",
+      "source": "codes",
+      "topics": [
+        "numeric_condition",
+        "count"
+      ],
+      "equivalents": [
+        "w1040",
+        "w1043"
+      ]
+    },
+    {
+      "teacherId": "Q068",
+      "source": "codes",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "w1048"
+      ]
+    },
+    {
+      "teacherId": "Q069",
+      "source": "codes",
+      "topics": [
+        "text_extraction"
+      ],
+      "equivalents": [
+        "e2"
+      ]
+    },
+    {
+      "teacherId": "Q070",
+      "source": "codes",
+      "topics": [
+        "text_extraction",
+        "classification"
+      ],
+      "equivalents": [
+        "e2",
+        "w1042"
+      ]
+    },
+    {
+      "teacherId": "Q071",
+      "source": "codes",
+      "topics": [
+        "classification",
+        "summary"
+      ],
+      "equivalents": [
+        "w1042",
+        "w1044"
+      ]
+    },
+    {
+      "teacherId": "Q072",
+      "source": "codes",
+      "topics": [
+        "classification",
+        "filter"
+      ],
+      "equivalents": [
+        "w1042",
+        "w1048"
+      ]
+    },
+    {
+      "teacherId": "Q073",
+      "source": "codes",
+      "topics": [
+        "classification",
+        "filter"
+      ],
+      "equivalents": [
+        "w1042",
+        "w1048"
+      ]
+    },
+    {
+      "teacherId": "Q074",
+      "source": "codes",
+      "topics": [
+        "classification",
+        "summary"
+      ],
+      "equivalents": [
+        "w1042",
+        "w1044"
+      ]
+    },
+    {
+      "teacherId": "Q075",
+      "source": "codes",
+      "topics": [
+        "text_extraction",
+        "classification"
+      ],
+      "equivalents": [
+        "e2",
+        "w1042"
+      ]
+    },
+    {
+      "teacherId": "Q076",
+      "source": "codes",
+      "topics": [
+        "text_extraction",
+        "summary"
+      ],
+      "equivalents": [
+        "e2",
+        "w1044"
+      ]
+    },
+    {
+      "teacherId": "Q077",
+      "source": "journal",
+      "topics": [
+        "merge"
+      ],
+      "equivalents": [
+        "w1049"
+      ]
+    },
+    {
+      "teacherId": "Q078",
+      "source": "journal",
+      "topics": [
+        "merge"
+      ],
+      "equivalents": [
+        "w1049"
+      ]
+    },
+    {
+      "teacherId": "Q079",
+      "source": "journal",
+      "topics": [
+        "merge"
+      ],
+      "equivalents": [
+        "w1049"
+      ]
+    },
+    {
+      "teacherId": "Q080",
+      "source": "journal",
+      "topics": [
+        "merge",
+        "composite_matching"
+      ],
+      "equivalents": [
+        "w1049",
+        "w1052"
+      ]
+    },
+    {
+      "teacherId": "Q081",
+      "source": "journal",
+      "topics": [
+        "summary",
+        "enriched_field"
+      ],
+      "equivalents": [
+        "w1060",
+        "w1051"
+      ]
+    },
+    {
+      "teacherId": "Q082",
+      "source": "journal",
+      "topics": [
+        "count",
+        "enriched_field"
+      ],
+      "equivalents": [
+        "w1056",
+        "w1051"
+      ]
+    },
+    {
+      "teacherId": "Q083",
+      "source": "journal",
+      "topics": [
+        "filter",
+        "summary",
+        "enriched_field"
+      ],
+      "equivalents": [
+        "w1072",
+        "w1060",
+        "w1051"
+      ]
+    },
+    {
+      "teacherId": "Q084",
+      "source": "journal",
+      "topics": [
+        "summary",
+        "enriched_field"
+      ],
+      "equivalents": [
+        "w1060",
+        "w1051"
+      ]
+    },
+    {
+      "teacherId": "Q085",
+      "source": "journal",
+      "topics": [
+        "count",
+        "enriched_field"
+      ],
+      "equivalents": [
+        "w1056",
+        "w1051"
+      ]
+    },
+    {
+      "teacherId": "Q086",
+      "source": "journal",
+      "topics": [
+        "filter",
+        "summary",
+        "enriched_field"
+      ],
+      "equivalents": [
+        "w1072",
+        "w1060",
+        "w1051"
+      ]
+    },
+    {
+      "teacherId": "Q087",
+      "source": "journal",
+      "topics": [
+        "summary",
+        "enriched_field"
+      ],
+      "equivalents": [
+        "w1060",
+        "w1051"
+      ]
+    },
+    {
+      "teacherId": "Q088",
+      "source": "journal",
+      "topics": [
+        "count",
+        "enriched_field"
+      ],
+      "equivalents": [
+        "w1056",
+        "w1051"
+      ]
+    },
+    {
+      "teacherId": "Q089",
+      "source": "journal",
+      "topics": [
+        "filter",
+        "summary",
+        "enriched_field"
+      ],
+      "equivalents": [
+        "w1072",
+        "w1060",
+        "w1051"
+      ]
+    },
+    {
+      "teacherId": "Q090",
+      "source": "journal",
+      "topics": [
+        "summary",
+        "enriched_field"
+      ],
+      "equivalents": [
+        "w1060",
+        "w1051"
+      ]
+    },
+    {
+      "teacherId": "Q091",
+      "source": "journal",
+      "topics": [
+        "count",
+        "enriched_field"
+      ],
+      "equivalents": [
+        "w1056",
+        "w1051"
+      ]
+    },
+    {
+      "teacherId": "Q092",
+      "source": "journal",
+      "topics": [
+        "filter",
+        "summary",
+        "enriched_field"
+      ],
+      "equivalents": [
+        "w1072",
+        "w1060",
+        "w1051"
+      ]
+    },
+    {
+      "teacherId": "Q093",
+      "source": "journal",
+      "topics": [
+        "summary",
+        "enriched_field"
+      ],
+      "equivalents": [
+        "w1060",
+        "w1051"
+      ]
+    },
+    {
+      "teacherId": "Q094",
+      "source": "journal",
+      "topics": [
+        "summary",
+        "enriched_field"
+      ],
+      "equivalents": [
+        "w1060",
+        "w1051"
+      ]
+    },
+    {
+      "teacherId": "Q095",
+      "source": "journal",
+      "topics": [
+        "summary",
+        "enriched_field"
+      ],
+      "equivalents": [
+        "w1060",
+        "w1051"
+      ]
+    },
+    {
+      "teacherId": "Q096",
+      "source": "journal",
+      "topics": [
+        "summary",
+        "enriched_field"
+      ],
+      "equivalents": [
+        "w1060",
+        "w1051"
+      ]
+    },
+    {
+      "teacherId": "Q097",
+      "source": "journal",
+      "topics": [
+        "summary",
+        "enriched_field"
+      ],
+      "equivalents": [
+        "w1060",
+        "w1051"
+      ]
+    },
+    {
+      "teacherId": "Q098",
+      "source": "journal",
+      "topics": [
+        "summary",
+        "enriched_field"
+      ],
+      "equivalents": [
+        "w1060",
+        "w1051"
+      ]
+    },
+    {
+      "teacherId": "Q099",
+      "source": "journal",
+      "topics": [
+        "summary",
+        "enriched_field"
+      ],
+      "equivalents": [
+        "w1060",
+        "w1051"
+      ]
+    },
+    {
+      "teacherId": "Q100",
+      "source": "journal",
+      "topics": [
+        "summary",
+        "enriched_field"
+      ],
+      "equivalents": [
+        "w1060",
+        "w1051"
+      ]
+    },
+    {
+      "teacherId": "Q101",
+      "source": "pay15",
+      "topics": [
+        "import"
+      ],
+      "equivalents": [
+        "w1002"
+      ]
+    },
+    {
+      "teacherId": "Q102",
+      "source": "pay15",
+      "topics": [
+        "text_extraction",
+        "numeric_conversion"
+      ],
+      "equivalents": [
+        "w1073",
+        "w1074"
+      ]
+    },
+    {
+      "teacherId": "Q103",
+      "source": "pay15",
+      "topics": [
+        "numeric_condition"
+      ],
+      "equivalents": [
+        "w1077"
+      ]
+    },
+    {
+      "teacherId": "Q104",
+      "source": "pay15",
+      "topics": [
+        "numeric_condition"
+      ],
+      "equivalents": [
+        "w1077"
+      ]
+    },
+    {
+      "teacherId": "Q105",
+      "source": "pay15",
+      "topics": [
+        "numeric_condition"
+      ],
+      "equivalents": [
+        "w1077"
+      ]
+    },
+    {
+      "teacherId": "Q106",
+      "source": "pay15",
+      "topics": [
+        "numeric_condition",
+        "summary"
+      ],
+      "equivalents": [
+        "w1077",
+        "w1080"
+      ]
+    },
+    {
+      "teacherId": "Q107",
+      "source": "pay15",
+      "topics": [
+        "calculation"
+      ],
+      "equivalents": [
+        "w1079"
+      ]
+    },
+    {
+      "teacherId": "Q108",
+      "source": "pay15",
+      "topics": [
+        "calculation",
+        "filter"
+      ],
+      "equivalents": [
+        "w1079",
+        "w1083"
+      ]
+    },
+    {
+      "teacherId": "Q109",
+      "source": "pay15",
+      "topics": [
+        "calculation"
+      ],
+      "equivalents": [
+        "w1079"
+      ]
+    },
+    {
+      "teacherId": "Q110",
+      "source": "pay15",
+      "topics": [
+        "calculation",
+        "rate"
+      ],
+      "equivalents": [
+        "w1079",
+        "w1078"
+      ]
+    },
+    {
+      "teacherId": "Q111",
+      "source": "pay15",
+      "topics": [
+        "date_arithmetic"
+      ],
+      "equivalents": [
+        "w1116"
+      ]
+    },
+    {
+      "teacherId": "Q112",
+      "source": "pay15",
+      "topics": [
+        "summary",
+        "ranking"
+      ],
+      "equivalents": [
+        "w1080"
+      ]
+    },
+    {
+      "teacherId": "Q113",
+      "source": "pay15",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "w1083",
+        "w1097"
+      ]
+    },
+    {
+      "teacherId": "Q114",
+      "source": "pay15",
+      "topics": [
+        "aggregate"
+      ],
+      "equivalents": [
+        "w1096"
+      ]
+    },
+    {
+      "teacherId": "Q115",
+      "source": "pay15",
+      "topics": [
+        "count",
+        "summary"
+      ],
+      "equivalents": [
+        "w1081",
+        "w1080"
+      ]
+    },
+    {
+      "teacherId": "Q116",
+      "source": "pay15",
+      "topics": [
+        "summary",
+        "two_measures"
+      ],
+      "equivalents": [
+        "w1080",
+        "w1082"
+      ]
+    },
+    {
+      "teacherId": "Q117",
+      "source": "pay15",
+      "topics": [
+        "summary",
+        "filter"
+      ],
+      "equivalents": [
+        "w1080",
+        "w1083"
+      ]
+    },
+    {
+      "teacherId": "Q118",
+      "source": "pay15",
+      "topics": [
+        "date_grouping",
+        "summary"
+      ],
+      "equivalents": [
+        "w1112",
+        "w1080"
+      ]
+    },
+    {
+      "teacherId": "Q119",
+      "source": "pay15",
+      "topics": [
+        "summary",
+        "two_dimensions"
+      ],
+      "equivalents": [
+        "w1080",
+        "w1108"
+      ]
+    },
+    {
+      "teacherId": "Q120",
+      "source": "pay15",
+      "topics": [
+        "summary",
+        "ranking"
+      ],
+      "equivalents": [
+        "w1080"
+      ]
+    },
+    {
+      "teacherId": "Q121",
+      "source": "pay15",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "w1083",
+        "w1097"
+      ]
+    },
+    {
+      "teacherId": "Q122",
+      "source": "pay15",
+      "topics": [
+        "aggregate"
+      ],
+      "equivalents": [
+        "w1096"
+      ]
+    },
+    {
+      "teacherId": "Q123",
+      "source": "pay15",
+      "topics": [
+        "count",
+        "summary"
+      ],
+      "equivalents": [
+        "w1081",
+        "w1080"
+      ]
+    },
+    {
+      "teacherId": "Q124",
+      "source": "pay15",
+      "topics": [
+        "summary",
+        "two_measures"
+      ],
+      "equivalents": [
+        "w1080",
+        "w1082"
+      ]
+    },
+    {
+      "teacherId": "Q125",
+      "source": "pay15",
+      "topics": [
+        "summary",
+        "filter"
+      ],
+      "equivalents": [
+        "w1080",
+        "w1083"
+      ]
+    },
+    {
+      "teacherId": "Q126",
+      "source": "pay15",
+      "topics": [
+        "date_grouping",
+        "summary"
+      ],
+      "equivalents": [
+        "w1112",
+        "w1080"
+      ]
+    },
+    {
+      "teacherId": "Q127",
+      "source": "pay15",
+      "topics": [
+        "summary",
+        "two_dimensions"
+      ],
+      "equivalents": [
+        "w1080",
+        "w1108"
+      ]
+    },
+    {
+      "teacherId": "Q128",
+      "source": "pay15",
+      "topics": [
+        "summary",
+        "ranking"
+      ],
+      "equivalents": [
+        "w1080"
+      ]
+    },
+    {
+      "teacherId": "Q129",
+      "source": "pay15",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "w1083",
+        "w1097"
+      ]
+    },
+    {
+      "teacherId": "Q130",
+      "source": "pay15",
+      "topics": [
+        "aggregate"
+      ],
+      "equivalents": [
+        "w1096"
+      ]
+    },
+    {
+      "teacherId": "Q131",
+      "source": "pay15",
+      "topics": [
+        "count",
+        "summary"
+      ],
+      "equivalents": [
+        "w1081",
+        "w1080"
+      ]
+    },
+    {
+      "teacherId": "Q132",
+      "source": "pay15",
+      "topics": [
+        "summary",
+        "two_measures"
+      ],
+      "equivalents": [
+        "w1080",
+        "w1082"
+      ]
+    },
+    {
+      "teacherId": "Q133",
+      "source": "pay15",
+      "topics": [
+        "summary",
+        "filter"
+      ],
+      "equivalents": [
+        "w1080",
+        "w1083"
+      ]
+    },
+    {
+      "teacherId": "Q134",
+      "source": "pay15",
+      "topics": [
+        "date_grouping",
+        "summary"
+      ],
+      "equivalents": [
+        "w1112",
+        "w1080"
+      ]
+    },
+    {
+      "teacherId": "Q135",
+      "source": "pay15",
+      "topics": [
+        "summary",
+        "two_dimensions"
+      ],
+      "equivalents": [
+        "w1080",
+        "w1108"
+      ]
+    },
+    {
+      "teacherId": "Q136",
+      "source": "pay15",
+      "topics": [
+        "summary",
+        "ranking"
+      ],
+      "equivalents": [
+        "w1080"
+      ]
+    },
+    {
+      "teacherId": "Q137",
+      "source": "pay15",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "w1083",
+        "w1097"
+      ]
+    },
+    {
+      "teacherId": "Q138",
+      "source": "pay15",
+      "topics": [
+        "aggregate"
+      ],
+      "equivalents": [
+        "w1096"
+      ]
+    },
+    {
+      "teacherId": "Q139",
+      "source": "pay15",
+      "topics": [
+        "count",
+        "summary"
+      ],
+      "equivalents": [
+        "w1081",
+        "w1080"
+      ]
+    },
+    {
+      "teacherId": "Q140",
+      "source": "pay15",
+      "topics": [
+        "summary",
+        "two_measures"
+      ],
+      "equivalents": [
+        "w1080",
+        "w1082"
+      ]
+    },
+    {
+      "teacherId": "Q141",
+      "source": "pay15",
+      "topics": [
+        "summary",
+        "filter"
+      ],
+      "equivalents": [
+        "w1080",
+        "w1083"
+      ]
+    },
+    {
+      "teacherId": "Q142",
+      "source": "pay15",
+      "topics": [
+        "date_grouping",
+        "summary"
+      ],
+      "equivalents": [
+        "w1112",
+        "w1080"
+      ]
+    },
+    {
+      "teacherId": "Q143",
+      "source": "pay15",
+      "topics": [
+        "summary",
+        "two_dimensions"
+      ],
+      "equivalents": [
+        "w1080",
+        "w1108"
+      ]
+    },
+    {
+      "teacherId": "Q144",
+      "source": "pay15",
+      "topics": [
+        "summary",
+        "ranking"
+      ],
+      "equivalents": [
+        "w1080"
+      ]
+    },
+    {
+      "teacherId": "Q145",
+      "source": "pay15",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "w1083",
+        "w1097"
+      ]
+    },
+    {
+      "teacherId": "Q146",
+      "source": "pay15",
+      "topics": [
+        "aggregate"
+      ],
+      "equivalents": [
+        "w1096"
+      ]
+    },
+    {
+      "teacherId": "Q147",
+      "source": "pay15",
+      "topics": [
+        "summary",
+        "ranking"
+      ],
+      "equivalents": [
+        "w1080"
+      ]
+    },
+    {
+      "teacherId": "Q148",
+      "source": "pay15",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "w1083",
+        "w1097"
+      ]
+    },
+    {
+      "teacherId": "Q149",
+      "source": "pay15",
+      "topics": [
+        "aggregate"
+      ],
+      "equivalents": [
+        "w1096"
+      ]
+    },
+    {
+      "teacherId": "Q150",
+      "source": "pay15",
+      "topics": [
+        "summary",
+        "ranking"
+      ],
+      "equivalents": [
+        "w1080"
+      ]
+    },
+    {
+      "teacherId": "Q151",
+      "source": "pay16",
+      "topics": [
+        "import"
+      ],
+      "equivalents": [
+        "w1003"
+      ]
+    },
+    {
+      "teacherId": "Q152",
+      "source": "pay16",
+      "topics": [
+        "text_extraction",
+        "numeric_conversion"
+      ],
+      "equivalents": [
+        "w1117",
+        "w1118"
+      ]
+    },
+    {
+      "teacherId": "Q153",
+      "source": "pay16",
+      "topics": [
+        "numeric_condition"
+      ],
+      "equivalents": [
+        "w1121"
+      ]
+    },
+    {
+      "teacherId": "Q154",
+      "source": "pay16",
+      "topics": [
+        "numeric_condition"
+      ],
+      "equivalents": [
+        "w1121"
+      ]
+    },
+    {
+      "teacherId": "Q155",
+      "source": "pay16",
+      "topics": [
+        "numeric_condition"
+      ],
+      "equivalents": [
+        "w1121"
+      ]
+    },
+    {
+      "teacherId": "Q156",
+      "source": "pay16",
+      "topics": [
+        "numeric_condition",
+        "summary"
+      ],
+      "equivalents": [
+        "w1121",
+        "w1124"
+      ]
+    },
+    {
+      "teacherId": "Q157",
+      "source": "pay16",
+      "topics": [
+        "calculation"
+      ],
+      "equivalents": [
+        "w1123"
+      ]
+    },
+    {
+      "teacherId": "Q158",
+      "source": "pay16",
+      "topics": [
+        "calculation",
+        "filter"
+      ],
+      "equivalents": [
+        "w1123",
+        "w1127"
+      ]
+    },
+    {
+      "teacherId": "Q159",
+      "source": "pay16",
+      "topics": [
+        "calculation",
+        "rate"
+      ],
+      "equivalents": [
+        "w1123",
+        "w1122"
+      ]
+    },
+    {
+      "teacherId": "Q160",
+      "source": "pay16",
+      "topics": [
+        "calculation"
+      ],
+      "equivalents": [
+        "w1123"
+      ]
+    },
+    {
+      "teacherId": "Q161",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "ranking"
+      ],
+      "equivalents": [
+        "w1124"
+      ]
+    },
+    {
+      "teacherId": "Q162",
+      "source": "pay16",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "w1127",
+        "w1141"
+      ]
+    },
+    {
+      "teacherId": "Q163",
+      "source": "pay16",
+      "topics": [
+        "aggregate"
+      ],
+      "equivalents": [
+        "w1140"
+      ]
+    },
+    {
+      "teacherId": "Q164",
+      "source": "pay16",
+      "topics": [
+        "count",
+        "summary"
+      ],
+      "equivalents": [
+        "w1125",
+        "w1124"
+      ]
+    },
+    {
+      "teacherId": "Q165",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "two_measures"
+      ],
+      "equivalents": [
+        "w1124",
+        "w1126"
+      ]
+    },
+    {
+      "teacherId": "Q166",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "filter"
+      ],
+      "equivalents": [
+        "w1124",
+        "w1127"
+      ]
+    },
+    {
+      "teacherId": "Q167",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "two_dimensions"
+      ],
+      "equivalents": [
+        "w1124",
+        "w1152"
+      ]
+    },
+    {
+      "teacherId": "Q168",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "ranking"
+      ],
+      "equivalents": [
+        "w1124"
+      ]
+    },
+    {
+      "teacherId": "Q169",
+      "source": "pay16",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "w1127",
+        "w1141"
+      ]
+    },
+    {
+      "teacherId": "Q170",
+      "source": "pay16",
+      "topics": [
+        "aggregate"
+      ],
+      "equivalents": [
+        "w1140"
+      ]
+    },
+    {
+      "teacherId": "Q171",
+      "source": "pay16",
+      "topics": [
+        "count",
+        "summary"
+      ],
+      "equivalents": [
+        "w1125",
+        "w1124"
+      ]
+    },
+    {
+      "teacherId": "Q172",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "two_measures"
+      ],
+      "equivalents": [
+        "w1124",
+        "w1126"
+      ]
+    },
+    {
+      "teacherId": "Q173",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "filter"
+      ],
+      "equivalents": [
+        "w1124",
+        "w1127"
+      ]
+    },
+    {
+      "teacherId": "Q174",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "two_dimensions"
+      ],
+      "equivalents": [
+        "w1124",
+        "w1152"
+      ]
+    },
+    {
+      "teacherId": "Q175",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "ranking"
+      ],
+      "equivalents": [
+        "w1124"
+      ]
+    },
+    {
+      "teacherId": "Q176",
+      "source": "pay16",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "w1127",
+        "w1141"
+      ]
+    },
+    {
+      "teacherId": "Q177",
+      "source": "pay16",
+      "topics": [
+        "aggregate"
+      ],
+      "equivalents": [
+        "w1140"
+      ]
+    },
+    {
+      "teacherId": "Q178",
+      "source": "pay16",
+      "topics": [
+        "count",
+        "summary"
+      ],
+      "equivalents": [
+        "w1125",
+        "w1124"
+      ]
+    },
+    {
+      "teacherId": "Q179",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "two_measures"
+      ],
+      "equivalents": [
+        "w1124",
+        "w1126"
+      ]
+    },
+    {
+      "teacherId": "Q180",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "filter"
+      ],
+      "equivalents": [
+        "w1124",
+        "w1127"
+      ]
+    },
+    {
+      "teacherId": "Q181",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "two_dimensions"
+      ],
+      "equivalents": [
+        "w1124",
+        "w1152"
+      ]
+    },
+    {
+      "teacherId": "Q182",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "ranking"
+      ],
+      "equivalents": [
+        "w1124"
+      ]
+    },
+    {
+      "teacherId": "Q183",
+      "source": "pay16",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "w1127",
+        "w1141"
+      ]
+    },
+    {
+      "teacherId": "Q184",
+      "source": "pay16",
+      "topics": [
+        "aggregate"
+      ],
+      "equivalents": [
+        "w1140"
+      ]
+    },
+    {
+      "teacherId": "Q185",
+      "source": "pay16",
+      "topics": [
+        "count",
+        "summary"
+      ],
+      "equivalents": [
+        "w1125",
+        "w1124"
+      ]
+    },
+    {
+      "teacherId": "Q186",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "two_measures"
+      ],
+      "equivalents": [
+        "w1124",
+        "w1126"
+      ]
+    },
+    {
+      "teacherId": "Q187",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "filter"
+      ],
+      "equivalents": [
+        "w1124",
+        "w1127"
+      ]
+    },
+    {
+      "teacherId": "Q188",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "two_dimensions"
+      ],
+      "equivalents": [
+        "w1124",
+        "w1152"
+      ]
+    },
+    {
+      "teacherId": "Q189",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "ranking"
+      ],
+      "equivalents": [
+        "w1124"
+      ]
+    },
+    {
+      "teacherId": "Q190",
+      "source": "pay16",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "w1127",
+        "w1141"
+      ]
+    },
+    {
+      "teacherId": "Q191",
+      "source": "pay16",
+      "topics": [
+        "aggregate"
+      ],
+      "equivalents": [
+        "w1140"
+      ]
+    },
+    {
+      "teacherId": "Q192",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "filter"
+      ],
+      "equivalents": [
+        "w1124",
+        "w1127"
+      ]
+    },
+    {
+      "teacherId": "Q193",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "ranking"
+      ],
+      "equivalents": [
+        "w1124"
+      ]
+    },
+    {
+      "teacherId": "Q194",
+      "source": "pay16",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "w1127",
+        "w1141"
+      ]
+    },
+    {
+      "teacherId": "Q195",
+      "source": "pay16",
+      "topics": [
+        "aggregate"
+      ],
+      "equivalents": [
+        "w1140"
+      ]
+    },
+    {
+      "teacherId": "Q196",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "filter"
+      ],
+      "equivalents": [
+        "w1124",
+        "w1127"
+      ]
+    },
+    {
+      "teacherId": "Q197",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "ranking"
+      ],
+      "equivalents": [
+        "w1124"
+      ]
+    },
+    {
+      "teacherId": "Q198",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "filter"
+      ],
+      "equivalents": [
+        "w1124",
+        "w1127"
+      ]
+    },
+    {
+      "teacherId": "Q199",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "ranking"
+      ],
+      "equivalents": [
+        "w1124"
+      ]
+    },
+    {
+      "teacherId": "Q200",
+      "source": "pay16",
+      "topics": [
+        "summary",
+        "filter"
+      ],
+      "equivalents": [
+        "w1124",
+        "w1127"
+      ]
+    },
+    {
+      "teacherId": "Q201",
+      "source": "songs",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q202",
+      "source": "songs",
+      "topics": [
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "sx101",
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q203",
+      "source": "songs",
+      "topics": [
+        "group_by",
+        "having",
+        "filter"
+      ],
+      "equivalents": [
+        "sc1002",
+        "sc1009",
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q204",
+      "source": "songs",
+      "topics": [
+        "join",
+        "filter"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q205",
+      "source": "songs",
+      "topics": [
+        "join",
+        "group_by",
+        "having",
+        "filter"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sc1002",
+        "sc1009",
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q206",
+      "source": "songs",
+      "topics": [
+        "aggregate"
+      ],
+      "equivalents": [
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q207",
+      "source": "songs",
+      "topics": [
+        "group_by",
+        "aggregate"
+      ],
+      "equivalents": [
+        "sc1002",
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q208",
+      "source": "songs",
+      "topics": [
+        "join",
+        "group_by",
+        "aggregate"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sc1002",
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q209",
+      "source": "songs",
+      "topics": [
+        "join",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sc1002",
+        "sc1009"
+      ]
+    },
+    {
+      "teacherId": "Q210",
+      "source": "songs",
+      "topics": [
+        "pattern_filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "sc1013",
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q211",
+      "source": "songs",
+      "topics": [
+        "join",
+        "pattern_filter"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sc1013"
+      ]
+    },
+    {
+      "teacherId": "Q212",
+      "source": "songs",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q213",
+      "source": "songs",
+      "topics": [
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "sx101",
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q214",
+      "source": "songs",
+      "topics": [
+        "group_by",
+        "having",
+        "filter"
+      ],
+      "equivalents": [
+        "sc1002",
+        "sc1009",
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q215",
+      "source": "songs",
+      "topics": [
+        "join",
+        "filter"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q216",
+      "source": "songs",
+      "topics": [
+        "join",
+        "group_by",
+        "having",
+        "filter"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sc1002",
+        "sc1009",
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q217",
+      "source": "songs",
+      "topics": [
+        "aggregate"
+      ],
+      "equivalents": [
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q218",
+      "source": "songs",
+      "topics": [
+        "group_by",
+        "aggregate"
+      ],
+      "equivalents": [
+        "sc1002",
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q219",
+      "source": "songs",
+      "topics": [
+        "join",
+        "group_by",
+        "aggregate"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sc1002",
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q220",
+      "source": "songs",
+      "topics": [
+        "join",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sc1002",
+        "sc1009"
+      ]
+    },
+    {
+      "teacherId": "Q221",
+      "source": "songs",
+      "topics": [
+        "pattern_filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "sc1013",
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q222",
+      "source": "songs",
+      "topics": [
+        "join",
+        "pattern_filter"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sc1013"
+      ]
+    },
+    {
+      "teacherId": "Q223",
+      "source": "songs",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q224",
+      "source": "songs",
+      "topics": [
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "sx101",
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q225",
+      "source": "songs",
+      "topics": [
+        "group_by",
+        "filter"
+      ],
+      "equivalents": [
+        "sc1002",
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q226",
+      "source": "songs",
+      "topics": [
+        "join",
+        "filter"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q227",
+      "source": "songs",
+      "topics": [
+        "join",
+        "group_by",
+        "filter"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sc1002",
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q228",
+      "source": "songs",
+      "topics": [
+        "aggregate"
+      ],
+      "equivalents": [
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q229",
+      "source": "songs",
+      "topics": [
+        "group_by",
+        "aggregate"
+      ],
+      "equivalents": [
+        "sc1002",
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q230",
+      "source": "songs",
+      "topics": [
+        "join",
+        "group_by",
+        "aggregate"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sc1002",
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q231",
+      "source": "songs",
+      "topics": [
+        "join",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sc1002",
+        "sc1009"
+      ]
+    },
+    {
+      "teacherId": "Q232",
+      "source": "songs",
+      "topics": [
+        "pattern_filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "sc1013",
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q233",
+      "source": "songs",
+      "topics": [
+        "join",
+        "pattern_filter"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sc1013"
+      ]
+    },
+    {
+      "teacherId": "Q234",
+      "source": "songs",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q235",
+      "source": "songs",
+      "topics": [
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "sx101",
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q236",
+      "source": "songs",
+      "topics": [
+        "group_by",
+        "having",
+        "filter"
+      ],
+      "equivalents": [
+        "sc1002",
+        "sc1009",
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q237",
+      "source": "songs",
+      "topics": [
+        "join",
+        "filter"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q238",
+      "source": "songs",
+      "topics": [
+        "join",
+        "group_by",
+        "having",
+        "filter"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sc1002",
+        "sc1009",
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q239",
+      "source": "songs",
+      "topics": [
+        "aggregate"
+      ],
+      "equivalents": [
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q240",
+      "source": "songs",
+      "topics": [
+        "group_by",
+        "aggregate"
+      ],
+      "equivalents": [
+        "sc1002",
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q241",
+      "source": "songs",
+      "topics": [
+        "join",
+        "group_by",
+        "aggregate"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sc1002",
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q242",
+      "source": "songs",
+      "topics": [
+        "join",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sc1002",
+        "sc1009"
+      ]
+    },
+    {
+      "teacherId": "Q243",
+      "source": "songs",
+      "topics": [
+        "pattern_filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "sc1013",
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q244",
+      "source": "songs",
+      "topics": [
+        "join",
+        "pattern_filter"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sc1013"
+      ]
+    },
+    {
+      "teacherId": "Q245",
+      "source": "songs",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q246",
+      "source": "songs",
+      "topics": [
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "sx101",
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q247",
+      "source": "songs",
+      "topics": [
+        "group_by",
+        "having",
+        "filter"
+      ],
+      "equivalents": [
+        "sc1002",
+        "sc1009",
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q248",
+      "source": "songs",
+      "topics": [
+        "join",
+        "filter"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q249",
+      "source": "songs",
+      "topics": [
+        "join",
+        "group_by",
+        "having",
+        "filter"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sc1002",
+        "sc1009",
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q250",
+      "source": "songs",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q251",
+      "source": "songs",
+      "topics": [
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "sx101",
+        "sc1001"
+      ]
+    },
+    {
+      "teacherId": "Q252",
+      "source": "songs",
+      "topics": [
+        "group_by",
+        "having",
+        "filter"
+      ],
+      "equivalents": [
+        "sc1002",
+        "sc1009",
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q253",
+      "source": "songs",
+      "topics": [
+        "join",
+        "filter"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q254",
+      "source": "songs",
+      "topics": [
+        "join",
+        "group_by",
+        "having",
+        "filter"
+      ],
+      "equivalents": [
+        "sc1014",
+        "sc1002",
+        "sc1009",
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q255",
+      "source": "songs",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "sx101"
+      ]
+    },
+    {
+      "teacherId": "Q256",
+      "source": "movies",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "mc1029",
+        "mc1002"
+      ]
+    },
+    {
+      "teacherId": "Q257",
+      "source": "movies",
+      "topics": [
+        "join",
+        "aggregate"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1001"
+      ]
+    },
+    {
+      "teacherId": "Q258",
+      "source": "movies",
+      "topics": [
+        "join",
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1029",
+        "mc1002"
+      ]
+    },
+    {
+      "teacherId": "Q259",
+      "source": "movies",
+      "topics": [
+        "join",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1023",
+        "mc1003"
+      ]
+    },
+    {
+      "teacherId": "Q260",
+      "source": "movies",
+      "topics": [
+        "join",
+        "distinct",
+        "filter"
+      ],
+      "equivalents": [
+        "m6",
+        "m12",
+        "mc1029"
+      ]
+    },
+    {
+      "teacherId": "Q261",
+      "source": "movies",
+      "topics": [
+        "join",
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1029",
+        "mc1001"
+      ]
+    },
+    {
+      "teacherId": "Q262",
+      "source": "movies",
+      "topics": [
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "mc1023",
+        "mc1003"
+      ]
+    },
+    {
+      "teacherId": "Q263",
+      "source": "movies",
+      "topics": [
+        "join",
+        "group_by"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1023"
+      ]
+    },
+    {
+      "teacherId": "Q264",
+      "source": "movies",
+      "topics": [
+        "relationship_chain",
+        "join"
+      ],
+      "equivalents": [
+        "m16",
+        "m6"
+      ]
+    },
+    {
+      "teacherId": "Q265",
+      "source": "movies",
+      "topics": [
+        "pattern_filter",
+        "sort"
+      ],
+      "equivalents": [
+        "m10",
+        "mc1002"
+      ]
+    },
+    {
+      "teacherId": "Q266",
+      "source": "movies",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "mc1029",
+        "mc1002"
+      ]
+    },
+    {
+      "teacherId": "Q267",
+      "source": "movies",
+      "topics": [
+        "join",
+        "aggregate"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1001"
+      ]
+    },
+    {
+      "teacherId": "Q268",
+      "source": "movies",
+      "topics": [
+        "join",
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1029",
+        "mc1002"
+      ]
+    },
+    {
+      "teacherId": "Q269",
+      "source": "movies",
+      "topics": [
+        "join",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1023",
+        "mc1003"
+      ]
+    },
+    {
+      "teacherId": "Q270",
+      "source": "movies",
+      "topics": [
+        "join",
+        "distinct",
+        "filter"
+      ],
+      "equivalents": [
+        "m6",
+        "m12",
+        "mc1029"
+      ]
+    },
+    {
+      "teacherId": "Q271",
+      "source": "movies",
+      "topics": [
+        "join",
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1029",
+        "mc1001"
+      ]
+    },
+    {
+      "teacherId": "Q272",
+      "source": "movies",
+      "topics": [
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "mc1023",
+        "mc1003"
+      ]
+    },
+    {
+      "teacherId": "Q273",
+      "source": "movies",
+      "topics": [
+        "join",
+        "group_by"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1023"
+      ]
+    },
+    {
+      "teacherId": "Q274",
+      "source": "movies",
+      "topics": [
+        "relationship_chain",
+        "join"
+      ],
+      "equivalents": [
+        "m16",
+        "m6"
+      ]
+    },
+    {
+      "teacherId": "Q275",
+      "source": "movies",
+      "topics": [
+        "pattern_filter",
+        "sort"
+      ],
+      "equivalents": [
+        "m10",
+        "mc1002"
+      ]
+    },
+    {
+      "teacherId": "Q276",
+      "source": "movies",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "mc1029",
+        "mc1002"
+      ]
+    },
+    {
+      "teacherId": "Q277",
+      "source": "movies",
+      "topics": [
+        "join",
+        "aggregate"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1001"
+      ]
+    },
+    {
+      "teacherId": "Q278",
+      "source": "movies",
+      "topics": [
+        "join",
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1029",
+        "mc1002"
+      ]
+    },
+    {
+      "teacherId": "Q279",
+      "source": "movies",
+      "topics": [
+        "join",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1023",
+        "mc1003"
+      ]
+    },
+    {
+      "teacherId": "Q280",
+      "source": "movies",
+      "topics": [
+        "join",
+        "distinct",
+        "filter"
+      ],
+      "equivalents": [
+        "m6",
+        "m12",
+        "mc1029"
+      ]
+    },
+    {
+      "teacherId": "Q281",
+      "source": "movies",
+      "topics": [
+        "join",
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1029",
+        "mc1001"
+      ]
+    },
+    {
+      "teacherId": "Q282",
+      "source": "movies",
+      "topics": [
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "mc1023",
+        "mc1003"
+      ]
+    },
+    {
+      "teacherId": "Q283",
+      "source": "movies",
+      "topics": [
+        "join",
+        "group_by"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1023"
+      ]
+    },
+    {
+      "teacherId": "Q284",
+      "source": "movies",
+      "topics": [
+        "relationship_chain",
+        "join"
+      ],
+      "equivalents": [
+        "m16",
+        "m6"
+      ]
+    },
+    {
+      "teacherId": "Q285",
+      "source": "movies",
+      "topics": [
+        "pattern_filter",
+        "sort"
+      ],
+      "equivalents": [
+        "m10",
+        "mc1002"
+      ]
+    },
+    {
+      "teacherId": "Q286",
+      "source": "movies",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "mc1029",
+        "mc1002"
+      ]
+    },
+    {
+      "teacherId": "Q287",
+      "source": "movies",
+      "topics": [
+        "join",
+        "aggregate"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1001"
+      ]
+    },
+    {
+      "teacherId": "Q288",
+      "source": "movies",
+      "topics": [
+        "join",
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1029",
+        "mc1002"
+      ]
+    },
+    {
+      "teacherId": "Q289",
+      "source": "movies",
+      "topics": [
+        "join",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1023",
+        "mc1003"
+      ]
+    },
+    {
+      "teacherId": "Q290",
+      "source": "movies",
+      "topics": [
+        "join",
+        "distinct",
+        "filter"
+      ],
+      "equivalents": [
+        "m6",
+        "m12",
+        "mc1029"
+      ]
+    },
+    {
+      "teacherId": "Q291",
+      "source": "movies",
+      "topics": [
+        "join",
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1029",
+        "mc1001"
+      ]
+    },
+    {
+      "teacherId": "Q292",
+      "source": "movies",
+      "topics": [
+        "join",
+        "group_by"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1023"
+      ]
+    },
+    {
+      "teacherId": "Q293",
+      "source": "movies",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "mc1029",
+        "mc1002"
+      ]
+    },
+    {
+      "teacherId": "Q294",
+      "source": "movies",
+      "topics": [
+        "join",
+        "aggregate"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1001"
+      ]
+    },
+    {
+      "teacherId": "Q295",
+      "source": "movies",
+      "topics": [
+        "join",
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1029",
+        "mc1002"
+      ]
+    },
+    {
+      "teacherId": "Q296",
+      "source": "movies",
+      "topics": [
+        "join",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1023",
+        "mc1003"
+      ]
+    },
+    {
+      "teacherId": "Q297",
+      "source": "movies",
+      "topics": [
+        "join",
+        "distinct",
+        "filter"
+      ],
+      "equivalents": [
+        "m6",
+        "m12",
+        "mc1029"
+      ]
+    },
+    {
+      "teacherId": "Q298",
+      "source": "movies",
+      "topics": [
+        "join",
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1029",
+        "mc1001"
+      ]
+    },
+    {
+      "teacherId": "Q299",
+      "source": "movies",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "mc1029",
+        "mc1002"
+      ]
+    },
+    {
+      "teacherId": "Q300",
+      "source": "movies",
+      "topics": [
+        "join",
+        "aggregate"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1001"
+      ]
+    },
+    {
+      "teacherId": "Q301",
+      "source": "movies",
+      "topics": [
+        "join",
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1029",
+        "mc1002"
+      ]
+    },
+    {
+      "teacherId": "Q302",
+      "source": "movies",
+      "topics": [
+        "join",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1023",
+        "mc1003"
+      ]
+    },
+    {
+      "teacherId": "Q303",
+      "source": "movies",
+      "topics": [
+        "join",
+        "distinct",
+        "filter"
+      ],
+      "equivalents": [
+        "m6",
+        "m12",
+        "mc1029"
+      ]
+    },
+    {
+      "teacherId": "Q304",
+      "source": "movies",
+      "topics": [
+        "join",
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1029",
+        "mc1001"
+      ]
+    },
+    {
+      "teacherId": "Q305",
+      "source": "movies",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "mc1029",
+        "mc1002"
+      ]
+    },
+    {
+      "teacherId": "Q306",
+      "source": "movies",
+      "topics": [
+        "join",
+        "aggregate"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1001"
+      ]
+    },
+    {
+      "teacherId": "Q307",
+      "source": "movies",
+      "topics": [
+        "join",
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1029",
+        "mc1002"
+      ]
+    },
+    {
+      "teacherId": "Q308",
+      "source": "movies",
+      "topics": [
+        "join",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1023",
+        "mc1003"
+      ]
+    },
+    {
+      "teacherId": "Q309",
+      "source": "movies",
+      "topics": [
+        "join",
+        "distinct",
+        "filter"
+      ],
+      "equivalents": [
+        "m6",
+        "m12",
+        "mc1029"
+      ]
+    },
+    {
+      "teacherId": "Q310",
+      "source": "movies",
+      "topics": [
+        "join",
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "m6",
+        "mc1029",
+        "mc1001"
+      ]
+    },
+    {
+      "teacherId": "Q311",
+      "source": "chinook",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "cc1025",
+        "cc1027"
+      ]
+    },
+    {
+      "teacherId": "Q312",
+      "source": "chinook",
+      "topics": [
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "cc1025",
+        "cc1019"
+      ]
+    },
+    {
+      "teacherId": "Q313",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "filter"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1025"
+      ]
+    },
+    {
+      "teacherId": "Q314",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1021",
+        "cc1030"
+      ]
+    },
+    {
+      "teacherId": "Q315",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "group_by",
+        "aggregate"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1021",
+        "cc1019"
+      ]
+    },
+    {
+      "teacherId": "Q316",
+      "source": "chinook",
+      "topics": [
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "cc1021",
+        "cc1030"
+      ]
+    },
+    {
+      "teacherId": "Q317",
+      "source": "chinook",
+      "topics": [
+        "group_by",
+        "aggregate"
+      ],
+      "equivalents": [
+        "cc1021",
+        "cc1019"
+      ]
+    },
+    {
+      "teacherId": "Q318",
+      "source": "chinook",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "cc1025",
+        "cc1027"
+      ]
+    },
+    {
+      "teacherId": "Q319",
+      "source": "chinook",
+      "topics": [
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "cc1025",
+        "cc1019"
+      ]
+    },
+    {
+      "teacherId": "Q320",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "filter"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1025"
+      ]
+    },
+    {
+      "teacherId": "Q321",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1021",
+        "cc1030"
+      ]
+    },
+    {
+      "teacherId": "Q322",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "group_by",
+        "aggregate"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1021",
+        "cc1019"
+      ]
+    },
+    {
+      "teacherId": "Q323",
+      "source": "chinook",
+      "topics": [
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "cc1021",
+        "cc1030"
+      ]
+    },
+    {
+      "teacherId": "Q324",
+      "source": "chinook",
+      "topics": [
+        "group_by",
+        "aggregate"
+      ],
+      "equivalents": [
+        "cc1021",
+        "cc1019"
+      ]
+    },
+    {
+      "teacherId": "Q325",
+      "source": "chinook",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "cc1025",
+        "cc1027"
+      ]
+    },
+    {
+      "teacherId": "Q326",
+      "source": "chinook",
+      "topics": [
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "cc1025",
+        "cc1019"
+      ]
+    },
+    {
+      "teacherId": "Q327",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "filter"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1025"
+      ]
+    },
+    {
+      "teacherId": "Q328",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1021",
+        "cc1030"
+      ]
+    },
+    {
+      "teacherId": "Q329",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "group_by",
+        "aggregate"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1021",
+        "cc1019"
+      ]
+    },
+    {
+      "teacherId": "Q330",
+      "source": "chinook",
+      "topics": [
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "cc1021",
+        "cc1030"
+      ]
+    },
+    {
+      "teacherId": "Q331",
+      "source": "chinook",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "cc1025",
+        "cc1027"
+      ]
+    },
+    {
+      "teacherId": "Q332",
+      "source": "chinook",
+      "topics": [
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "cc1025",
+        "cc1019"
+      ]
+    },
+    {
+      "teacherId": "Q333",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "filter"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1025"
+      ]
+    },
+    {
+      "teacherId": "Q334",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1021",
+        "cc1030"
+      ]
+    },
+    {
+      "teacherId": "Q335",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "group_by",
+        "aggregate"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1021",
+        "cc1019"
+      ]
+    },
+    {
+      "teacherId": "Q336",
+      "source": "chinook",
+      "topics": [
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "cc1021",
+        "cc1030"
+      ]
+    },
+    {
+      "teacherId": "Q337",
+      "source": "chinook",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "cc1025",
+        "cc1027"
+      ]
+    },
+    {
+      "teacherId": "Q338",
+      "source": "chinook",
+      "topics": [
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "cc1025",
+        "cc1019"
+      ]
+    },
+    {
+      "teacherId": "Q339",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "filter"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1025"
+      ]
+    },
+    {
+      "teacherId": "Q340",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1021",
+        "cc1030"
+      ]
+    },
+    {
+      "teacherId": "Q341",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "group_by",
+        "aggregate"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1021",
+        "cc1019"
+      ]
+    },
+    {
+      "teacherId": "Q342",
+      "source": "chinook",
+      "topics": [
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "cc1021",
+        "cc1030"
+      ]
+    },
+    {
+      "teacherId": "Q343",
+      "source": "chinook",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "cc1025",
+        "cc1027"
+      ]
+    },
+    {
+      "teacherId": "Q344",
+      "source": "chinook",
+      "topics": [
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "cc1025",
+        "cc1019"
+      ]
+    },
+    {
+      "teacherId": "Q345",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "filter"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1025"
+      ]
+    },
+    {
+      "teacherId": "Q346",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1021",
+        "cc1030"
+      ]
+    },
+    {
+      "teacherId": "Q347",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "group_by",
+        "aggregate"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1021",
+        "cc1019"
+      ]
+    },
+    {
+      "teacherId": "Q348",
+      "source": "chinook",
+      "topics": [
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "cc1021",
+        "cc1030"
+      ]
+    },
+    {
+      "teacherId": "Q349",
+      "source": "chinook",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "cc1025",
+        "cc1027"
+      ]
+    },
+    {
+      "teacherId": "Q350",
+      "source": "chinook",
+      "topics": [
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "cc1025",
+        "cc1019"
+      ]
+    },
+    {
+      "teacherId": "Q351",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "filter"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1025"
+      ]
+    },
+    {
+      "teacherId": "Q352",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1021",
+        "cc1030"
+      ]
+    },
+    {
+      "teacherId": "Q353",
+      "source": "chinook",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "cc1025",
+        "cc1027"
+      ]
+    },
+    {
+      "teacherId": "Q354",
+      "source": "chinook",
+      "topics": [
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "cc1025",
+        "cc1019"
+      ]
+    },
+    {
+      "teacherId": "Q355",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "filter"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1025"
+      ]
+    },
+    {
+      "teacherId": "Q356",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "group_by",
+        "aggregate"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1021",
+        "cc1019"
+      ]
+    },
+    {
+      "teacherId": "Q357",
+      "source": "chinook",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "cc1025",
+        "cc1027"
+      ]
+    },
+    {
+      "teacherId": "Q358",
+      "source": "chinook",
+      "topics": [
+        "group_by",
+        "aggregate"
+      ],
+      "equivalents": [
+        "cc1021",
+        "cc1019"
+      ]
+    },
+    {
+      "teacherId": "Q359",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "filter"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1025"
+      ]
+    },
+    {
+      "teacherId": "Q360",
+      "source": "chinook",
+      "topics": [
+        "join",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "cc1003",
+        "cc1021",
+        "cc1030"
+      ]
+    },
+    {
+      "teacherId": "Q361",
+      "source": "pcards",
+      "topics": [
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "ap1013",
+        "ap1001"
+      ]
+    },
+    {
+      "teacherId": "Q362",
+      "source": "pcards",
+      "topics": [
+        "group_by",
+        "filter"
+      ],
+      "equivalents": [
+        "ac1005",
+        "ap1013"
+      ]
+    },
+    {
+      "teacherId": "Q363",
+      "source": "pcards",
+      "topics": [
+        "group_by",
+        "having",
+        "filter"
+      ],
+      "equivalents": [
+        "ac1005",
+        "ac1027",
+        "ap1013"
+      ]
+    },
+    {
+      "teacherId": "Q364",
+      "source": "pcards",
+      "topics": [
+        "refund",
+        "aggregate"
+      ],
+      "equivalents": [
+        "ap1006",
+        "ap1001"
+      ]
+    },
+    {
+      "teacherId": "Q365",
+      "source": "pcards",
+      "topics": [
+        "group_by",
+        "two_dimensions"
+      ],
+      "equivalents": [
+        "ac1005",
+        "ap1012"
+      ]
+    },
+    {
+      "teacherId": "Q366",
+      "source": "pcards",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "ap1013",
+        "ac1026"
+      ]
+    },
+    {
+      "teacherId": "Q367",
+      "source": "pcards",
+      "topics": [
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "ac1005",
+        "ac1027"
+      ]
+    },
+    {
+      "teacherId": "Q368",
+      "source": "pcards",
+      "topics": [
+        "refund",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "ap1006",
+        "ac1005",
+        "ac1027"
+      ]
+    },
+    {
+      "teacherId": "Q369",
+      "source": "pcards",
+      "topics": [
+        "pattern_filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "ac1015",
+        "ap1001"
+      ]
+    },
+    {
+      "teacherId": "Q370",
+      "source": "pcards",
+      "topics": [
+        "pattern_filter",
+        "group_by"
+      ],
+      "equivalents": [
+        "ac1015",
+        "ac1005"
+      ]
+    },
+    {
+      "teacherId": "Q371",
+      "source": "pcards",
+      "topics": [
+        "pattern_filter",
+        "sort"
+      ],
+      "equivalents": [
+        "ac1015",
+        "ac1026"
+      ]
+    },
+    {
+      "teacherId": "Q372",
+      "source": "pcards",
+      "topics": [
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "ap1013",
+        "ap1001"
+      ]
+    },
+    {
+      "teacherId": "Q373",
+      "source": "pcards",
+      "topics": [
+        "group_by",
+        "filter"
+      ],
+      "equivalents": [
+        "ac1005",
+        "ap1013"
+      ]
+    },
+    {
+      "teacherId": "Q374",
+      "source": "pcards",
+      "topics": [
+        "group_by",
+        "having",
+        "filter"
+      ],
+      "equivalents": [
+        "ac1005",
+        "ac1027",
+        "ap1013"
+      ]
+    },
+    {
+      "teacherId": "Q375",
+      "source": "pcards",
+      "topics": [
+        "refund",
+        "aggregate"
+      ],
+      "equivalents": [
+        "ap1006",
+        "ap1001"
+      ]
+    },
+    {
+      "teacherId": "Q376",
+      "source": "pcards",
+      "topics": [
+        "group_by",
+        "two_dimensions"
+      ],
+      "equivalents": [
+        "ac1005",
+        "ap1012"
+      ]
+    },
+    {
+      "teacherId": "Q377",
+      "source": "pcards",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "ap1013",
+        "ac1026"
+      ]
+    },
+    {
+      "teacherId": "Q378",
+      "source": "pcards",
+      "topics": [
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "ac1005",
+        "ac1027"
+      ]
+    },
+    {
+      "teacherId": "Q379",
+      "source": "pcards",
+      "topics": [
+        "refund",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "ap1006",
+        "ac1005",
+        "ac1027"
+      ]
+    },
+    {
+      "teacherId": "Q380",
+      "source": "pcards",
+      "topics": [
+        "pattern_filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "ac1015",
+        "ap1001"
+      ]
+    },
+    {
+      "teacherId": "Q381",
+      "source": "pcards",
+      "topics": [
+        "pattern_filter",
+        "group_by"
+      ],
+      "equivalents": [
+        "ac1015",
+        "ac1005"
+      ]
+    },
+    {
+      "teacherId": "Q382",
+      "source": "pcards",
+      "topics": [
+        "pattern_filter",
+        "sort"
+      ],
+      "equivalents": [
+        "ac1015",
+        "ac1026"
+      ]
+    },
+    {
+      "teacherId": "Q383",
+      "source": "pcards",
+      "topics": [
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "ap1013",
+        "ap1001"
+      ]
+    },
+    {
+      "teacherId": "Q384",
+      "source": "pcards",
+      "topics": [
+        "group_by",
+        "filter"
+      ],
+      "equivalents": [
+        "ac1005",
+        "ap1013"
+      ]
+    },
+    {
+      "teacherId": "Q385",
+      "source": "pcards",
+      "topics": [
+        "group_by",
+        "having",
+        "filter"
+      ],
+      "equivalents": [
+        "ac1005",
+        "ac1027",
+        "ap1013"
+      ]
+    },
+    {
+      "teacherId": "Q386",
+      "source": "pcards",
+      "topics": [
+        "refund",
+        "aggregate"
+      ],
+      "equivalents": [
+        "ap1006",
+        "ap1001"
+      ]
+    },
+    {
+      "teacherId": "Q387",
+      "source": "pcards",
+      "topics": [
+        "group_by",
+        "two_dimensions"
+      ],
+      "equivalents": [
+        "ac1005",
+        "ap1012"
+      ]
+    },
+    {
+      "teacherId": "Q388",
+      "source": "pcards",
+      "topics": [
+        "filter",
+        "sort"
+      ],
+      "equivalents": [
+        "ap1013",
+        "ac1026"
+      ]
+    },
+    {
+      "teacherId": "Q389",
+      "source": "pcards",
+      "topics": [
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "ac1005",
+        "ac1027"
+      ]
+    },
+    {
+      "teacherId": "Q390",
+      "source": "pcards",
+      "topics": [
+        "refund",
+        "group_by",
+        "having"
+      ],
+      "equivalents": [
+        "ap1006",
+        "ac1005",
+        "ac1027"
+      ]
+    },
+    {
+      "teacherId": "Q391",
+      "source": "pcards",
+      "topics": [
+        "pattern_filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "ac1015",
+        "ap1001"
+      ]
+    },
+    {
+      "teacherId": "Q392",
+      "source": "pcards",
+      "topics": [
+        "pattern_filter",
+        "group_by"
+      ],
+      "equivalents": [
+        "ac1015",
+        "ac1005"
+      ]
+    },
+    {
+      "teacherId": "Q393",
+      "source": "pcards",
+      "topics": [
+        "pattern_filter",
+        "sort"
+      ],
+      "equivalents": [
+        "ac1015",
+        "ac1026"
+      ]
+    },
+    {
+      "teacherId": "Q394",
+      "source": "pcards",
+      "topics": [
+        "filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "ap1013",
+        "ap1001"
+      ]
+    },
+    {
+      "teacherId": "Q395",
+      "source": "pcards",
+      "topics": [
+        "group_by",
+        "filter"
+      ],
+      "equivalents": [
+        "ac1005",
+        "ap1013"
+      ]
+    },
+    {
+      "teacherId": "Q396",
+      "source": "pcards",
+      "topics": [
+        "group_by",
+        "having",
+        "filter"
+      ],
+      "equivalents": [
+        "ac1005",
+        "ac1027",
+        "ap1013"
+      ]
+    },
+    {
+      "teacherId": "Q397",
+      "source": "pcards",
+      "topics": [
+        "refund",
+        "aggregate"
+      ],
+      "equivalents": [
+        "ap1006",
+        "ap1001"
+      ]
+    },
+    {
+      "teacherId": "Q398",
+      "source": "pcards",
+      "topics": [
+        "group_by",
+        "two_dimensions"
+      ],
+      "equivalents": [
+        "ac1005",
+        "ap1012"
+      ]
+    },
+    {
+      "teacherId": "Q399",
+      "source": "pcards",
+      "topics": [
+        "pattern_filter",
+        "aggregate"
+      ],
+      "equivalents": [
+        "ac1015",
+        "ap1001"
+      ]
+    },
+    {
+      "teacherId": "Q400",
+      "source": "pcards",
+      "topics": [
+        "pattern_filter",
+        "group_by"
+      ],
+      "equivalents": [
+        "ac1015",
+        "ac1005"
+      ]
+    }
+  ],
+  "regression": [
+    {
+      "teacherId": "REG001-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG001-S",
+      "type": "continuous",
+      "equivalent": "rC01S"
+    },
+    {
+      "teacherId": "REG001-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG001-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG002-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG002-S",
+      "type": "dummy",
+      "equivalent": "rC02S"
+    },
+    {
+      "teacherId": "REG002-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG002-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG003-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG003-S",
+      "type": "continuous",
+      "equivalent": "rC01S"
+    },
+    {
+      "teacherId": "REG003-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG003-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG004-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG004-S",
+      "type": "dummy",
+      "equivalent": "rC02S"
+    },
+    {
+      "teacherId": "REG004-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG004-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG005-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG005-S",
+      "type": "continuous",
+      "equivalent": "rC01S"
+    },
+    {
+      "teacherId": "REG005-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG005-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG006-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG006-S",
+      "type": "dummy",
+      "equivalent": "rC02S"
+    },
+    {
+      "teacherId": "REG006-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG006-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG007-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG007-S",
+      "type": "continuous",
+      "equivalent": "rC01S"
+    },
+    {
+      "teacherId": "REG007-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG007-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG008-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG008-S",
+      "type": "dummy",
+      "equivalent": "rC02S"
+    },
+    {
+      "teacherId": "REG008-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG008-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG009-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG009-S",
+      "type": "continuous",
+      "equivalent": "rC01S"
+    },
+    {
+      "teacherId": "REG009-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG009-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG010-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG010-S",
+      "type": "dummy",
+      "equivalent": "rC02S"
+    },
+    {
+      "teacherId": "REG010-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG010-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG011-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG011-S",
+      "type": "continuous",
+      "equivalent": "rC01S"
+    },
+    {
+      "teacherId": "REG011-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG011-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG012-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG012-S",
+      "type": "dummy",
+      "equivalent": "rC02S"
+    },
+    {
+      "teacherId": "REG012-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG012-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG013-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG013-S",
+      "type": "continuous",
+      "equivalent": "rC01S"
+    },
+    {
+      "teacherId": "REG013-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG013-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG014-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG014-S",
+      "type": "dummy",
+      "equivalent": "rC02S"
+    },
+    {
+      "teacherId": "REG014-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG014-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG015-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG015-S",
+      "type": "continuous",
+      "equivalent": "rC01S"
+    },
+    {
+      "teacherId": "REG015-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG015-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG016-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG016-S",
+      "type": "dummy",
+      "equivalent": "rC02S"
+    },
+    {
+      "teacherId": "REG016-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG016-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG017-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG017-S",
+      "type": "continuous",
+      "equivalent": "rC01S"
+    },
+    {
+      "teacherId": "REG017-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG017-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG018-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG018-S",
+      "type": "dummy",
+      "equivalent": "rC02S"
+    },
+    {
+      "teacherId": "REG018-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG018-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG019-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG019-S",
+      "type": "continuous",
+      "equivalent": "rC01S"
+    },
+    {
+      "teacherId": "REG019-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG019-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG020-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG020-S",
+      "type": "dummy",
+      "equivalent": "rC02S"
+    },
+    {
+      "teacherId": "REG020-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG020-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG021-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG021-S",
+      "type": "continuous",
+      "equivalent": "rC01S"
+    },
+    {
+      "teacherId": "REG021-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG021-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG022-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG022-S",
+      "type": "dummy",
+      "equivalent": "rC02S"
+    },
+    {
+      "teacherId": "REG022-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG022-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG023-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG023-S",
+      "type": "continuous",
+      "equivalent": "rC01S"
+    },
+    {
+      "teacherId": "REG023-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG023-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG024-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG024-S",
+      "type": "dummy",
+      "equivalent": "rC02S"
+    },
+    {
+      "teacherId": "REG024-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG024-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG025-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG025-S",
+      "type": "continuous",
+      "equivalent": "rC01S"
+    },
+    {
+      "teacherId": "REG025-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG025-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG026-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG026-S",
+      "type": "dummy",
+      "equivalent": "rC02S"
+    },
+    {
+      "teacherId": "REG026-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG026-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG027-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG027-S",
+      "type": "continuous",
+      "equivalent": "rC01S"
+    },
+    {
+      "teacherId": "REG027-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG027-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG028-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG028-S",
+      "type": "dummy",
+      "equivalent": "rC02S"
+    },
+    {
+      "teacherId": "REG028-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG028-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG029-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG029-S",
+      "type": "continuous",
+      "equivalent": "rC01S"
+    },
+    {
+      "teacherId": "REG029-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG029-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    },
+    {
+      "teacherId": "REG030-P",
+      "type": "prediction",
+      "equivalent": "rC01P"
+    },
+    {
+      "teacherId": "REG030-S",
+      "type": "dummy",
+      "equivalent": "rC02S"
+    },
+    {
+      "teacherId": "REG030-Q",
+      "type": "quadratic",
+      "equivalent": "rC01Q"
+    },
+    {
+      "teacherId": "REG030-I",
+      "type": "interaction",
+      "equivalent": "rC01I"
+    }
+  ],
+  "limits": [
+    "SQL and workbook execution/feedback are local; no embedded AI service.",
+    "The restaurant model outputs are fitted to course data; the teacher regression contexts use synthetic teaching values.",
+    "Monthly P-card samples and the Movies subset are not full-population data.",
+    "Topic coverage does not establish equal exam difficulty or measured learning outcomes."
+  ]
+}

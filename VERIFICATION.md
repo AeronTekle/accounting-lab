@@ -9,8 +9,8 @@
 
 ## Content and behaviour
 
-- 440 course-based questions and variants: 200 SQL, 200 Excel/ETL and 40 regression.
-- 112 authored practice sets: 98 data manipulation exams (five questions each) and 14 regression exams (four questions each). Every question appears in at least one set.
+- 851 course-based questions and variants: 332 SQL, 359 Excel/ETL and 160 regression.
+- 844 practice sets: 800 distinct data manipulation combinations (five questions each) and 44 regression exams (four questions each). Every question appears in at least one set.
 - Original downloaded case files are byte-preserved; source hashes are recorded. Movies and P-cards use explicitly defined 2,000-record subsets; their checked answers use those exact subsets.
 - Restaurant models were calculated from the supplied workbook, not invented. The authoring script documents aggregation, date joins, ordinary least squares and standard-error assumptions.
 - All 22 supported formula functions and the 12 employee-code/payroll exercise answers passed the independent checks in node check.cjs.
@@ -85,3 +85,15 @@ Live replay verification recorded two Excel runs and three SQL runs in M02. The 
 The library now contains 200 Excel/ETL questions, 200 SQL questions and 40 regression questions. Added questions vary filters, aggregation levels, source rows, thresholds and model inputs within the supplied cases. Eighty additional data manipulation sets pair three questions from one workbook with two questions from one SQL database. Six additional regression sets use the already verified restaurant models. Timed sets are paginated six per page.
 
 `build_library.py` computes all added SQL answers with SQLite and compares their complete results with independently constructed pandas calculations. It also calculates the workbook answers from the unchanged source workbooks. A zero-hours payroll group has an undefined hourly rate and uses a written explanation. Added regression answers use the original fitted coefficients. `check-library.cjs` compares all 160 new SQL results from the browser's bundled SQLite engine with the checked source results and verifies the final subject counts.
+
+## Full method-family coverage expansion — 12 November 2026
+
+The public teacher application catalogue was inspected directly: 400 manipulation questions, 800 manipulation combinations and 120 regression questions in 30 four-question sets. `audit_coverage.cjs` maps every manipulation question’s source-specific topic labels to representative local exercises and every regression question to its model-task type. The mapping verifies skill-family coverage, not identical prompts, context variety, numeric outputs, difficulty or teaching effectiveness. `coverage-audit.json` preserves the metadata and mappings without copying the teacher’s prompts or solutions.
+
+Added 159 workbook questions and 132 SQL questions address original text imports, film date/lead-time and two-way pivots, employee numeric classification, all four journal reference lookups, compound preparer keys, both payroll layouts/tax fields/groupings, named-artist HAVING, film relationships, invoice/genre/album units and purchasing-card refunds/patterns/periods. Workbook grouped answers were cross-checked using pandas and SQLite. Full journal left merges preserve 789 lines; 148 have no preparer match on the compound key and are retained as exceptions.
+
+A separate P-card sample retains up to 100 original records per year/month from all 48 months in 2011–2014. Existing 2014 OSU answers retain their original dataset. The new sample is not a statewide expenditure estimate. Text imports are unchanged source bytes.
+
+Thirty additional interpretation sets each contain four model outputs: additive prediction, continuous or dummy interpretation, a squared-term model and all interaction coefficients. They use the supplied restaurant case with date/game-derived indicators, and 309 complete sales/weather dates. All 120 outputs passed independent QR checks for coefficients, standard errors, p-values and R²; displayed 12-significant-digit coefficients give sufficient precision for prediction checks. The six original models and their 312-date outputs are unchanged.
+
+`node check-coverage.cjs` verifies all 851 questions appear in at least one set, 800 distinct manipulation combinations, 44 regression sets, all 132 new SQL results (including five legitimate empty results), and every P-card year/month. Existing formula, replay, navigation, loading and exam-timer checks pass. AI tutoring remains a documented difference: this static site offers hints, reference checks and worked solutions rather than a server AI service.
