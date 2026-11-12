@@ -12,7 +12,7 @@ async function check(mode) {
  let intervalCount = 0;
  const pendingResponses = [];
  const succeeds = mode === 'success' || mode === 'slow';
- const element = () => ({ hidden: false, append() {}, replaceChildren() {}, setAttribute() {} });
+ const element = () => ({ hidden: false, dataset: {}, append() {}, replaceChildren() {}, setAttribute() {} });
  const context = vm.createContext({
   AbortController, URLSearchParams,
   document: { getElementById: id => elements[id] ||= element(), createElement: element },

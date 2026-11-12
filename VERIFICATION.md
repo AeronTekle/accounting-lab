@@ -63,3 +63,7 @@ Two live failures were reproduced and fixed. Refreshing a guided regression ques
 Numeric checks now accept English thousands separators, including the displayed game-day result 1,436.30. Editing SQL or a formula while a calculation is running cancels that calculation and preserves the new draft, avoiding feedback for an older editor value. `node check-navigation.cjs` covers the saved-answer and URL regressions, finished-review restoration and formatted numeric entry.
 
 An individual timed set initially exposed its questions before Start and while paused, although full mock sections hid them. Both formats now show downloads before starting, reveal questions while the timer runs, and hide the question workspace while paused. Written work and lab drafts remain available on resume.
+
+## Simpler browsing
+
+The home page now offers three study routes. Topic practice, timed exams, oral practice and course files have separate navigation destinations. Topic practice has subject buttons and case/search filters. Previous and Next move through the filtered questions and retain guided drafts. Oral exercises return to the oral page. The embedded lab uses the outer question’s hint and solution controls and adjusts its height to its content.
