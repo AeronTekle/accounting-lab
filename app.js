@@ -50,6 +50,18 @@ if(window.COURSE_EXTRA){Object.assign(datasets,window.COURSE_EXTRA.datasets);Obj
 function csv(headers,rows){return '\uFEFF'+[headers,...rows].map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');}
 let saved={};try{saved=JSON.parse(localStorage.getItem('accountingLab.v1')||'{}');}catch{}
 let state={studio:'sql',dataset:'songs',index:0,play:false,completed:new Set(saved.completed||[]),drafts:saved.drafts||{},last:null,worker:null,timer:null,working:false,data:null,loadId:0};
+let replayRunId=null,replaySequence=0,replayReady=false;
+const replayParams=new URLSearchParams(location.search);
+const recordExamRuns=replayParams.get('embed')==='1'&&replayParams.get('exam')==='1';
+function sendReplay(action,values={}){
+ if(!recordExamRuns||!replayReady)return;
+ window.parent.postMessage({type:'accountingLab.replay',attempt:replayParams.get('attempt'),questionId:replayParams.get('exercise'),action,...values},location.origin);
+}
+function replaySummary(result){
+ if(!result.ok)return result.error;
+ if(state.studio==='sql')return result.count+' rows\n'+JSON.stringify(result.columns)+'\n'+JSON.stringify(result.rows.slice(0,3));
+ return result.results.length+' calculations\n'+JSON.stringify(result.results.slice(0,3));
+}
 const dataCache={};const fmt=new Intl.NumberFormat('en-US',{maximumFractionDigits:8});
 const usd=new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:8});
 let sampleOneQuery=null;
@@ -58,8 +70,8 @@ function persist(){try{localStorage.setItem('accountingLab.v1',JSON.stringify({c
 function current(){return state.play?null:exercises[state.dataset][state.index];}
 function key(){return state.dataset+':'+(state.play?'play':current().id)+(new URLSearchParams(location.search).get('attempt')||'');}
 function input(){return state.studio==='sql'?$('sqlInput'):$('formulaInput');}
-function remember(){if(state.working){stop();clearResults();}state.drafts[key()]={text:input().value,mode:$('formulaMode').value};persist();}
-function stop(){if(state.worker)state.worker.terminate();clearTimeout(state.timer);state.worker=null;state.working=false;$('runButton').disabled=false;$('checkButton').disabled=state.play;$('runButton').innerHTML=state.studio==='sql'?'<span>▶</span> Run SQL <kbd>⌘ ↵</kbd>':'<span>▶</span> Calculate <kbd>⌘ ↵</kbd>';updateSampleButtons();}
+function remember(){if(state.working){stop();clearResults();}state.drafts[key()]={text:input().value,mode:$('formulaMode').value};persist();sendReplay('draft',{text:input().value,mode:$('formulaMode').value,kind:state.studio});}
+function stop(recordInterruption=true){if(state.working&&replayRunId&&recordInterruption)sendReplay('finish',{runId:replayRunId,status:'interrupted',summary:'Calculation interrupted.'});replayRunId=null;if(state.worker)state.worker.terminate();clearTimeout(state.timer);state.worker=null;state.working=false;$('runButton').disabled=false;$('checkButton').disabled=state.play;$('runButton').innerHTML=state.studio==='sql'?'<span>▶</span> Run SQL <kbd>⌘ ↵</kbd>':'<span>▶</span> Calculate <kbd>⌘ ↵</kbd>';updateSampleButtons();}
 function clearResults(){state.last=null;$('resultCount').textContent='Ready for your next attempt';$('timing').textContent='';$('feedback').hidden=true;$('tableFooter').hidden=true;$('exportButton').disabled=true;$('resultArea').replaceChildren();const div=document.createElement('div');div.className='empty-result';div.innerHTML='<span class="empty-icon">▤<span>↗</span></span><h3>Your results will appear here</h3><p>Enter a solution and select <strong>'+(state.studio==='sql'?'Run SQL':'Calculate')+'</strong>.<br>You can edit your solution and run it again.</p>';$('resultArea').append(div);}
 function feedback(message,type='neutral'){$('feedback').textContent=message;$('feedback').className='feedback '+type;$('feedback').hidden=false;}
 function list(){
@@ -153,10 +165,19 @@ function run(check=false,sample=0){
   delete sampleStatus.dataset.outcome;
  }else $('feedback').hidden=true;
  updateSampleButtons();
+ const runId=String(Date.now())+'-'+(++replaySequence);
+ replayRunId=runId;
+ sendReplay('start',{runId,text:query,mode:$('formulaMode').value,kind:state.studio});
  const worker=new Worker(state.studio==='sql'?'sql-worker.js?v=practice-82':'excel-worker.js');state.worker=worker;
- state.timer=setTimeout(()=>{stop();reportError('The calculation reached the eight-second limit. Try a smaller query or formula.');},8000);
- worker.onerror=()=>{if(state.worker!==worker)return;stop();reportError('Could not start the calculation engine. Reload the page to try again.');};
- worker.onmessage=e=>{if(state.worker!==worker)return;const r=e.data;stop();if(!r.ok){reportError(r.error);return;}
+ state.timer=setTimeout(()=>{sendReplay('finish',{runId,status:'error',summary:'Calculation exceeded eight seconds.'});stop(false);reportError('The calculation reached the eight-second limit. Try a smaller query or formula.');},8000);
+ worker.onerror=()=>{if(state.worker!==worker)return;sendReplay('finish',{runId,status:'error',summary:'Calculation engine could not start.'});stop(false);reportError('Could not start the calculation engine. Reload the page to try again.');};
+ worker.onmessage=e=>{if(state.worker!==worker)return;const r=e.data;stop(false);if(!r.ok){sendReplay('finish',{runId,status:'error',summary:r.error});reportError(r.error);return;}
+  let status='executed';
+  if(ex&&(check||recordExamRuns)&&r.reference){
+   const matches=state.studio==='sql'?r.columns.length===r.reference.columns.length&&compareRows(r.rows,r.reference.rows,ex.ordered):$('formulaMode').value===ex.mode&&!r.errors&&r.results.length===r.reference.length&&r.results.every((v,i)=>!r.reference[i].error&&same(v.value,r.reference[i].value));
+   status=matches?'correct':'incorrect';
+  }
+  sendReplay('finish',{runId,status,summary:replaySummary(r)});
   if(sample){if(query===$('sqlInput').value)showSampleResult(sample,r,query);return;}
   $('exportButton').disabled=false;$('timing').textContent=r.ms+' ms';
   if(state.studio==='sql'){
@@ -170,8 +191,8 @@ function run(check=false,sample=0){
    if(check){const pass=$('formulaMode').value===ex.mode&&!r.errors&&r.results.length===r.reference.length&&r.results.every((v,i)=>!r.reference[i].error&&same(v.value,r.reference[i].value));if(pass)passed(ex);else feedback('The results differ. '+($('formulaMode').value!==ex.mode?'Select '+(ex.mode==='summary'?'one summary calculation':'one calculation per row')+'.':r.errors?'Fix the formula errors shown in the result column.':'Some rows differ from the reference result.')+' Try a hint and calculate again.','error');}
   }
  };
- if(state.studio==='sql')worker.postMessage({sql:query,database:datasets[state.dataset].file,expected:check?ex.answer:null,sample});
- else worker.postMessage({formula:query,data:state.data,mode:$('formulaMode').value,expected:check?ex.answer:null});
+ if(state.studio==='sql')worker.postMessage({sql:query,database:datasets[state.dataset].file,expected:(check||recordExamRuns)&&ex?ex.answer:null,sample});
+ else worker.postMessage({formula:query,data:state.data,mode:$('formulaMode').value,expected:(check||recordExamRuns)&&ex?ex.answer:null});
 }
 function passed(ex){state.completed.add(ex.id);persist();list();feedback('✓ Your result matches the reference. '+(ex.id==='p3'?'Review the source rows with zero hours.':'Can you explain why your method works?'),'success');}
 function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
@@ -219,4 +240,5 @@ renderTask();renderContext();
  if(ds&&datasets[ds]){const type=datasets[ds].schema?'sql':'excel';setStudio(type);state.dataset=ds;$('dataset').value=ds;const ix=exercises[ds].findIndex(x=>x.id===id);state.index=ix<0?0:ix;renderTask();renderContext();}
  if(p.get('embed')==='1')document.body.classList.add('embedded-lab');
  if(p.get('exam')==='1'){for(const id of ['solutionButton','hintButton','checkButton'])$(id).hidden=true;}
+ replayReady=true;
 })();

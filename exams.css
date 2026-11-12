@@ -158,3 +158,26 @@
 .footer-links { display: flex; flex-wrap: wrap; gap: 16px; }
 @media (max-width: 860px) { .study-paths, .oral-examples { grid-template-columns: 1fr; } .study-path { min-height: 0; gap: 12px; } .bank-filters { grid-template-columns: 1fr; } }
 @media (max-width: 620px) { .mock-choice { flex-direction: column; align-items: flex-start; } .subject-choice { flex: 1 1 40%; } }
+
+.recent-replays { margin: 22px 0; padding: 20px; border: 1px solid var(--line); background: #fff; border-radius: 10px; }
+.recent-replays h2 { margin: 0 0 8px; font-size: 21px; }
+.recent-replays p { font-size: 13px; color: #405544; }
+.recent-replays details { border-top: 1px solid var(--line); padding: 12px 0; }
+.recent-replays summary { cursor: pointer; font-size: 14px; font-weight: 600; }
+.replay-table-wrap { max-width: 100%; overflow-x: auto; margin: 16px 0; }
+.replay-table-wrap th, .replay-table-wrap td { font-size: 12px; color: #304e3a; padding: 10px; text-align: left; }
+.replay-table-wrap th { background: #e2ebd8; white-space: nowrap; }
+.replay-table-wrap td:first-child { min-width: 190px; }
+.replay-table-wrap button { min-height: 40px; }
+.replay-dialog { width: min(940px, calc(100% - 28px)); max-height: calc(100% - 28px); padding: 24px; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); }
+.replay-dialog::backdrop { background: rgb(15 34 26 / .65); }
+.replay-dialog h2 { font: 28px/1.2 Georgia, serif; }
+.replay-dialog p { color: #405544; font-size: 14px; }
+.replay-versions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
+.replay-versions section { min-width: 0; }
+.replay-versions label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 8px; }
+.replay-versions select { width: 100%; min-height: 44px; border: 1px solid var(--line); border-radius: 6px; padding: 8px; background: #fff; }
+.replay-versions pre { white-space: pre-wrap; overflow-wrap: anywhere; padding: 14px; border: 1px solid var(--line); border-radius: 6px; background: #f5f8ef; font: 12px/1.7 var(--mono); min-height: 120px; }
+.replay-versions .replay-output { min-height: 70px; background: #fff; }
+.replay-versions button { min-height: 44px; }
+@media(max-width:640px) { .replay-versions { grid-template-columns: 1fr; } .replay-dialog { padding: 18px; } }
