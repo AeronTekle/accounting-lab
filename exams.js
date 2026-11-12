@@ -1,8 +1,9 @@
 'use strict';
 const el=id=>document.getElementById(id);
-const sections=['home','bank','materials','session'];
+const sections=['home','bank','exams','oral','materials','session'];
 let catalog,practice,bank=[],byId={},session=null,bankPage=1;
 let activeView='home',restoringLocation=false;
+let workspaceObserver;
 const bankPageSize=12;
 const nf=new Intl.NumberFormat('en-US',{maximumFractionDigits:6});
 const followUpSeconds=60;
@@ -58,9 +59,10 @@ function btn(label,action,cls='primary-button'){const b=text('button',label,cls)
 function show(id){
  activeView=id;
  for(const section of sections)el(section).hidden=section!==id;
- for(const [name,view] of [['examsTab','home'],['bankTab','bank'],['materialsTab','materials']]){
-  el(name).classList.toggle('active',id===view);
-  if(id===view)el(name).setAttribute('aria-current','page');else el(name).removeAttribute('aria-current');
+ const navView=id==='session'?(session.guided?session.returnView||'bank':'exams'):id;
+ for(const [name,view] of [['examsTab','home'],['bankTab','bank'],['timedTab','exams'],['oralTab','oral'],['materialsTab','materials']]){
+  el(name).classList.toggle('active',navView===view);
+  if(navView===view)el(name).setAttribute('aria-current','page');else el(name).removeAttribute('aria-current');
  }
  if(id==='bank')renderBank();
  syncLocation();
@@ -87,7 +89,7 @@ function restoreLocation(){
    else newMock();
   }else{
    renderCards();
-   show(['bank','materials'].includes(params.get('view'))?params.get('view'):'home');
+   show(['bank','exams','oral','materials'].includes(params.get('view'))?params.get('view'):'home');
   }
  }finally{
   restoringLocation=false;
@@ -97,6 +99,15 @@ function restoreLocation(){
 function openBank(){
  show('bank');
  el('bankHeading').focus();
+}
+function openExams(){
+ renderCards();
+ show('exams');
+ el('examLibraryHeading').focus();
+}
+function openOral(){
+ show('oral');
+ el('oralPracticeTitle').focus();
 }
 function showExamGroup(group){
  for(const name of ['manipulation','regression']){
@@ -169,7 +180,7 @@ function renderCards(){
  for(const group of ['manipulation','regression']){
   const container=el(group+'Cards');
   const sets=examSets.filter(ex=>ex.type===group);
-  const label=group==='manipulation'?'Data manipulation':'Regression';
+  const label=group==='manipulation'?'Excel and SQL':'Regression';
   el(group+'Filter').textContent=label+' ('+sets.length+')';
   container.replaceChildren();
   for(const ex of sets){
@@ -207,16 +218,28 @@ function newMock(){
  renderSession();
  el('sessionTitle').focus();
 }
-function single(id){
+function single(id,browseIds){
  if(protectAttempt('Resume or finish your current attempt before opening guided practice.'))return;
  const answers=session?.guided?session.answers:{};
  const done=session?.guided?session.done:{};
- session={id:'single',title:'Guided practice',ids:[id],index:0,answers,done,finished:false,guided:true};
+ const previousIds=session?.guided?session.browseIds:undefined;
+ const candidates=browseIds||((previousIds||[]).includes(id)?previousIds:bank.filter(q=>q.kind===byId[id].kind).map(q=>q.id));
+ const questionIds=candidates.filter(questionId=>byId[questionId]);
+ const returnView=activeView==='oral'?'oral':(activeView==='session'||restoringLocation)&&session?.guided?session.returnView||'bank':'bank';
+ session={id:'single',title:'Guided practice',ids:[id],index:0,answers,done,browseIds:questionIds.includes(id)?questionIds:[id],returnView,finished:false,guided:true};
  store();
  renderSession();
 }
+function moveGuided(step){
+ const ids=session.browseIds||session.ids;
+ const next=ids[ids.indexOf(session.ids[0])+step];
+ if(!next)return;
+ single(next,ids);
+ el('questionTitle').focus();
+}
 function renderBank(){
  const subject=el('subjectFilter').value;
+ el('subjectChoices').querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.subject===subject)));
  const subjectQuestions=bank.filter(q=>subject==='all'||q.kind===subject);
  const caseFilter=el('caseFilter');
  const selectedCase=caseFilter.value;
@@ -240,10 +263,11 @@ function renderBank(){
  const list=el('bankList');
  list.replaceChildren();
  for(const q of visible){
-  const button=btn('',()=>{single(q.id);el('sessionTitle').focus();},'bank-item');
+  const button=btn('',()=>{single(q.id,matches.map(question=>question.id));el('sessionTitle').focus();},'bank-item');
   const label=text('span','','bank-item-label');
-  const mode=q.dataset?'Interactive lab':q.kind==='Regression'?'Model output':'Workbook';
+  const mode=q.dataset?'Work in the browser':q.kind==='Regression'?'Interpret model output':'Use the downloaded workbook';
   label.append(text('strong',q.title),text('small',q.category+' · '+mode));
+  if(followUps[q.id])label.append(text('small','Includes an examiner follow-up','oral-badge'));
   button.append(text('span',q.kind,'item-code'),label,text('span','↗','arrow'));
   list.append(button);
  }
@@ -282,6 +306,7 @@ function numericValue(value){
  return Number(grouped?raw.replaceAll(',',''):raw.replace(',','.'));
 }
 function renderQuestion(){
+ workspaceObserver?.disconnect();
  const questionId=session.ids[session.index];
  const q=byId[questionId],lock=locked(),activeIds=activeQuestionIds(),position=activeIds.indexOf(questionId);
  el('questionLabel').textContent=(position+1)+' / '+activeIds.length+' · '+q.kind.toUpperCase();el('questionCategory').textContent=q.category;el('questionTitle').textContent=q.title;el('questionPrompt').textContent=q.prompt;downloadLinks(el('questionFiles'),filesFor(q));renderModel(q);
@@ -294,13 +319,31 @@ function renderQuestion(){
  });
  const area=el('responseArea');area.replaceChildren();
  if(q.dataset){
-  const frame=document.createElement('iframe');frame.title='Interactive workspace: '+q.title;frame.className='lab-frame';frame.src='index.html?v=usability-audit-1&embed=1&dataset='+encodeURIComponent(q.dataset)+'&exercise='+encodeURIComponent(q.id)+'&attempt='+encodeURIComponent(session.attempt||'guided')+(lock?'&exam=1':'');area.append(frame);
+  const frame=document.createElement('iframe');frame.title='Interactive workspace: '+q.title;frame.className='lab-frame';frame.src='index.html?v=simple-browsing-1&embed=1&dataset='+encodeURIComponent(q.dataset)+'&exercise='+encodeURIComponent(q.id)+'&attempt='+encodeURIComponent(session.attempt||'guided')+(lock?'&exam=1':'');
+  frame.onload=()=>{
+   if(!frame.isConnected)return;
+   const resize=()=>{frame.style.height=Math.ceil(frame.contentDocument.body.getBoundingClientRect().height+2)+'px';};
+   resize();
+   workspaceObserver=new ResizeObserver(resize);
+   workspaceObserver.observe(frame.contentDocument.body);
+  };
+  area.append(frame);
  }else{
   const label=text('label','YOUR METHOD AND EXPLANATION','response-label');label.htmlFor='writtenAnswer';const answer=document.createElement('textarea');answer.id='writtenAnswer';answer.className='scratch-answer';answer.placeholder='Write your calculation, method or interpretation here…';answer.value=session.answers[q.id]||'';answer.oninput=()=>{session.answers[q.id]=answer.value;store();};area.append(label,answer);
   if(q.expected!==null&&q.expected!==undefined&&!lock){const wrap=text('div','','numeric-check'),label=text('label','Check your numeric result','response-label');label.htmlFor='numericAnswer';const inp=document.createElement('input');inp.type='text';inp.inputMode='decimal';inp.id='numericAnswer';inp.className='numeric-answer';inp.placeholder='Enter your result';const result=text('span','','numeric-feedback');result.setAttribute('role','status');const button=btn('Check number',()=>{const val=numericValue(inp.value);if(!inp.value.trim()||!Number.isFinite(val)){result.textContent='Enter a number, for example 1436.30 or 1,436.30.';return;}const tolerance=q.id==='r5'?0.000001:q.id==='r16'?0.000051:0.011;result.textContent=Math.abs(val-q.expected)<=tolerance?'✓ The number is correct. Use the criteria below to review your explanation.':'The result differs. Check the model and the inputs requested in the question.';},'secondary-button');wrap.append(label,inp,button,result);area.append(wrap);}
  }
  el('answerDetails').hidden=lock;el('answerDetails').open=false;el('questionHint').hidden=true;el('questionHint').textContent=q.hint||'Check the data, method and units.';el('showQuestionHint').hidden=lock;el('questionAnswer').textContent=q.answer;el('answerChecks').replaceChildren();(q.checks||['Check the output values and rows','Explain why your method works','Use the specified dataset']).forEach(x=>el('answerChecks').append(text('li',x)));el('doneCheckbox').checked=!!session.done[q.id];el('doneCheckbox').onchange=()=>{session.done[q.id]=el('doneCheckbox').checked;store();renderNavMarks();};
  el('nextQuestion').textContent=position<activeIds.length-1?'Next question →':'First question ↺';
+ const browseIds=session.browseIds||[questionId];
+ const browseIndex=browseIds.indexOf(questionId);
+ el('previousQuestion').hidden=!session.guided||session.returnView==='oral';
+ el('previousQuestion').disabled=browseIndex<=0;
+ el('nextQuestion').hidden=session.guided&&session.returnView==='oral';
+ el('nextQuestion').disabled=session.guided&&browseIndex>=browseIds.length-1;
+ if(session.guided){
+  el('nextQuestion').textContent='Next exercise →';
+  el('questionLabel').textContent=q.kind.toUpperCase()+' · EXERCISE '+(browseIndex+1)+' OF '+browseIds.length;
+ }
  el('openFollowUp').hidden=lock||!followUps[questionId];
  if(lock&&!q.dataset)area.append(text('p','You can see hints, worked solutions and review criteria after finishing the exam.','locked-note'));
 }
@@ -353,9 +396,9 @@ function renderSession(){
  show('session');
  const part=currentPart();
  const waiting=!session.guided&&!session.finished&&!session.deadline;
- el('backButton').textContent=session.guided?'← Back to question bank':'← Back to practice exams';
- el('sessionTitle').textContent=session.guided?byId[session.ids[0]].title:session.parts?session.title:session.id+' · '+session.title;
- el('sessionMode').textContent=session.guided?'GUIDED PRACTICE':session.parts?'FULL MOCK EXAM':'TIMED PRACTICE EXAM';
+ el('backButton').textContent=session.guided?(session.returnView==='oral'?'← Back to oral practice':'← Back to topic practice'):'← Back to timed exams';
+ el('sessionTitle').textContent=session.guided?byId[session.ids[0]].kind+' practice':session.parts?session.title:session.id+' · '+session.title;
+ el('sessionMode').textContent=session.guided?(session.returnView==='oral'?'ORAL PRACTICE':'TOPIC PRACTICE'):session.parts?'FULL MOCK EXAM':'TIMED PRACTICE EXAM';
  el('sessionStatus').textContent=session.guided?'Hints and worked solutions available':session.finished?'Review':session.deadline?'Exam in progress':session.started?'Paused':'Ready to start';
  el('timerPanel').hidden=session.guided||Boolean(session.parts&&session.finished);
  const instructions=session.guided?'Try the question first, then use the hints, worked solution and review criteria to check your work.':session.parts?(session.finished?'Both sections are complete. Use the review below to revisit your work.':'Section '+(session.partIndex+1)+' of 2 · '+part.id+' '+part.title+'. Download the files below before starting. Hints and solutions open after both sections.'):'This exam has '+session.ids.length+' questions. Use the lab for SQL and supported Excel formulas, or download the files to work in your own tools.';
@@ -371,9 +414,9 @@ function renderSession(){
  }
  renderMockProgress();
  renderReview();
- el('questionNav').hidden=waiting;
+ el('questionNav').hidden=waiting||session.guided;
  el('questionSheet').hidden=waiting;
- if(waiting)el('responseArea').replaceChildren();else renderQuestion();
+ if(waiting){workspaceObserver?.disconnect();el('responseArea').replaceChildren();}else renderQuestion();
  updateTimer();
 }
 function updateTimer(){
@@ -435,9 +478,22 @@ async function init(){
   for(const [dataset,qs] of Object.entries(catalog.exercises)){for(const q of qs)bank.push({...q,dataset,kind:catalog.datasets[dataset].schema?'SQL':'Excel',category:catalog.datasets[dataset].name,prompt:q.desc,answer:q.answer+'\n\n'+q.explain});}
   bank.push(...practice.questions);byId=Object.fromEntries(bank.map(q=>[q.id,q]));for(const ex of examSets)if(ex.ids.some(id=>!byId[id]))throw Error('Unknown exam question.');
   for(const [id,followUp] of Object.entries(followUps)){
-   const link=text('a',byId[id].kind+' · '+followUp.topic+' ↗','secondary-button');
-   link.href='exams.html?question='+encodeURIComponent(id);
-   el('followUpExamples').append(link);
+   const q=byId[id],card=text('article','','oral-card');
+   const open=btn('Open exercise →',()=>{single(id,[id]);el('sessionTitle').focus();},'primary-button');
+   open.setAttribute('aria-label','Open '+q.kind+' oral exercise '+followUp.topic);
+   card.append(text('span',q.kind,'eyebrow'),text('h2',followUp.topic),text('p',q.title),open);
+   el('followUpExamples').append(card);
+  }
+  for(const subject of ['all','Excel','SQL','Regression']){
+   const count=bank.filter(q=>subject==='all'||q.kind===subject).length;
+   const button=btn((subject==='all'?'All subjects':subject)+' · '+count,()=>{
+    el('subjectFilter').value=subject;
+    el('caseFilter').value='all';
+    resetBankPage();
+   },'subject-choice');
+   button.dataset.subject=subject;
+   button.setAttribute('aria-pressed',String(subject==='all'));
+   el('subjectChoices').append(button);
   }
   el('questionCount').textContent=bank.length;el('examCount').textContent=examSets.length;el('datasetCount').textContent=Object.keys(catalog.datasets).length;el('modelMethod').textContent=practice.modelMethod;
   for(const m of practice.materials){const a=text('a','','material-card');a.href=m.file;a.download='';a.append(text('strong',m.title+' ↓'),text('small',m.note),text('small','Source: '+m.origin));el('materialList').append(a);}
@@ -458,9 +514,13 @@ async function init(){
   console.error(error);
  }finally{clearTimeout(loadTimeout);}
 }
-el('examsTab').onclick=()=>{renderCards();show('home');};
+el('examsTab').onclick=()=>{renderCards();show('home');el('homeHeading').focus();};
 el('bankTab').onclick=openBank;
 el('openQuestionBank').onclick=openBank;
+el('timedTab').onclick=openExams;
+el('openTimedExams').onclick=openExams;
+el('oralTab').onclick=openOral;
+el('openOralPractice').onclick=openOral;
 el('openFullMock').onclick=newMock;
 el('materialsTab').onclick=()=>show('materials');
 for(const group of ['manipulation','regression'])el(group+'Filter').onclick=()=>showExamGroup(group);
@@ -481,11 +541,8 @@ el('startTimer').onclick=startTimer;
 el('pauseTimer').onclick=pauseTimer;
 el('finishExam').onclick=()=>finish();
 el('backButton').onclick=()=>{
- if(session.guided){openBank();return;}
- renderCards();
- show('home');
- if(locked()&&(session.started||session.partIndex>0))document.querySelector('.return-session')?.focus();
- else el('examLibraryHeading').scrollIntoView();
+ if(session.guided){if(session.returnView==='oral')openOral();else openBank();return;}
+ openExams();
 };
 el('showQuestionHint').onclick=()=>{el('questionHint').hidden=!el('questionHint').hidden;};
 el('openFollowUp').onclick=openFollowUp;
@@ -503,8 +560,10 @@ el('showFollowUpReview').onclick=()=>{
  el('followUpReviewTitle').focus();
 };
 el('nextQuestion').onclick=()=>{
+ if(session.guided){moveGuided(1);return;}
  const ids=activeQuestionIds();
  moveToQuestion(ids[(ids.indexOf(session.ids[session.index])+1)%ids.length]);
 };
+el('previousQuestion').onclick=()=>moveGuided(-1);
 window.addEventListener('popstate',restoreLocation);
 init();

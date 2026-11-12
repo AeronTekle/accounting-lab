@@ -27,3 +27,5 @@
 .sample-result[data-outcome="pass"] { color: #286043; }
 #sampleEvidence { margin-top: 12px; }
 #sampleEvidence p { margin: 8px 0 0; }
+
+.embedded-lab .task-card { display: none; }
