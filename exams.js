@@ -2,6 +2,7 @@
 const el=id=>document.getElementById(id);
 const sections=['home','bank','materials','session'];
 let catalog,practice,bank=[],byId={},session=null,bankPage=1;
+let activeView='home',restoringLocation=false;
 const bankPageSize=12;
 const nf=new Intl.NumberFormat('en-US',{maximumFractionDigits:6});
 const followUpSeconds=60;
@@ -55,12 +56,43 @@ const store=()=>{try{localStorage.setItem('accountingLab.exam.v1',JSON.stringify
 function text(tag,content,cls){const x=document.createElement(tag);x.textContent=content;if(cls)x.className=cls;return x;}
 function btn(label,action,cls='primary-button'){const b=text('button',label,cls);b.onclick=action;return b;}
 function show(id){
+ activeView=id;
  for(const section of sections)el(section).hidden=section!==id;
  for(const [name,view] of [['examsTab','home'],['bankTab','bank'],['materialsTab','materials']]){
   el(name).classList.toggle('active',id===view);
   if(id===view)el(name).setAttribute('aria-current','page');else el(name).removeAttribute('aria-current');
  }
  if(id==='bank')renderBank();
+ syncLocation();
+}
+function syncLocation(replace=false){
+ if(restoringLocation)return;
+ const url=new URL(location.href);
+ url.search='';
+ url.hash='';
+ if(activeView==='session')url.searchParams.set(session.guided?'question':'exam',session.guided?session.ids[0]:session.id);
+ else if(activeView!=='home')url.searchParams.set('view',activeView);
+ if(url.href!==location.href)history[replace?'replaceState':'pushState'](null,'',url);
+}
+function restoreLocation(){
+ restoringLocation=true;
+ try{
+  const params=new URLSearchParams(location.search);
+  const id=params.get('question'),examId=params.get('exam');
+  const exam=examSets.find(ex=>ex.id===examId);
+  if(byId[id])single(id);
+  else if(examId==='mock'||exam){
+   if(session&&!session.guided&&session.id===examId)renderSession();
+   else if(exam)newExam(exam);
+   else newMock();
+  }else{
+   renderCards();
+   show(['bank','materials'].includes(params.get('view'))?params.get('view'):'home');
+  }
+ }finally{
+  restoringLocation=false;
+  syncLocation(true);
+ }
 }
 function openBank(){
  show('bank');
@@ -177,7 +209,9 @@ function newMock(){
 }
 function single(id){
  if(protectAttempt('Resume or finish your current attempt before opening guided practice.'))return;
- session={id:'single',title:'Guided practice',ids:[id],index:0,answers:{},done:{},finished:false,guided:true};
+ const answers=session?.guided?session.answers:{};
+ const done=session?.guided?session.done:{};
+ session={id:'single',title:'Guided practice',ids:[id],index:0,answers,done,finished:false,guided:true};
  store();
  renderSession();
 }
@@ -242,6 +276,11 @@ function renderModel(q){
  const table=document.createElement('table'),caption=text('caption','Model coefficients fitted to the supplied restaurant data');caption.className='sr-only';table.append(caption);const head=document.createElement('thead'),tr=document.createElement('tr');['Term','Estimate','Standard error','p-value'].forEach(x=>tr.append(text('th',x)));head.append(tr);table.append(head);const body=document.createElement('tbody');m.coefficients.forEach(c=>{const row=document.createElement('tr');[c.term,nf.format(c.estimate),nf.format(c.standardError),c.pValue<.0001?c.pValue.toExponential(3):c.pValue.toFixed(6)].forEach(x=>row.append(text('td',x)));body.append(row);});table.append(body);card.append(table);out.append(card);
  out.append(text('p',description,'model-description'));
 }
+function numericValue(value){
+ const raw=value.trim();
+ const grouped=/^[+-]?\d{1,3}(,\d{3})+(\.\d+)?$/.test(raw);
+ return Number(grouped?raw.replaceAll(',',''):raw.replace(',','.'));
+}
 function renderQuestion(){
  const questionId=session.ids[session.index];
  const q=byId[questionId],lock=locked(),activeIds=activeQuestionIds(),position=activeIds.indexOf(questionId);
@@ -255,10 +294,10 @@ function renderQuestion(){
  });
  const area=el('responseArea');area.replaceChildren();
  if(q.dataset){
-  const frame=document.createElement('iframe');frame.title='Interactive workspace: '+q.title;frame.className='lab-frame';frame.src='index.html?v=exam-downloads-1&embed=1&dataset='+encodeURIComponent(q.dataset)+'&exercise='+encodeURIComponent(q.id)+'&attempt='+encodeURIComponent(session.attempt||'guided')+(lock?'&exam=1':'');area.append(frame);
+  const frame=document.createElement('iframe');frame.title='Interactive workspace: '+q.title;frame.className='lab-frame';frame.src='index.html?v=usability-audit-1&embed=1&dataset='+encodeURIComponent(q.dataset)+'&exercise='+encodeURIComponent(q.id)+'&attempt='+encodeURIComponent(session.attempt||'guided')+(lock?'&exam=1':'');area.append(frame);
  }else{
   const label=text('label','YOUR METHOD AND EXPLANATION','response-label');label.htmlFor='writtenAnswer';const answer=document.createElement('textarea');answer.id='writtenAnswer';answer.className='scratch-answer';answer.placeholder='Write your calculation, method or interpretation here…';answer.value=session.answers[q.id]||'';answer.oninput=()=>{session.answers[q.id]=answer.value;store();};area.append(label,answer);
-  if(q.expected!==null&&q.expected!==undefined&&!lock){const wrap=text('div','','numeric-check'),label=text('label','Check your numeric result','response-label');label.htmlFor='numericAnswer';const inp=document.createElement('input');inp.type='text';inp.inputMode='decimal';inp.id='numericAnswer';inp.className='numeric-answer';inp.placeholder='Enter your result';const result=text('span','','numeric-feedback');result.setAttribute('role','status');const button=btn('Check number',()=>{const val=Number(inp.value.trim().replace(',','.'));if(!inp.value.trim()||!Number.isFinite(val)){result.textContent='Enter a number without a thousands separator.';return;}const tolerance=q.id==='r5'?0.000001:q.id==='r16'?0.000051:0.011;result.textContent=Math.abs(val-q.expected)<=tolerance?'✓ The number is correct. Use the criteria below to review your explanation.':'The result differs. Check the model and the inputs requested in the question.';},'secondary-button');wrap.append(label,inp,button,result);area.append(wrap);}
+  if(q.expected!==null&&q.expected!==undefined&&!lock){const wrap=text('div','','numeric-check'),label=text('label','Check your numeric result','response-label');label.htmlFor='numericAnswer';const inp=document.createElement('input');inp.type='text';inp.inputMode='decimal';inp.id='numericAnswer';inp.className='numeric-answer';inp.placeholder='Enter your result';const result=text('span','','numeric-feedback');result.setAttribute('role','status');const button=btn('Check number',()=>{const val=numericValue(inp.value);if(!inp.value.trim()||!Number.isFinite(val)){result.textContent='Enter a number, for example 1436.30 or 1,436.30.';return;}const tolerance=q.id==='r5'?0.000001:q.id==='r16'?0.000051:0.011;result.textContent=Math.abs(val-q.expected)<=tolerance?'✓ The number is correct. Use the criteria below to review your explanation.':'The result differs. Check the model and the inputs requested in the question.';},'secondary-button');wrap.append(label,inp,button,result);area.append(wrap);}
  }
  el('answerDetails').hidden=lock;el('answerDetails').open=false;el('questionHint').hidden=true;el('questionHint').textContent=q.hint||'Check the data, method and units.';el('showQuestionHint').hidden=lock;el('questionAnswer').textContent=q.answer;el('answerChecks').replaceChildren();(q.checks||['Check the output values and rows','Explain why your method works','Use the specified dataset']).forEach(x=>el('answerChecks').append(text('li',x)));el('doneCheckbox').checked=!!session.done[q.id];el('doneCheckbox').onchange=()=>{session.done[q.id]=el('doneCheckbox').checked;store();renderNavMarks();};
  el('nextQuestion').textContent=position<activeIds.length-1?'Next question →':'First question ↺';
@@ -413,7 +452,7 @@ async function init(){
    if(exam)old.title=exam.title;
    session=old;
   }}catch{}
-  renderCards();const params=new URLSearchParams(location.search);if(byId[params.get('question')])single(params.get('question'));else show(params.get('view')==='materials'?'materials':params.get('view')==='bank'?'bank':'home');
+  restoreLocation();
   if(session?.deadline&&remaining()===0)finish(true);
   el('loading').hidden=true;
   el('loadFallback').hidden=true;
@@ -473,4 +512,5 @@ el('nextQuestion').onclick=()=>{
  const ids=activeQuestionIds();
  moveToQuestion(ids[(ids.indexOf(session.ids[session.index])+1)%ids.length]);
 };
+window.addEventListener('popstate',restoreLocation);
 init();
