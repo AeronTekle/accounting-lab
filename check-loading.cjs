@@ -31,7 +31,7 @@ async function check(mode) {
    return Promise.resolve(response);
   }
  });
- vm.runInContext(code + ';renderCards=()=>{};show=()=>{};', context);
+ vm.runInContext(code + ';renderCards=()=>{};show=()=>{};restoreLocation=()=>{};', context);
  const loading = context.init();
  if (mode === 'slow') {
   assert.equal(elements.loadFallback?.hidden ?? false, false);

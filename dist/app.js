@@ -58,7 +58,7 @@ function persist(){try{localStorage.setItem('accountingLab.v1',JSON.stringify({c
 function current(){return state.play?null:exercises[state.dataset][state.index];}
 function key(){return state.dataset+':'+(state.play?'play':current().id)+(new URLSearchParams(location.search).get('attempt')||'');}
 function input(){return state.studio==='sql'?$('sqlInput'):$('formulaInput');}
-function remember(){if(state.working)return;state.drafts[key()]={text:input().value,mode:$('formulaMode').value};persist();}
+function remember(){if(state.working){stop();clearResults();}state.drafts[key()]={text:input().value,mode:$('formulaMode').value};persist();}
 function stop(){if(state.worker)state.worker.terminate();clearTimeout(state.timer);state.worker=null;state.working=false;$('runButton').disabled=false;$('checkButton').disabled=state.play;$('runButton').innerHTML=state.studio==='sql'?'<span>▶</span> Run SQL <kbd>⌘ ↵</kbd>':'<span>▶</span> Calculate <kbd>⌘ ↵</kbd>';updateSampleButtons();}
 function clearResults(){state.last=null;$('resultCount').textContent='Ready for your next attempt';$('timing').textContent='';$('feedback').hidden=true;$('tableFooter').hidden=true;$('exportButton').disabled=true;$('resultArea').replaceChildren();const div=document.createElement('div');div.className='empty-result';div.innerHTML='<span class="empty-icon">▤<span>↗</span></span><h3>Your results will appear here</h3><p>Enter a solution and select <strong>'+(state.studio==='sql'?'Run SQL':'Calculate')+'</strong>.<br>You can edit your solution and run it again.</p>';$('resultArea').append(div);}
 function feedback(message,type='neutral'){$('feedback').textContent=message;$('feedback').className='feedback '+type;$('feedback').hidden=false;}

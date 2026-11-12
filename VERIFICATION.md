@@ -53,3 +53,11 @@ These are authored prompts with self-review criteria. The 60-second limit is a p
 ## Practical limits
 
 The Excel interpreter implements a documented subset, not all Excel features. Advanced spreadsheet cases use downloadable original workbooks. Free-text explanations use published assessment criteria and student self-review; there is no invented automatic grade. The practice exams are not guaranteed official exam questions. The optional Fiftyville case is not included. No empirical educational-effectiveness study has been claimed.
+
+## Live usability review on 12 November 2026
+
+The live site accepted a correct invoice-revenue SQL query and an alternative payroll formula returning 33.05. The full mock could be started, paused, refreshed, resumed and completed through both sections into the combined review. Question search and examiner follow-up review/retry also worked.
+
+Two live failures were reproduced and fixed. Refreshing a guided regression question erased its written answer, and switching to the home screen left the question URL unchanged so refresh reopened the question. Guided written answers and attempted-question marks now survive reopening, refresh and switching guided questions. URLs now reflect the visible page, guided question or timed exam, including browser Back and Forward. A finished exam review can also be reopened by refresh.
+
+Numeric checks now accept English thousands separators, including the displayed game-day result 1,436.30. Editing SQL or a formula while a calculation is running cancels that calculation and preserves the new draft, avoiding feedback for an older editor value. `node check-navigation.cjs` covers the saved-answer and URL regressions, finished-review restoration and formatted numeric entry.
