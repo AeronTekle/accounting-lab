@@ -9,7 +9,7 @@ let replaySelection;
 let examGroup='manipulation',examPage=1;
 const examPageSize=6;
 const bankPageSize=12;
-const nf=new Intl.NumberFormat('en-US',{maximumFractionDigits:6});
+const nf=new Intl.NumberFormat('en-US',{maximumSignificantDigits:12});
 const followUpSeconds=60;
 const followUps={
  i2:{topic:'Missing payroll IDs',prompt:'A colleague suggests excluding all rows with a missing Employee_Number before reporting total gross wages. Would you do that? What would you check first?',points:[
@@ -163,6 +163,7 @@ const examSets=[
  {id:'R08',title:'Game Days and Home-Game Effects',type:'regression',seconds:300,ids:['r15','r16','r8','r11'],desc:'Compare game-day sales and interpret the slope for home games.'}
 ];
 if(globalThis.LIBRARY_EXTRA)examSets.push(...globalThis.LIBRARY_EXTRA.examSets);
+if(globalThis.COURSE_COVERAGE)examSets.push(...globalThis.COURSE_COVERAGE.examSets);
 const store=()=>{try{localStorage.setItem('accountingLab.exam.v1',JSON.stringify(session));}catch{}};
 function text(tag,content,cls){const x=document.createElement(tag);x.textContent=content;if(cls)x.className=cls;return x;}
 function btn(label,action,cls='primary-button'){const b=text('button',label,cls);b.onclick=action;return b;}
@@ -306,13 +307,17 @@ function protectAttempt(message){
  el('sessionTitle').focus();
  return true;
 }
+function matchingExamSets(group=examGroup){
+ const terms=(el('examSearch').value||'').toLowerCase().trim().split(/\s+/).filter(Boolean);
+ return examSets.filter(ex=>ex.type===group&&terms.every(term=>[ex.id,ex.title,...ex.ids.map(id=>byId[id]?.category||'')].join(' ').toLowerCase().includes(term)));
+}
 function renderCards(){
  renderReplayHistory();
- const pages=Math.ceil(examSets.filter(ex=>ex.type===examGroup).length/examPageSize);
+ const pages=Math.max(1,Math.ceil(matchingExamSets().length/examPageSize));
  examPage=Math.min(examPage,pages);
  for(const group of ['manipulation','regression']){
   const container=el(group+'Cards');
-  const sets=examSets.filter(ex=>ex.type===group);
+  const sets=matchingExamSets(group);
   const label=group==='manipulation'?'Excel and SQL':'Regression';
   el(group+'Filter').textContent=label+' ('+sets.length+')';
   el(group+'Filter').setAttribute('aria-pressed',String(group===examGroup));
@@ -327,6 +332,8 @@ function renderCards(){
    container.append(card);
   }
  }
+ if(!matchingExamSets().length)el(examGroup+'Cards').append(text('p','No matching sets. Try a case name such as payroll, a database name or an exam ID.'));
+ el('randomExam').disabled=!matchingExamSets().length;
  el('examPageLabel').textContent='Page '+examPage+' of '+pages;
  el('previousExamPage').disabled=examPage===1;
  el('nextExamPage').disabled=examPage===pages;
@@ -434,7 +441,7 @@ const modelViews={
 function renderModel(q){
  const out=el('regressionOutput');out.replaceChildren();out.hidden=!q.model;if(!q.model)return;
  const m=practice.models[q.model],card=text('section','','model-card');card.append(text('header','OLS from the restaurant case · n = '+m.n+' · R² = '+m.r2.toFixed(4)+' · conventional OLS standard errors'));
- const [formula,description]=modelViews[q.model];
+ const [formula,description]=modelViews[q.model]||[m.formula,m.description];
  card.append(text('div','Predicted sales = '+formula,'model-formula'));
  const table=document.createElement('table'),caption=text('caption','Model coefficients fitted to the supplied restaurant data');caption.className='sr-only';table.append(caption);const head=document.createElement('thead'),tr=document.createElement('tr');['Term','Estimate','Standard error','p-value'].forEach(x=>tr.append(text('th',x)));head.append(tr);table.append(head);const body=document.createElement('tbody');m.coefficients.forEach(c=>{const row=document.createElement('tr');[c.term,nf.format(c.estimate),nf.format(c.standardError),c.pValue<.0001?c.pValue.toExponential(3):c.pValue.toFixed(6)].forEach(x=>row.append(text('td',x)));body.append(row);});table.append(body);card.append(table);out.append(card);
  out.append(text('p',description,'model-description'));
@@ -458,7 +465,7 @@ function renderQuestion(){
  });
  const area=el('responseArea');area.replaceChildren();
  if(q.dataset){
-  const frame=document.createElement('iframe');frame.title='Interactive workspace: '+q.title;frame.className='lab-frame';frame.src='index.html?v=library-440-1&embed=1&dataset='+encodeURIComponent(q.dataset)+'&exercise='+encodeURIComponent(q.id)+'&attempt='+encodeURIComponent(session.attempt||'guided')+(lock?'&exam=1':'');
+  const frame=document.createElement('iframe');frame.title='Interactive workspace: '+q.title;frame.className='lab-frame';frame.src='index.html?v=coverage-1&embed=1&dataset='+encodeURIComponent(q.dataset)+'&exercise='+encodeURIComponent(q.id)+'&attempt='+encodeURIComponent(session.attempt||'guided')+(lock?'&exam=1':'');
   frame.onload=()=>{
    if(!frame.isConnected)return;
    const resize=()=>{frame.style.height=Math.ceil(frame.contentDocument.body.getBoundingClientRect().height+2)+'px';};
@@ -742,10 +749,10 @@ async function init(){
  let loadTimedOut=false;
  const loadTimeout=setTimeout(()=>{loadTimedOut=true;controller.abort();},12000);
  try{
-  const [c,p]=await Promise.all([fetch('assets/catalog.json?v=library-440-1',{signal:controller.signal}),fetch('assets/practice.json?v=submission-review-1',{signal:controller.signal})]);if(!c.ok||!p.ok)throw Error();catalog=await c.json();practice=await p.json();
+  const [c,p]=await Promise.all([fetch('assets/catalog.json?v=coverage-1',{signal:controller.signal}),fetch('assets/practice.json?v=submission-review-1',{signal:controller.signal})]);if(!c.ok||!p.ok)throw Error();catalog=await c.json();practice=await p.json();Object.assign(practice.models,globalThis.COURSE_COVERAGE?.models||{});practice.materials.push(...(globalThis.COURSE_COVERAGE?.materials||[]));
   clearTimeout(loadTimeout);
   for(const [dataset,qs] of Object.entries(catalog.exercises)){for(const q of qs)bank.push({...q,dataset,kind:catalog.datasets[dataset].schema?'SQL':'Excel',category:catalog.datasets[dataset].name,prompt:q.desc,answer:q.answer+'\n\n'+q.explain});}
-  bank.push(...practice.questions,...(globalThis.LIBRARY_EXTRA?.questions||[]));byId=Object.fromEntries(bank.map(q=>[q.id,q]));for(const ex of examSets)if(ex.ids.some(id=>!byId[id]))throw Error('Unknown exam question.');
+  bank.push(...practice.questions,...(globalThis.LIBRARY_EXTRA?.questions||[]),...(globalThis.COURSE_COVERAGE?.questions||[]));byId=Object.fromEntries(bank.map(q=>[q.id,q]));for(const ex of examSets)if(ex.ids.some(id=>!byId[id]))throw Error('Unknown exam question.');
   for(const subject of ['Excel','SQL','Regression']){
    const count=Object.keys(followUps).filter(id=>byId[id].kind===subject).length;
    const button=btn(subject+' · '+count,()=>{oralSubject=subject;renderOral();},'subject-choice');
@@ -795,6 +802,8 @@ el('openTimedExams').onclick=openExams;
 el('oralTab').onclick=openOral;
 el('openOralPractice').onclick=openOral;
 el('openFullMock').onclick=newMock;
+el('examSearch').oninput=()=>{examPage=1;renderCards();};
+el('randomExam').onclick=()=>{const sets=matchingExamSets();if(sets.length)newExam(sets[Math.floor(Math.random()*sets.length)]);};
 el('materialsTab').onclick=()=>show('materials');
 for(const group of ['manipulation','regression'])el(group+'Filter').onclick=()=>showExamGroup(group);
 for(const [id,step] of [['previousExamPage',-1],['nextExamPage',1]]){
