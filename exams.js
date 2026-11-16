@@ -3,6 +3,7 @@ const el=id=>document.getElementById(id);
 const sections=['home','bank','exams','oral','materials','session'];
 let catalog,practice,bank=[],byId={},session=null,bankPage=1;
 let activeView='home',restoringLocation=false;
+let selectedExamTrack=null;
 let workspaceObserver;
 let oralSubject='Excel';
 let replaySelection;
@@ -134,6 +135,67 @@ const followUps={
  ]}
 };
 let followUpDeadline,followUpInterval;
+let oralChallengeDeadline=0,oralChallengeInterval;
+const oralSpecificChallenges={
+ "i2": "The payroll manager asks you to publish the 2016 wage total today. How would you report the 68 rows with missing Employee_Number without understating wages, and what reconciliation would you request?",
+ "m13": "Your director query returns the right-looking names, but two directors share a name. Explain how you would prove the result contains unique people rather than unique name strings.",
+ "r15": "Management wants to increase staffing on game days because of your result. What additional comparison would you perform before making that recommendation, and why?",
+ "e2": "A new employee code has a two-digit plant and a two-letter frequency suffix. Walk through how your extraction logic handles it and one edge case it could fail.",
+ "p3": "Two departments have very different hours and wages. Demonstrate why averaging their hourly rates without weights could mislead the CFO.",
+ "p6": "An employee has positive pay but zero recorded hours. Describe two legitimate explanations and the audit evidence needed before correcting the row.",
+ "f3": "A colleague rounds every permit to the nearest hour before calculating the average. Explain the bias this could introduce and how you would reproduce the correct result.",
+ "f4": "Your ZIP-code check finds text N/A rather than blanks. Explain how you would distinguish missing, invalid and genuine ZIP values in a repeatable cleaning rule.",
+ "j1": "Your merged journal now has more lines than the source. Show the checks you would perform on reference keys, row counts and signed totals before accepting it.",
+ "i1": "The 2015 and 2016 payroll files have different structures. Explain how you would create comparable six-month gross-wage totals without double counting overtime.",
+ "c2": "The CFO sees two invoice totals: 20,848.62 from a join and 2,328.60 from the invoice table. Explain precisely how you would isolate the duplication and validate the correct total.",
+ "c6": "A customer has invoices in two billing countries. Explain why the sum of country-level distinct customers differs from the company-wide distinct count.",
+ "s4": "A ranking has a tie at fifth place. The manager wants all tied songs, not exactly five rows. Explain how you would change the selection logic while keeping a deterministic display order.",
+ "s6": "Your artist count omits artists with no songs. Explain why changing to a LEFT JOIN is insufficient if you still use COUNT(*).",
+ "m2": "Your film ratings come from a 2,000-film subset. Explain what changes when you weight ratings by votes and which population your conclusion applies to.",
+ "a1": "A purchasing-card transaction exceeds the review threshold. Explain how you would investigate it without treating the flag as proof of fraud.",
+ "a6": "Two charges match on date, vendor and amount. Explain how you would test whether they are duplicates, including what a later refund would mean.",
+ "r1": "Your forecast input is 20°C but the model uses Fahrenheit. Explain the conversion, substitution into the fitted equation and one reason the prediction might still be uncertain.",
+ "r3": "A slope is statistically significant but the model has weak predictive performance. Explain how you would design a later-date forecast test and compare it to a baseline.",
+ "r4": "The model includes G, L and L×G. Derive the game-day difference when L=5,000 and explain why the coefficient of G alone is not that difference.",
+ "r6": "A teammate evaluates a forecast using realised future weather. Explain the information leak and design a test using only information known on the prediction date.",
+ "r9": "A manager requests a forecast at 0°F. Explain why the equation can produce a number but the historical sample cannot validate it.",
+ "r12": "You must compare two forecasting models fairly. Specify the training dates, later test period, permitted inputs and common error metric.",
+ "r14": "The squared temperature coefficient is negative. Explain why that does not make the slope negative everywhere and how you would evaluate the local slope at 70°F."
+};
+const oralChallenges={
+ Excel:'A manager challenges the spreadsheet result. Explain which source rows and assumptions you used, one way a filter or missing value could change the answer, and a concrete reconciliation check.',
+ SQL:'Your query runs without errors, but an auditor questions its result. Explain the intended row grain, how joins or duplicates could distort the answer, and a validation query you would run.',
+ Regression:'A manager wants to use your estimate to make a decision. Explain what the coefficient or prediction means, one limitation of the model, and an additional diagnostic or comparison you would request.'
+};
+function stopOralChallenge(){clearInterval(oralChallengeInterval);oralChallengeInterval=null;}
+function finishOralChallenge(){
+ stopOralChallenge();
+ el('oralChallengeTimer').hidden=true;
+ el('finishOralChallenge').hidden=true;
+ el('oralChallengeReview').hidden=false;
+ el('startOralChallenge').textContent='Try challenge again';
+}
+function tickOralChallenge(){
+ const left=Math.max(0,Math.ceil((oralChallengeDeadline-Date.now())/1000));
+ el('oralChallengeTimer').textContent='Challenge time: '+displayTime(left);
+ if(left===0)finishOralChallenge();
+}
+function startOralChallenge(){
+ stopOralChallenge();
+ el('oralChallengeCheck').checked=false;
+ el('oralChallengeReview').hidden=true;
+ el('oralChallengeTimer').hidden=false;
+ el('finishOralChallenge').hidden=false;
+ oralChallengeDeadline=Date.now()+60000;
+ tickOralChallenge();
+ oralChallengeInterval=setInterval(tickOralChallenge,250);
+}
+function updateOralAssessment(){
+ const inputs=[...el('followUpPoints').querySelectorAll('input')];
+ const n=inputs.filter(x=>x.checked).length;
+ el('oralSelfAssessment').textContent=n+' of '+inputs.length+' review points covered (self-assessed; not an automatic grade).';
+}
+
 const examSets=[
  {id:'M01',title:'Employee Codes and Songs',type:'manipulation',seconds:480,ids:['e1','e2','e3','s2','s3'],desc:'Extract text, apply conditions and join related data.'},
  {id:'M02',title:'Payroll and Invoices',type:'manipulation',seconds:480,ids:['p1','p2','p3','c1','c2'],desc:'Calculate gross pay, weighted rates and totals.'},
@@ -211,6 +273,36 @@ function restoreLocation(){
   syncLocation(true);
  }
 }
+function chooseExamTrack(track){
+ selectedExamTrack=track;
+ el('selectedTrack').hidden=false;
+ el('selectedTrackTitle').textContent=track==='manipulation'?'Data Manipulation':'Data Interpretation';
+ el('selectedTrackDescription').textContent=track==='manipulation'?'Excel and SQL: practise questions, timed exam sets or oral explanations.':'Regression: practise interpretation, predictions and defending model conclusions.';
+ el('chooseManipulation').setAttribute('aria-pressed',String(track==='manipulation'));
+ el('chooseInterpretation').setAttribute('aria-pressed',String(track==='interpretation'));
+ el('selectedTrackTitle').scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+function openTrackQuestions(){
+ if(!selectedExamTrack)return;
+ el('subjectFilter').value=selectedExamTrack==='manipulation'?'manipulation':'Regression';
+ el('questionSearch').value='';
+ el('caseFilter').value='all';
+ bankPage=1;
+ openBank();
+}
+function openTrackExams(){
+ if(!selectedExamTrack)return;
+ examGroup=selectedExamTrack==='manipulation'?'manipulation':'regression';
+ examPage=1;
+ el('examSearch').value='';
+ openExams();
+}
+function openTrackOral(){
+ if(!selectedExamTrack)return;
+ oralSubject=selectedExamTrack==='manipulation'?'Excel':'Regression';
+ el('oralSearch').value='';
+ openOral();
+}
 function openBank(){
  show('bank');
  el('bankHeading').focus();
@@ -226,9 +318,13 @@ function openOral(){
  el('oralPracticeTitle').focus();
 }
 function renderOral(){
- const entries=Object.entries(followUps).filter(([id])=>byId[id].kind===oralSubject);
+ const query=(el('oralSearch')?.value||'').trim().toLocaleLowerCase();
+ const entries=Object.entries(followUps).filter(([id,followUp])=>{
+  const q=byId[id];
+  return q?.kind===oralSubject&&(!query||[followUp.topic,followUp.prompt,q.title,q.caseName||'',q.id].join(' ').toLocaleLowerCase().includes(query));
+ });
  el('oralSubjectChoices').querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.subject===oralSubject)));
- el('oralCount').textContent=entries.length+' '+oralSubject+' exercises · '+Object.keys(followUps).length+' oral exercises in total';
+ el('oralCount').textContent=entries.length+' matching '+oralSubject+' exercises · '+Object.keys(followUps).length+' oral exercises in total';
  const cards=entries.map(([id,followUp])=>{
   const q=byId[id],card=text('article','','oral-card');
   const open=btn('Open exercise →',()=>{single(id,[id]);el('sessionTitle').focus();},'primary-button');
@@ -236,8 +332,9 @@ function renderOral(){
   card.append(text('span',q.kind,'eyebrow'),text('h2',followUp.topic),text('p',q.title),open);
   return card;
  });
- el('followUpExamples').replaceChildren(...cards);
+ el('followUpExamples').replaceChildren(...(cards.length?cards:[text('p','No matching oral exercises. Try another keyword or subject.','section-description')]));
 }
+el('oralSearch')?.addEventListener('input',()=>{if(byId&&Object.keys(byId).length)renderOral();});
 function showExamGroup(group){
  examGroup=group;
  examPage=1;
@@ -259,6 +356,12 @@ function updateFollowUpTimer(){
 }
 function startFollowUp(){
  stopFollowUpTimer();
+ stopOralChallenge();
+ el('oralChallengeReview').hidden=true;
+ el('oralChallengeTimer').hidden=true;
+ el('finishOralChallenge').hidden=true;
+ el('startOralChallenge').textContent='Start 60-second challenge';
+ el('oralSelfAssessment').textContent='';
  el('followUpReview').hidden=true;
  el('followUpPoints').querySelectorAll('input').forEach(input=>{input.checked=false;});
  el('followUpClock').hidden=false;
@@ -285,6 +388,8 @@ function openFollowUp(){
   return item;
  });
  el('followUpPoints').replaceChildren(...points);
+ el('oralChallengePrompt').textContent=oralSpecificChallenges[q.id]||oralChallenges[q.kind]||oralChallenges.Excel;
+ updateOralAssessment();
  el('followUpDialog').showModal();
  startFollowUp();
 }
@@ -386,7 +491,7 @@ function moveGuided(step){
 function renderBank(){
  const subject=el('subjectFilter').value;
  el('subjectChoices').querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.subject===subject)));
- const subjectQuestions=bank.filter(q=>subject==='all'||q.kind===subject);
+ const subjectQuestions=bank.filter(q=>subject==='all'||(subject==='manipulation'?q.kind==='Excel'||q.kind==='SQL':q.kind===subject));
  const caseFilter=el('caseFilter');
  const selectedCase=caseFilter.value;
  const cases=[...new Set(subjectQuestions.map(q=>q.category))].sort((a,b)=>a.localeCompare(b));
@@ -759,9 +864,9 @@ async function init(){
    button.dataset.subject=subject;
    el('oralSubjectChoices').append(button);
   }
-  for(const subject of ['all','Excel','SQL','Regression']){
-   const count=bank.filter(q=>subject==='all'||q.kind===subject).length;
-   const button=btn((subject==='all'?'All subjects':subject)+' · '+count,()=>{
+  for(const subject of ['all','manipulation','Excel','SQL','Regression']){
+   const count=bank.filter(q=>subject==='all'||(subject==='manipulation'?q.kind==='Excel'||q.kind==='SQL':q.kind===subject)).length;
+   const button=btn((subject==='all'?'All subjects':subject==='manipulation'?'Excel + SQL':subject)+' · '+count,()=>{
     el('subjectFilter').value=subject;
     el('caseFilter').value='all';
     resetBankPage();
@@ -796,11 +901,14 @@ for(const side of ['before','after']){
 }
 el('examsTab').onclick=()=>{renderCards();show('home');el('homeHeading').focus();};
 el('bankTab').onclick=openBank;
-el('openQuestionBank').onclick=openBank;
+el('chooseManipulation').onclick=()=>chooseExamTrack('manipulation');
+el('chooseInterpretation').onclick=()=>chooseExamTrack('interpretation');
+el('changeTrack').onclick=()=>{selectedExamTrack=null;el('selectedTrack').hidden=true;el('chooseManipulation').setAttribute('aria-pressed','false');el('chooseInterpretation').setAttribute('aria-pressed','false');el('homeHeading').focus();};
+el('openQuestionBank').onclick=openTrackQuestions;
 el('timedTab').onclick=openExams;
-el('openTimedExams').onclick=openExams;
+el('openTimedExams').onclick=openTrackExams;
 el('oralTab').onclick=openOral;
-el('openOralPractice').onclick=openOral;
+el('openOralPractice').onclick=openTrackOral;
 el('openFullMock').onclick=newMock;
 el('examSearch').oninput=()=>{examPage=1;renderCards();};
 el('randomExam').onclick=()=>{const sets=matchingExamSets();if(sets.length)newExam(sets[Math.floor(Math.random()*sets.length)]);};
@@ -833,9 +941,13 @@ el('showQuestionHint').onclick=()=>{el('questionHint').hidden=!el('questionHint'
 el('openFollowUp').onclick=openFollowUp;
 el('followUpDialog').onclose=()=>{
  stopFollowUpTimer();
+ stopOralChallenge();
  el('openFollowUp').focus();
 };
 el('retryFollowUp').onclick=startFollowUp;
+el('followUpPoints').addEventListener('change',updateOralAssessment);
+el('startOralChallenge').onclick=startOralChallenge;
+el('finishOralChallenge').onclick=finishOralChallenge;
 el('showFollowUpReview').onclick=()=>{
  stopFollowUpTimer();
  el('followUpClock').hidden=true;
