@@ -11,7 +11,7 @@ const questions = Object.fromEntries([...Object.values(catalog.exercises).flat()
 let url = new URL('https://example.test/exams.html?question=r15');
 let saved;
 const entries = [];
-const element = {hidden: false, classList: {toggle() {}}, setAttribute() {}, removeAttribute() {}, focus() {}, prepend() {}};
+const element = {hidden: false, classList: {toggle() {}}, setAttribute() {}, removeAttribute() {}, focus() {}, prepend() {}, addEventListener() {}};
 const context = vm.createContext({
  ExamReplay:globalThis.ExamReplay,
  COURSE_COVERAGE:globalThis.COURSE_COVERAGE, LIBRARY_EXTRA:globalThis.LIBRARY_EXTRA,
