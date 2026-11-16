@@ -226,9 +226,13 @@ function openOral(){
  el('oralPracticeTitle').focus();
 }
 function renderOral(){
- const entries=Object.entries(followUps).filter(([id])=>byId[id].kind===oralSubject);
+ const query=(el('oralSearch')?.value||'').trim().toLocaleLowerCase();
+ const entries=Object.entries(followUps).filter(([id,followUp])=>{
+  const q=byId[id];
+  return q?.kind===oralSubject&&(!query||[followUp.topic,followUp.prompt,q.title,q.caseName||'',q.id].join(' ').toLocaleLowerCase().includes(query));
+ });
  el('oralSubjectChoices').querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.subject===oralSubject)));
- el('oralCount').textContent=entries.length+' '+oralSubject+' exercises · '+Object.keys(followUps).length+' oral exercises in total';
+ el('oralCount').textContent=entries.length+' matching '+oralSubject+' exercises · '+Object.keys(followUps).length+' oral exercises in total';
  const cards=entries.map(([id,followUp])=>{
   const q=byId[id],card=text('article','','oral-card');
   const open=btn('Open exercise →',()=>{single(id,[id]);el('sessionTitle').focus();},'primary-button');
@@ -236,8 +240,9 @@ function renderOral(){
   card.append(text('span',q.kind,'eyebrow'),text('h2',followUp.topic),text('p',q.title),open);
   return card;
  });
- el('followUpExamples').replaceChildren(...cards);
+ el('followUpExamples').replaceChildren(...(cards.length?cards:[text('p','No matching oral exercises. Try another keyword or subject.','section-description')]));
 }
+el('oralSearch')?.addEventListener('input',()=>{if(byId&&Object.keys(byId).length)renderOral();});
 function showExamGroup(group){
  examGroup=group;
  examPage=1;
