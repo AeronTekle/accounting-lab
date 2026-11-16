@@ -334,7 +334,7 @@ function renderOral(){
  });
  el('followUpExamples').replaceChildren(...(cards.length?cards:[text('p','No matching oral exercises. Try another keyword or subject.','section-description')]));
 }
-el('oralSearch')?.addEventListener('input',()=>{if(byId&&Object.keys(byId).length)renderOral();});
+el('oralSearch')?.addEventListener?.('input',()=>{if(byId&&Object.keys(byId).length)renderOral();});
 function showExamGroup(group){
  examGroup=group;
  examPage=1;
