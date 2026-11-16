@@ -1,0 +1,35 @@
+name: Verify Accounting Lab
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          node --check dist/app.js
+          node --check dist/exams.js
+          node --check dist/replay.js
+          node --check dist/sql-worker.js
+          node --check dist/excel-worker.js
+      - name: Test interactive SQL and Excel reference calculations
+        run: node check.cjs
+      - name: Test Exam Replay recording and restoration
+        run: node check-replay.cjs
+      - name: Test navigation and saved exam state
+        run: node check-navigation.cjs
+      - name: Test loading and offline fallback
+        run: node check-loading.cjs
+      - name: Test question bank and course content
+        run: |
+          node check-course.cjs
+          node check-library.cjs
+          node check-coverage.cjs
