@@ -3,6 +3,7 @@ const el=id=>document.getElementById(id);
 const sections=['home','bank','exams','oral','materials','session'];
 let catalog,practice,bank=[],byId={},session=null,bankPage=1;
 let activeView='home',restoringLocation=false;
+let selectedExamTrack=null;
 let workspaceObserver;
 let oralSubject='Excel';
 let replaySelection;
@@ -272,6 +273,36 @@ function restoreLocation(){
   syncLocation(true);
  }
 }
+function chooseExamTrack(track){
+ selectedExamTrack=track;
+ el('selectedTrack').hidden=false;
+ el('selectedTrackTitle').textContent=track==='manipulation'?'Data Manipulation':'Data Interpretation';
+ el('selectedTrackDescription').textContent=track==='manipulation'?'Excel and SQL: practise questions, timed exam sets or oral explanations.':'Regression: practise interpretation, predictions and defending model conclusions.';
+ el('chooseManipulation').setAttribute('aria-pressed',String(track==='manipulation'));
+ el('chooseInterpretation').setAttribute('aria-pressed',String(track==='interpretation'));
+ el('selectedTrackTitle').scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+function openTrackQuestions(){
+ if(!selectedExamTrack)return;
+ el('subjectFilter').value=selectedExamTrack==='manipulation'?'manipulation':'Regression';
+ el('questionSearch').value='';
+ el('caseFilter').value='all';
+ bankPage=1;
+ openBank();
+}
+function openTrackExams(){
+ if(!selectedExamTrack)return;
+ examGroup=selectedExamTrack==='manipulation'?'manipulation':'regression';
+ examPage=1;
+ el('examSearch').value='';
+ openExams();
+}
+function openTrackOral(){
+ if(!selectedExamTrack)return;
+ oralSubject=selectedExamTrack==='manipulation'?'Excel':'Regression';
+ el('oralSearch').value='';
+ openOral();
+}
 function openBank(){
  show('bank');
  el('bankHeading').focus();
@@ -460,7 +491,7 @@ function moveGuided(step){
 function renderBank(){
  const subject=el('subjectFilter').value;
  el('subjectChoices').querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.subject===subject)));
- const subjectQuestions=bank.filter(q=>subject==='all'||q.kind===subject);
+ const subjectQuestions=bank.filter(q=>subject==='all'||(subject==='manipulation'?q.kind==='Excel'||q.kind==='SQL':q.kind===subject));
  const caseFilter=el('caseFilter');
  const selectedCase=caseFilter.value;
  const cases=[...new Set(subjectQuestions.map(q=>q.category))].sort((a,b)=>a.localeCompare(b));
@@ -833,9 +864,9 @@ async function init(){
    button.dataset.subject=subject;
    el('oralSubjectChoices').append(button);
   }
-  for(const subject of ['all','Excel','SQL','Regression']){
-   const count=bank.filter(q=>subject==='all'||q.kind===subject).length;
-   const button=btn((subject==='all'?'All subjects':subject)+' · '+count,()=>{
+  for(const subject of ['all','manipulation','Excel','SQL','Regression']){
+   const count=bank.filter(q=>subject==='all'||(subject==='manipulation'?q.kind==='Excel'||q.kind==='SQL':q.kind===subject)).length;
+   const button=btn((subject==='all'?'All subjects':subject==='manipulation'?'Excel + SQL':subject)+' · '+count,()=>{
     el('subjectFilter').value=subject;
     el('caseFilter').value='all';
     resetBankPage();
@@ -870,11 +901,14 @@ for(const side of ['before','after']){
 }
 el('examsTab').onclick=()=>{renderCards();show('home');el('homeHeading').focus();};
 el('bankTab').onclick=openBank;
-el('openQuestionBank').onclick=openBank;
+el('chooseManipulation').onclick=()=>chooseExamTrack('manipulation');
+el('chooseInterpretation').onclick=()=>chooseExamTrack('interpretation');
+el('changeTrack').onclick=()=>{selectedExamTrack=null;el('selectedTrack').hidden=true;el('chooseManipulation').setAttribute('aria-pressed','false');el('chooseInterpretation').setAttribute('aria-pressed','false');el('homeHeading').focus();};
+el('openQuestionBank').onclick=openTrackQuestions;
 el('timedTab').onclick=openExams;
-el('openTimedExams').onclick=openExams;
+el('openTimedExams').onclick=openTrackExams;
 el('oralTab').onclick=openOral;
-el('openOralPractice').onclick=openOral;
+el('openOralPractice').onclick=openTrackOral;
 el('openFullMock').onclick=newMock;
 el('examSearch').oninput=()=>{examPage=1;renderCards();};
 el('randomExam').onclick=()=>{const sets=matchingExamSets();if(sets.length)newExam(sets[Math.floor(Math.random()*sets.length)]);};
