@@ -134,6 +134,41 @@ const followUps={
  ]}
 };
 let followUpDeadline,followUpInterval;
+let oralChallengeDeadline=0,oralChallengeInterval;
+const oralChallenges={
+ Excel:'A manager challenges the spreadsheet result. Explain which source rows and assumptions you used, one way a filter or missing value could change the answer, and a concrete reconciliation check.',
+ SQL:'Your query runs without errors, but an auditor questions its result. Explain the intended row grain, how joins or duplicates could distort the answer, and a validation query you would run.',
+ Regression:'A manager wants to use your estimate to make a decision. Explain what the coefficient or prediction means, one limitation of the model, and an additional diagnostic or comparison you would request.'
+};
+function stopOralChallenge(){clearInterval(oralChallengeInterval);oralChallengeInterval=null;}
+function finishOralChallenge(){
+ stopOralChallenge();
+ el('oralChallengeTimer').hidden=true;
+ el('finishOralChallenge').hidden=true;
+ el('oralChallengeReview').hidden=false;
+ el('startOralChallenge').textContent='Try challenge again';
+}
+function tickOralChallenge(){
+ const left=Math.max(0,Math.ceil((oralChallengeDeadline-Date.now())/1000));
+ el('oralChallengeTimer').textContent='Challenge time: '+displayTime(left);
+ if(left===0)finishOralChallenge();
+}
+function startOralChallenge(){
+ stopOralChallenge();
+ el('oralChallengeCheck').checked=false;
+ el('oralChallengeReview').hidden=true;
+ el('oralChallengeTimer').hidden=false;
+ el('finishOralChallenge').hidden=false;
+ oralChallengeDeadline=Date.now()+60000;
+ tickOralChallenge();
+ oralChallengeInterval=setInterval(tickOralChallenge,250);
+}
+function updateOralAssessment(){
+ const inputs=[...el('followUpPoints').querySelectorAll('input')];
+ const n=inputs.filter(x=>x.checked).length;
+ el('oralSelfAssessment').textContent=n+' of '+inputs.length+' review points covered (self-assessed; not an automatic grade).';
+}
+
 const examSets=[
  {id:'M01',title:'Employee Codes and Songs',type:'manipulation',seconds:480,ids:['e1','e2','e3','s2','s3'],desc:'Extract text, apply conditions and join related data.'},
  {id:'M02',title:'Payroll and Invoices',type:'manipulation',seconds:480,ids:['p1','p2','p3','c1','c2'],desc:'Calculate gross pay, weighted rates and totals.'},
@@ -264,6 +299,12 @@ function updateFollowUpTimer(){
 }
 function startFollowUp(){
  stopFollowUpTimer();
+ stopOralChallenge();
+ el('oralChallengeReview').hidden=true;
+ el('oralChallengeTimer').hidden=true;
+ el('finishOralChallenge').hidden=true;
+ el('startOralChallenge').textContent='Start 60-second challenge';
+ el('oralSelfAssessment').textContent='';
  el('followUpReview').hidden=true;
  el('followUpPoints').querySelectorAll('input').forEach(input=>{input.checked=false;});
  el('followUpClock').hidden=false;
@@ -290,6 +331,8 @@ function openFollowUp(){
   return item;
  });
  el('followUpPoints').replaceChildren(...points);
+ el('oralChallengePrompt').textContent=oralChallenges[q.kind]||oralChallenges.Excel;
+ updateOralAssessment();
  el('followUpDialog').showModal();
  startFollowUp();
 }
@@ -838,9 +881,13 @@ el('showQuestionHint').onclick=()=>{el('questionHint').hidden=!el('questionHint'
 el('openFollowUp').onclick=openFollowUp;
 el('followUpDialog').onclose=()=>{
  stopFollowUpTimer();
+ stopOralChallenge();
  el('openFollowUp').focus();
 };
 el('retryFollowUp').onclick=startFollowUp;
+el('followUpPoints').addEventListener('change',updateOralAssessment);
+el('startOralChallenge').onclick=startOralChallenge;
+el('finishOralChallenge').onclick=finishOralChallenge;
 el('showFollowUpReview').onclick=()=>{
  stopFollowUpTimer();
  el('followUpClock').hidden=true;
