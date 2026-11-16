@@ -124,8 +124,20 @@
     <h3 id="followUpReviewTitle" tabindex="-1">Review your answer</h3>
     <p>Tick the points you covered.</p>
     <ul id="followUpPoints" class="follow-up-points"></ul>
+    <p id="oralSelfAssessment" class="follow-up-status" role="status"></p>
+    <div class="oral-second-round">
+      <h3>Round 2 · Defend your reasoning</h3>
+      <p id="oralChallengePrompt"></p>
+      <button id="startOralChallenge" class="secondary-button" type="button">Start 60-second challenge</button>
+      <p id="oralChallengeTimer" role="timer" hidden></p>
+      <button id="finishOralChallenge" class="secondary-button" type="button" hidden>Finish challenge</button>
+      <div id="oralChallengeReview" hidden>
+        <p><strong>Self-review:</strong> Did you explain your assumptions, identify a limitation and describe a way to verify the result?</p>
+        <label><input id="oralChallengeCheck" type="checkbox"> I addressed all three points</label>
+      </div>
+    </div>
     <button id="retryFollowUp" class="secondary-button" type="button">Try again</button>
   </section>
 </dialog>
 <footer class="exam-footer"><div class="footer-links"><a href="index.html">Open standalone SQL / Excel lab ↗</a><a href="https://github.com/AeronTekle/accounting-lab" target="_blank" rel="noopener">Source code ↗</a></div><details class="saved-work"><summary>What is saved in this browser?</summary><p>This browser stores written answers, SQL and formula drafts, the questions marked as attempted or completed, and the current exam’s question selection and timer state. The five latest completed exam replays also store submitted SQL/formulas, short result previews, saved drafts and time spent viewing each question. Follow-up checklists are temporary. Browser storage can be cleared in your browser settings, and work stays with this browser profile on this device.</p></details></footer></main>
-<script src="library-extra.js?v=coverage-1" defer></script><script src="coverage-extra.js?v=coverage-1" defer></script><script src="replay.js?v=exam-replay-1" defer></script><script src="exams.js?v=coverage-1" defer></script></body></html>
+<script src="library-extra.js?v=coverage-1" defer></script><script src="coverage-extra.js?v=coverage-1" defer></script><script src="replay.js?v=exam-replay-1" defer></script><script src="exams.js?v=oral-round2-1" defer></script></body></html>
