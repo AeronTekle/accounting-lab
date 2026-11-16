@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#193c34"><meta name="description" content="Practice exams, a question bank, regression exercises and course materials for Data Analytics in Accounting."><title>Accounting Lab | Practice Exams</title><link rel="stylesheet" href="style.css?v=coverage-1"><link rel="stylesheet" href="exams.css?v=exam-replay-1"></head><body>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#193c34"><meta name="description" content="Practice exams, a question bank, regression exercises and course materials for Data Analytics in Accounting."><title>Accounting Lab | Practice Exams</title><link rel="stylesheet" href="style.css?v=coverage-1"><link rel="stylesheet" href="exams.css?v=exam-sections-1"></head><body>
 <a class="skip" href="#main">Skip to main content</a>
 <header class="topbar"><a href="exams.html" class="brand"><span class="brand-icon">a<span>l</span></span><span>Accounting <b>Lab</b><small>DATA ANALYTICS IN ACCOUNTING</small></span></a><nav aria-label="Main navigation"><button id="examsTab" class="nav-button active">Home</button><button id="bankTab" class="nav-button">Topic practice</button><button id="timedTab" class="nav-button">Timed exams</button><button id="oralTab" class="nav-button">Oral practice</button><button id="materialsTab" class="nav-button">Files</button></nav></header>
 <main id="main" class="exam-main">
@@ -31,22 +31,37 @@
 <section id="home" hidden aria-labelledby="homeHeading">
   <div class="start-intro">
     <span class="eyebrow">DATA ANALYTICS IN ACCOUNTING</span>
-    <h1 id="homeHeading" tabindex="-1">What would you like to practise?</h1>
-    <p>Choose one way to study. Start with a topic if you are still learning the methods.</p>
+    <h1 id="homeHeading" tabindex="-1">Choose your exam section</h1>
+    <p>Just like the oral exam, start with Data Manipulation or Data Interpretation. Then decide how you want to practise.</p>
   </div>
-  <div class="study-paths">
-    <button id="openQuestionBank" class="study-path recommended" type="button">
-      <span class="path-tag">START HERE</span><strong>Practise a topic</strong>
-      <span>Choose Excel, SQL or regression. Work through questions with hints and solutions.</span><span class="path-action">Choose a topic →</span>
+  <div class="exam-track-choices" role="group" aria-label="Choose exam section">
+    <button id="chooseManipulation" type="button" class="exam-track-card" aria-pressed="false">
+      <span class="path-tag">SECTION 1</span><strong>Data Manipulation</strong>
+      <span>Excel and SQL · clean, combine, calculate and query data</span>
+      <span class="path-action">Choose this section →</span>
     </button>
-    <button id="openTimedExams" class="study-path" type="button">
-      <span class="path-tag">WHEN YOU ARE READY</span><strong>Try a timed exam</strong>
-      <span>Choose a short practice set or take a full mock with both exam sections.</span><span class="path-action">Choose an exam →</span>
+    <button id="chooseInterpretation" type="button" class="exam-track-card" aria-pressed="false">
+      <span class="path-tag">SECTION 2</span><strong>Data Interpretation</strong>
+      <span>Regression · interpret model output, predict and explain results</span>
+      <span class="path-action">Choose this section →</span>
     </button>
-    <button id="openOralPractice" class="study-path" type="button">
-      <span class="path-tag">EXPLAIN YOUR THINKING</span><strong>Rehearse an oral answer</strong>
-      <span>Solve a question, then answer a specific examiner follow-up aloud.</span><span class="path-action">See oral exercises →</span>
-    </button>
+  </div>
+  <div id="selectedTrack" class="selected-track" hidden>
+    <div class="track-heading"><div><span class="eyebrow">YOUR SELECTED SECTION</span><h2 id="selectedTrackTitle">Data Manipulation</h2><p id="selectedTrackDescription"></p></div><button id="changeTrack" type="button" class="text-button">Change section</button></div>
+    <div class="study-paths">
+      <button id="openQuestionBank" class="study-path recommended" type="button">
+        <span class="path-tag">START HERE</span><strong>Practise questions</strong>
+        <span>Choose a specific method and work with hints and solutions.</span><span class="path-action">Open question bank →</span>
+      </button>
+      <button id="openTimedExams" class="study-path" type="button">
+        <span class="path-tag">EXAM CONDITIONS</span><strong>Try a timed exam</strong>
+        <span>Practise an exam set for this section. Exam Replay keeps your attempts.</span><span class="path-action">Choose an exam →</span>
+      </button>
+      <button id="openOralPractice" class="study-path" type="button">
+        <span class="path-tag">EXPLAIN YOUR THINKING</span><strong>Practise oral questions</strong>
+        <span>Answer an examiner's follow-up, then defend your reasoning.</span><span class="path-action">Open oral practice →</span>
+      </button>
+    </div>
   </div>
   <details class="coverage-note"><summary>What does the library cover?</summary><p>Practise the course methods in Excel, SQL and regression. Workbook tasks include original text imports and complete source workbooks; SQL results use the specifically labelled database downloads.</p><ul><li><strong>Film permits:</strong> import and locale, filters, text searches, dates, duration and lead time, rankings and two-way pivots.</li><li><strong>Employee codes:</strong> variable-length extraction, numeric conversion and bands, pay frequencies, filtering and pivots.</li><li><strong>Journal entries:</strong> account, business-unit, source and preparer lookups, compound keys, unmatched references and enriched summaries.</li><li><strong>2015 and 2016 payroll:</strong> job codes, pay and hours, employer cost, zero-hour rates, tax fields, employee/project/division summaries, dates and monthly grouping.</li><li><strong>Songs and Movies:</strong> filtering, patterns, joins, distinct people, aggregates, grouped conditions and relationship chains.</li><li><strong>Chinook:</strong> customers and invoices, billing-country comparisons, album/genre/track joins and purchased units.</li><li><strong>Purchasing cards:</strong> purchases and refunds, signed amounts, vendor patterns, cardholder and monthly analysis. A separate sample spans 2011–2014.</li><li><strong>Regression:</strong> predictions, continuous and dummy coefficients, p-values, squared terms, all interaction coefficients, reference groups, ranges and forecasting limits. Thirty additional four-question exams use separately fitted models from the restaurant case.</li></ul><p>Questions cover the same method families as the teacher’s catalogue. The wording, task combinations and data samples can differ; these are practice questions rather than official exam questions.</p></details>
   <p class="home-library-note"><b id="questionCount"></b> questions · <b id="examCount"></b> timed sets · <b id="datasetCount"></b> interactive datasets</p>
@@ -56,6 +71,7 @@
   <h1 id="oralPracticeTitle" class="section-h1" tabindex="-1">Practise explaining your answer</h1>
   <p class="section-description">Choose a subject and an exercise. Solve it first, then select <strong>Practise examiner follow-up</strong> beneath the question. Speak for up to 60 seconds and review the key points.</p>
   <div id="oralSubjectChoices" class="subject-choices" role="group" aria-label="Oral practice subject"></div>
+  <div class="exam-finder"><label for="oralSearch">Find an oral exercise<input id="oralSearch" type="search" placeholder="Search topic, question or follow-up" autocomplete="off"></label></div>
   <p id="oralCount" class="bank-count" role="status"></p>
   <div id="followUpExamples" class="oral-examples"></div>
 </section>
@@ -84,7 +100,7 @@
   <div id="subjectChoices" class="subject-choices" role="group" aria-label="Practice subject"></div>
   <div class="bank-filters">
     <label for="questionSearch">Search<input id="questionSearch" type="search" placeholder="E.g. invoice, payroll or temperature"></label>
-    <select id="subjectFilter" hidden aria-label="Selected practice subject"><option value="all">All subjects</option><option>Excel</option><option>SQL</option><option>Regression</option></select>
+    <select id="subjectFilter" hidden aria-label="Selected practice subject"><option value="all">All subjects</option><option>Excel</option><option>SQL</option><option>Regression</option><option value="manipulation">Excel + SQL</option></select>
     <label for="caseFilter">Course case<select id="caseFilter"><option value="all">All cases</option></select></label>
     <button id="clearFilters" class="text-button" type="button">Clear filters</button>
   </div>
@@ -123,8 +139,20 @@
     <h3 id="followUpReviewTitle" tabindex="-1">Review your answer</h3>
     <p>Tick the points you covered.</p>
     <ul id="followUpPoints" class="follow-up-points"></ul>
+    <p id="oralSelfAssessment" class="follow-up-status" role="status"></p>
+    <div class="oral-second-round">
+      <h3>Round 2 · Defend your reasoning</h3>
+      <p id="oralChallengePrompt"></p>
+      <button id="startOralChallenge" class="secondary-button" type="button">Start 60-second challenge</button>
+      <p id="oralChallengeTimer" role="timer" hidden></p>
+      <button id="finishOralChallenge" class="secondary-button" type="button" hidden>Finish challenge</button>
+      <div id="oralChallengeReview" hidden>
+        <p><strong>Self-review:</strong> Did you explain your assumptions, identify a limitation and describe a way to verify the result?</p>
+        <label><input id="oralChallengeCheck" type="checkbox"> I addressed all three points</label>
+      </div>
+    </div>
     <button id="retryFollowUp" class="secondary-button" type="button">Try again</button>
   </section>
 </dialog>
 <footer class="exam-footer"><div class="footer-links"><a href="index.html">Open standalone SQL / Excel lab ↗</a><a href="https://github.com/AeronTekle/accounting-lab" target="_blank" rel="noopener">Source code ↗</a></div><details class="saved-work"><summary>What is saved in this browser?</summary><p>This browser stores written answers, SQL and formula drafts, the questions marked as attempted or completed, and the current exam’s question selection and timer state. The five latest completed exam replays also store submitted SQL/formulas, short result previews, saved drafts and time spent viewing each question. Follow-up checklists are temporary. Browser storage can be cleared in your browser settings, and work stays with this browser profile on this device.</p></details></footer></main>
-<script src="library-extra.js?v=coverage-1" defer></script><script src="coverage-extra.js?v=coverage-1" defer></script><script src="replay.js?v=exam-replay-1" defer></script><script src="exams.js?v=coverage-1" defer></script></body></html>
+<script src="library-extra.js?v=coverage-1" defer></script><script src="coverage-extra.js?v=coverage-1" defer></script><script src="replay.js?v=exam-replay-1" defer></script><script src="exams.js?v=exam-sections-1" defer></script></body></html>
