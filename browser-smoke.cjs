@@ -37,7 +37,12 @@ async function main(){
   await sql.locator('#sqlInput').waitFor({state:'visible',timeout:20000});
   await sql.locator('#sqlInput').fill('SELECT SUM(Total) FROM Invoice;');
   await sql.locator('#runButton').click();
-  await page.waitForFunction(()=>{const f=document.querySelector('#responseArea iframe');const d=f?.contentDocument;return d&&/2,328\\.6|2328\\.6/.test(d.querySelector('#resultArea')?.innerText||'');},{timeout:15000});
+  try{
+   await page.waitForFunction(()=>{const d=document.querySelector('#responseArea iframe')?.contentDocument;return d&&/2,328[.]6|2328[.]6/.test(d.querySelector('#resultArea')?.innerText||'');},undefined,{timeout:15000});
+  }catch(error){
+   console.error('SQL browser diagnostic:',await sql.locator('#resultArea').innerText(),await sql.locator('#feedback').innerText());
+   throw error;
+  }
   console.log('PASS: embedded SQLite query returned known invoice total');
   await page.goto(base+'?exam=M02');
   await page.locator('#startTimer').click();
