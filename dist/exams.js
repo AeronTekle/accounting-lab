@@ -135,6 +135,32 @@ const followUps={
 };
 let followUpDeadline,followUpInterval;
 let oralChallengeDeadline=0,oralChallengeInterval;
+const oralSpecificChallenges={
+ "i2": "The payroll manager asks you to publish the 2016 wage total today. How would you report the 68 rows with missing Employee_Number without understating wages, and what reconciliation would you request?",
+ "m13": "Your director query returns the right-looking names, but two directors share a name. Explain how you would prove the result contains unique people rather than unique name strings.",
+ "r15": "Management wants to increase staffing on game days because of your result. What additional comparison would you perform before making that recommendation, and why?",
+ "e2": "A new employee code has a two-digit plant and a two-letter frequency suffix. Walk through how your extraction logic handles it and one edge case it could fail.",
+ "p3": "Two departments have very different hours and wages. Demonstrate why averaging their hourly rates without weights could mislead the CFO.",
+ "p6": "An employee has positive pay but zero recorded hours. Describe two legitimate explanations and the audit evidence needed before correcting the row.",
+ "f3": "A colleague rounds every permit to the nearest hour before calculating the average. Explain the bias this could introduce and how you would reproduce the correct result.",
+ "f4": "Your ZIP-code check finds text N/A rather than blanks. Explain how you would distinguish missing, invalid and genuine ZIP values in a repeatable cleaning rule.",
+ "j1": "Your merged journal now has more lines than the source. Show the checks you would perform on reference keys, row counts and signed totals before accepting it.",
+ "i1": "The 2015 and 2016 payroll files have different structures. Explain how you would create comparable six-month gross-wage totals without double counting overtime.",
+ "c2": "The CFO sees two invoice totals: 20,848.62 from a join and 2,328.60 from the invoice table. Explain precisely how you would isolate the duplication and validate the correct total.",
+ "c6": "A customer has invoices in two billing countries. Explain why the sum of country-level distinct customers differs from the company-wide distinct count.",
+ "s4": "A ranking has a tie at fifth place. The manager wants all tied songs, not exactly five rows. Explain how you would change the selection logic while keeping a deterministic display order.",
+ "s6": "Your artist count omits artists with no songs. Explain why changing to a LEFT JOIN is insufficient if you still use COUNT(*).",
+ "m2": "Your film ratings come from a 2,000-film subset. Explain what changes when you weight ratings by votes and which population your conclusion applies to.",
+ "a1": "A purchasing-card transaction exceeds the review threshold. Explain how you would investigate it without treating the flag as proof of fraud.",
+ "a6": "Two charges match on date, vendor and amount. Explain how you would test whether they are duplicates, including what a later refund would mean.",
+ "r1": "Your forecast input is 20°C but the model uses Fahrenheit. Explain the conversion, substitution into the fitted equation and one reason the prediction might still be uncertain.",
+ "r3": "A slope is statistically significant but the model has weak predictive performance. Explain how you would design a later-date forecast test and compare it to a baseline.",
+ "r4": "The model includes G, L and L×G. Derive the game-day difference when L=5,000 and explain why the coefficient of G alone is not that difference.",
+ "r6": "A teammate evaluates a forecast using realised future weather. Explain the information leak and design a test using only information known on the prediction date.",
+ "r9": "A manager requests a forecast at 0°F. Explain why the equation can produce a number but the historical sample cannot validate it.",
+ "r12": "You must compare two forecasting models fairly. Specify the training dates, later test period, permitted inputs and common error metric.",
+ "r14": "The squared temperature coefficient is negative. Explain why that does not make the slope negative everywhere and how you would evaluate the local slope at 70°F."
+};
 const oralChallenges={
  Excel:'A manager challenges the spreadsheet result. Explain which source rows and assumptions you used, one way a filter or missing value could change the answer, and a concrete reconciliation check.',
  SQL:'Your query runs without errors, but an auditor questions its result. Explain the intended row grain, how joins or duplicates could distort the answer, and a validation query you would run.',
@@ -331,7 +357,7 @@ function openFollowUp(){
   return item;
  });
  el('followUpPoints').replaceChildren(...points);
- el('oralChallengePrompt').textContent=oralChallenges[q.kind]||oralChallenges.Excel;
+ el('oralChallengePrompt').textContent=oralSpecificChallenges[q.id]||oralChallenges[q.kind]||oralChallenges.Excel;
  updateOralAssessment();
  el('followUpDialog').showModal();
  startFollowUp();
