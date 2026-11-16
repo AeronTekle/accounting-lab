@@ -52,7 +52,7 @@ async function main(){
   for(const query of ['SELECT SUM(i.Total) FROM Invoice i JOIN InvoiceLine l ON l.InvoiceId=i.InvoiceId;','SELECT SUM(Total) FROM Invoice;']){
    await timed.locator('#sqlInput').fill(query);
    await timed.locator('#runButton').click();
-   await timed.locator('#runButton').waitFor({state:'enabled',timeout:15000});
+   await page.waitForFunction(()=>document.querySelector('#responseArea iframe')?.contentDocument?.getElementById('runButton')?.disabled===false,undefined,{timeout:15000});
    await sleep(350);
   }
   await page.locator('#finishExam').click();
