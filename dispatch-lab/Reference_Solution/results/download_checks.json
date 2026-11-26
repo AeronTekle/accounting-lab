@@ -1,0 +1,16 @@
+{
+  "hosted_UI_run": "e4b1ae17-6c5c-40e4-b196-ebe6b7cac9a4",
+  "downloaded_JSON": {
+    "bytes": 63460,
+    "prompt_and_raw_response_preserved": true
+  },
+  "downloaded_CSV": {
+    "rows": 25,
+    "unique_customers": 25,
+    "status_preserved": true
+  },
+  "downloaded_TXT": {
+    "finding_preserved": true
+  },
+  "status": "PASS"
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "file": "vrp_capacity.py",
+    "source": "https://raw.githubusercontent.com/google/or-tools/stable/ortools/constraint_solver/samples/vrp_capacity.py",
+    "sha256": "d688f7c98479df447678d380fdf57c8100558170a146039f146205fec52e86cb"
+  },
+  {
+    "file": "vrp_time_windows.py",
+    "source": "https://raw.githubusercontent.com/google/or-tools/stable/ortools/constraint_solver/samples/vrp_time_windows.py",
+    "sha256": "5fa1f43ee61a84a01f6170a54b5aa86949c7503c73d3002394c863ac51a1e3bf"
+  }
+]

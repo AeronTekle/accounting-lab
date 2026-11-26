@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "checks": [
+    "Original demand is 175.",
+    "Per-customer ceiling gives raised demand 240.",
+    "Current dispatch covers all customers and costs DKK 3264.",
+    "Three routes rejected with only two vans.",
+    "Overloaded/late route rejected.",
+    "Duplicate and missing customers rejected.",
+    "Unknown IDs rejected.",
+    "Empty proposal rejected.",
+    "Malformed route structure rejected.",
+    "Waiting, service and depot return included in cost.",
+    "Return journey checked against shift.",
+    "Full service must finish before window closes.",
+    "Invalid settings rejected.",
+    "Cross-origin API request rejected.",
+    "Missing server credential reported without a fabricated plan.",
+    "Malformed raw provider response preserved.",
+    "Quota response retained without automatic retry."
+  ],
+  "count": 17,
+  "scope": "Implementation tests; mocked provider responses excluded from experiment results."
+}

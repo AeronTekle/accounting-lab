@@ -1,0 +1,136 @@
+[
+  {
+    "id": "baseline_three",
+    "description": "The supplied current three-van dispatch, replayed without redesign.",
+    "method": "baseline",
+    "request": {
+      "config": {
+        "vehicles": 3
+      }
+    }
+  },
+  {
+    "id": "optimized_three",
+    "description": "Three vans available; the solver may leave a van unused.",
+    "request": {
+      "config": {
+        "vehicles": 3
+      }
+    }
+  },
+  {
+    "id": "optimized_two",
+    "description": "One van/driver unavailable: at most two routes.",
+    "request": {
+      "config": {
+        "vehicles": 2
+      }
+    }
+  },
+  {
+    "id": "optimized_one",
+    "description": "One available van: test aggregate capacity.",
+    "request": {
+      "config": {
+        "vehicles": 1
+      }
+    }
+  },
+  {
+    "id": "traffic_two",
+    "description": "Two vans with every travel leg multiplied by 1.5 and rounded up.",
+    "request": {
+      "config": {
+        "vehicles": 2,
+        "travel_multiplier": 1.5
+      }
+    }
+  },
+  {
+    "id": "traffic_three",
+    "description": "Three vans under the same 1.5 traffic multiplier.",
+    "request": {
+      "config": {
+        "vehicles": 3,
+        "travel_multiplier": 1.5
+      }
+    }
+  },
+  {
+    "id": "demand_two",
+    "description": "Each customer demand rises 30%, rounded up separately; two vans.",
+    "request": {
+      "config": {
+        "vehicles": 2,
+        "demand_multiplier": 1.3
+      }
+    }
+  },
+  {
+    "id": "demand_three",
+    "description": "Same demand increase, with three vans available.",
+    "request": {
+      "config": {
+        "vehicles": 3,
+        "demand_multiplier": 1.3
+      }
+    }
+  },
+  {
+    "id": "window_change",
+    "description": "C23 moves its complete-service window to minutes 30\u201375.",
+    "request": {
+      "config": {
+        "vehicles": 2
+      },
+      "window_change": {
+        "id": "C23",
+        "open_minute": 30,
+        "close_minute": 75
+      }
+    }
+  },
+  {
+    "id": "larger_vans",
+    "description": "Demand increase, two larger vans with capacity 150 each. Same initial costs: test the cost assumption separately.",
+    "request": {
+      "config": {
+        "vehicles": 2,
+        "capacity": 150,
+        "demand_multiplier": 1.3
+      }
+    }
+  },
+  {
+    "id": "larger_vans_costed",
+    "description": "Larger vans at capacity 150 with DKK 700 fixed cost each.",
+    "request": {
+      "config": {
+        "vehicles": 2,
+        "capacity": 150,
+        "demand_multiplier": 1.3,
+        "fixed_cost_dkk": 700
+      }
+    }
+  },
+  {
+    "id": "search_short",
+    "description": "Normal day with three vans available and one second search.",
+    "request": {
+      "config": {
+        "vehicles": 3,
+        "search_seconds": 1
+      }
+    }
+  },
+  {
+    "id": "search_long",
+    "description": "The same normal day with five seconds search.",
+    "request": {
+      "config": {
+        "vehicles": 3,
+        "search_seconds": 5
+      }
+    }
+  }
+]
