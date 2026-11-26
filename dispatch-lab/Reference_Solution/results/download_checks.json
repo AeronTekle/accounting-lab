@@ -12,5 +12,15 @@
   "downloaded_TXT": {
     "finding_preserved": true
   },
-  "status": "PASS"
+  "status": "PASS",
+  "complete_export": {
+    "records": 15,
+    "all_results_requests_findings_match": true,
+    "csv_rows": 231,
+    "customer_rows": 225,
+    "failed_attempt_rows": 6,
+    "all_findings_and_conclusion_in_TXT": true,
+    "history_after_reload": 15,
+    "status": "PASS"
+  }
 }
