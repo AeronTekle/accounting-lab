@@ -4,14 +4,13 @@ from pathlib import Path
 import ortools
 from engine import solve
 OUT=None
-SCENARIOS=[('normal_three',{'vehicles':3}),('normal_two',{'vehicles':2}),('traffic_three',{'vehicles':3,'travel_multiplier':1.5}),('traffic_two',{'vehicles':2,'travel_multiplier':1.5}),('demand_three',{'vehicles':3,'demand_multiplier':1.3}),('demand_two',{'vehicles':2,'demand_multiplier':1.3}),('window_three',{'vehicles':3}),('window_two',{'vehicles':2})]
+SCENARIOS=[('normal_three',{'vehicles':3}),('normal_two',{'vehicles':2}),('capacity_125_two',{'vehicles':2,'capacity':125})]
 def main():
     global OUT
     parser=argparse.ArgumentParser();parser.add_argument('--output',default='new_results');args=parser.parse_args();OUT=Path(args.output);OUT.mkdir(parents=True,exist_ok=True)
     results=[];summary=[];schedules=[]
     for name,config in SCENARIOS:
         payload={'config':config}
-        if name.startswith('window'):payload['window_change']={'id':'C23','open_minute':30,'close_minute':75}
         r=solve(payload);r.update(scenario_id=name,request=payload);results.append(r)
         served=len({s['id'] for route in r['routes'] for s in route['stops']})
         summary.append({'scenario':name,'method':'OR-Tools','status':r['status'],'valid':r.get('valid',False),'customers_served':served,'violations':len(r.get('errors',[])) if r.get('valid') is not None else '', 'used_vans':r.get('used_vehicles',''),'paid_minutes':r.get('total_paid_minutes',''),'valid_cost_dkk':r.get('total_cost_dkk','') if r.get('valid') else '', 'runtime_seconds':r['elapsed_seconds'],'ortools_version':ortools.__version__,'search_seconds':r['config']['search_seconds'],'first_solution_strategies':'; '.join(r.get('first_solution_strategies_tried',[])),'search_status_code':r.get('search_status_code',''),'explanation':' '.join(r['explanation'])})

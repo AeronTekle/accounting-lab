@@ -1,14 +1,14 @@
 'use strict';
-const $=id=>document.getElementById(id),KEY='dispatch-lab-gemini-v2';let experiments=[],latest=null,activeId=null;
+const $=id=>document.getElementById(id),KEY='dispatch-lab-final-case-v1';let experiments=[],latest=null,activeId=null;
 const fmt=n=>n===undefined?'—':Number(n).toLocaleString('en-GB'),clock=n=>`${String(8+Math.floor(n/60)).padStart(2,'0')}:${String(n%60).padStart(2,'0')}`;
 function validEvidence(e){return e&&typeof e.id==='string'&&typeof e.finding==='string'&&e.result&&typeof e.result.status==='string'&&Array.isArray(e.result.routes)&&Array.isArray(e.result.dataset?.locations)&&Array.isArray(e.result.explanation);}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify({schema_version:2,experiments,conclusion:$('conclusion').value}));$('storage').textContent='Saved in this browser. Download JSON as a backup.';}catch{$('storage').textContent='Browser storage is full or unavailable. Download JSON before closing.';}}
 try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s?.schema_version===2&&Array.isArray(s.experiments)&&s.experiments.every(validEvidence)){experiments=s.experiments.filter(e=>e.result.method==='llm');$('conclusion').value=s.conclusion||'';}}catch{}
-$('scenario').onchange=()=>{const s=$('scenario').value;$('vehicles').value=s==='breakdown'?'2':'3';$('traffic').value=s==='traffic'?'1.5':'1';$('demand').value=s==='demand'?'1.3':'1';};
+$('scenario').onchange=()=>{const change=$('scenario').value;$('vehicles').value=change==='normal'?'3':'2';$('capacity').value=change==='capacity'?'125':'100';$('traffic').value='1';$('demand').value='1';};
 async function request(method){
  if(!document.querySelector('input:invalid')){}else{$('message').textContent='Correct the highlighted number fields.';document.querySelector('input:invalid').reportValidity();return;}
  const config={vehicles:Number($('vehicles').value),capacity:Number($('capacity').value),shift_minutes:Number($('shift').value),travel_multiplier:Number($('traffic').value),demand_multiplier:Number($('demand').value),fixed_cost_dkk:Number($('fixed').value),minute_cost_dkk:Number($('minute').value),search_seconds:3};
- const body={method,config,extra_prompt:$('extra').value};if($('scenario').value==='window')body.window_change={id:'C23',open_minute:30,close_minute:75};
+ const body={method,config,extra_prompt:$('extra').value};
  const lf=$('locations').files[0],mf=$('matrix').files[0];if(!!lf!==!!mf){$('message').textContent='Upload both CSV files together.';return;}if(lf){body.locations_csv=await lf.text();body.matrix_csv=await mf.text();}
  $('solve').disabled=true;$('message').textContent=method==='llm'?'Waiting for Gemini. This may take up to two minutes…':'Checking the current dispatch…';
  try{const res=await fetch('/api/solve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}),r=await res.json();if(!res.ok)throw Error(r.error||'Request failed');const e={id:crypto.randomUUID(),saved_at:new Date().toISOString(),scenario:$('scenario').selectedOptions[0].textContent,request:body,finding:'',result:r};experiments.push(e);activeId=e.id;latest=r;$('finding').value='';persist();history();render(r);$('message').textContent='Attempt saved. '+r.status;$('save-status').textContent='Add a finding to this saved attempt.';}

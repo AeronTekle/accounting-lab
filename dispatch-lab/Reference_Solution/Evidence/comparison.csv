@@ -1,0 +1,8 @@
+scenario,method,status,customers_in_routes,violations,vans_used,paid_minutes,valid_cost_dkk,candidate_cost_dkk,runtime_seconds,record_id
+normal_three,OR-Tools,FEASIBLE_NOT_PROVEN_OPTIMAL,25,0,2,425,2700,2700,3.01,normal_three
+normal_three,Gemini,FEASIBLE_NOT_PROVEN_OPTIMAL,25,0,3,438,3252,3252,4.843,f2d49ba2-6669-40f5-9ec9-46961fcdfd9a
+normal_two,OR-Tools,FEASIBLE_NOT_PROVEN_OPTIMAL,25,0,2,424,2696,2696,3.0,normal_two
+normal_two,Gemini,INVALID_LLM_PLAN,25,8,2,431,,2724,0.917,e4b1ae17-6c5c-40e4-b196-ebe6b7cac9a4
+normal_two,Gemini,API_ERROR,0,,,,,,5.952,ec4811fc-e044-4dea-9d68-e034ceafa137
+capacity_125_two,OR-Tools,FEASIBLE_NOT_PROVEN_OPTIMAL,25,0,2,424,2696,2696,3.0,capacity_125_two
+capacity_125_two,Gemini,INVALID_LLM_PLAN,25,9,2,460,,2840,1.146,afbcf2d2-0f2e-47cc-a6db-01d1b188e855

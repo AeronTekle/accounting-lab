@@ -1,0 +1,38 @@
+{
+  "source_record_id": "e4b1ae17-6c5c-40e4-b196-ebe6b7cac9a4",
+  "observed_weakness": "Route 2 starts with 117 units against the 100-unit limit and returns at minute 291, after the 240-minute shift.",
+  "chosen_change": "Increase each van capacity from 100 to 125, with two vans available.",
+  "why": "Test whether extra load capacity addresses the overload without changing delivery windows, travel, service or shift length.",
+  "prediction": "The same old route would pass the load check at 125, but its timing would remain invalid. A newly generated plan still needs independent validation.",
+  "changed_request": {
+    "method": "llm",
+    "config": {
+      "vehicles": 2,
+      "capacity": 125,
+      "shift_minutes": 240,
+      "travel_multiplier": 1,
+      "demand_multiplier": 1,
+      "fixed_cost_dkk": 500,
+      "minute_cost_dkk": 4,
+      "search_seconds": 3
+    },
+    "extra_prompt": ""
+  },
+  "recorded_before_test_utc": "2026-11-27T16:02:07.152720+00:00",
+  "observed_outcome": {
+    "LLM_valid": false,
+    "load_violations": 0,
+    "late_customer_violations": 8,
+    "late_return_violations": 1,
+    "route_loads": [
+      58,
+      117
+    ],
+    "route_returns": [
+      140,
+      320
+    ],
+    "OR_Tools_valid": true,
+    "OR_Tools_cost_dkk": 2696
+  }
+}

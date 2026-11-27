@@ -32,13 +32,14 @@ Minimise total cost while meeting every rule. Plans violating constraints are in
 
 TASKS
 
-1. Investigate the OR-Tools examples
+1. Run and compare the OR-Tools examples
 
-Explore Google's examples for simple vehicle routing (https://developers.google.com/optimization/routing/vrp), capacity constraints (https://developers.google.com/optimization/routing/cvrp) and time windows (https://developers.google.com/optimization/routing/vrptw).
+Run Google's capacity and time-window examples locally in Python:
 
-Write one paragraph comparing their objectives and restrictions, and explain which features are needed for Northline's problem.
+Capacity constraints: https://developers.google.com/optimization/routing/cvrp
+Time windows: https://developers.google.com/optimization/routing/vrptw
 
-Run the capacity and time-window examples in Python, using Terminal or a local environment. For each, save the original output, change one input and rerun. Record the exact change and explain its observed effect. An unsuccessful search does not automatically prove impossibility.
+Write one paragraph comparing their objectives and restrictions.
 
 2. Build your website with AI and an API
 
@@ -59,25 +60,19 @@ Adapt the time-window example by adding capacity constraints. Use Northline's da
 
 Run locally in Python, separately from the website and independently of the LLM's routes. Save route schedules and a scenario-summary CSV showing solution status, vans used, cost and runtime. Include runnable code, solver version and search settings. Keep unsuccessful runs in the summary.
 
-4. Compare and challenge the plans
+4. Compare the results and recommend a decision
 
-Compare both methods with three vans available and then two. Also test 50% longer journeys, 30% higher demand and one additional change you choose.
+Test both methods with three vans available and then two. After comparing these results, identify one weakness or limitation in a specific plan. Choose one change to the data or operating conditions that addresses it, and test both methods using the same changed settings. State exactly what you changed, explain why you chose it and show whether it helped.
 
-Use identical inputs, costs and constraints. Report customers served, violations, vans used, paid minutes, cost and runtime. Compare savings only between valid plans. Manually check one generated route's load, timing and cost, and verify complete customer coverage. Explain one finding using a specific route or failed run.
+Use identical inputs, costs and constraints for each comparison. Present a comparison table showing customers served, violations, vans used, paid minutes, cost and runtime. Keep failed runs and invalid plans in the results, but compare costs only between valid plans. A failure to find a plan does not by itself prove impossibility, and a feasible plan is not necessarily optimal.
 
-Retain malformed responses and unsuccessful searches. Distinguish a feasible plan, proven impossibility and failure to find a solution within a search limit. A feasible plan is not necessarily a proven optimum.
-
-5. Recommend a decision
-
-Explain whether two vans are sufficient, how disruptions affect that conclusion and when a third van makes sense. Discuss differences between the methods and one model limitation. Check that website downloads preserve the actual inputs, results and findings.
+Explain the main differences between the methods. Recommend whether two vans are sufficient, how your chosen change affects that decision and when a third van makes sense. Include one limitation of your conclusion.
 
 DELIVERABLES
 
 - Working website URL and GitHub repository.
+- Outputs from the two OR-Tools examples.
 - Website experiment downloads and local OR-Tools code, schedules and scenario-summary CSV.
+- One report of no more than two pages containing your Step 1 paragraph and your Step 4 comparison, explanation and recommendation. Include source links and the website/GitHub links. No separate written explanations of Steps 2 and 3 are required.
 
-Submit one report containing:
-
-- Your Step 1 paragraph and before-and-after results.
-- Your manual route check, comparison table and recommendation.
-- Source links and a brief explanation of your implementation choices and use of AI.
+Submit detailed outputs and evidence as separate files, outside the two-page report.
