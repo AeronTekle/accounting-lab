@@ -11,4 +11,6 @@ const h=createHandler(data,{},runExperiment);check((await h(new Request('https:/
 // Mocked responses are used ONLY for error-handling tests, never experiment evidence.
 const malformed=await runExperiment({method:'llm'},data,{GEMINI_API_KEY:'test',GEMINI_MODEL:'test'},async()=>new Response(JSON.stringify({candidates:[{content:{parts:[{text:'not JSON'}]}}]})));check(malformed.status==='MALFORMED_RESPONSE'&&malformed.api.raw_response.includes('not JSON'),'Malformed raw provider response preserved.');
 const failed=await runExperiment({method:'llm'},data,{GEMINI_API_KEY:'test',GEMINI_MODEL:'test'},async()=>new Response('{"error":"quota"}',{status:429}));check(failed.status==='API_ERROR'&&failed.api.http_status===429,'Quota response retained without automatic retry.');
+for(const config of [null,[],1,'invalid'])assert.throws(()=>prepare({config},data));checks.push('Configuration must be an object.');
+const configResponse=await h(new Request('https://example.test/api/config'),{GEMINI_API_KEY:'test'});check((await configResponse.json()).model==='gemini-3.1-flash-lite','Displayed default model matches the generation default.');
 console.log(checks.length+' meaningful checks passed.');

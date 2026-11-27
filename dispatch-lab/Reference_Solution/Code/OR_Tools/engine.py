@@ -8,7 +8,10 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-DATA = Path(__file__).resolve().parents[3] / 'Student_Materials'
+PACKAGE = Path(__file__).resolve().parents[3]
+DATA = next((p for p in (PACKAGE / '1. Student_Materials', PACKAGE / 'Student_Materials')
+             if (p / 'locations.csv').is_file() and (p / 'travel_minutes.csv').is_file()),
+            PACKAGE / '1. Student_Materials')
 
 def read_inputs(locations_text=None, matrix_text=None):
     locations_text = locations_text if locations_text is not None else (DATA / 'locations.csv').read_text()
@@ -110,7 +113,7 @@ def evaluate_routes(routes, locations, travel, demand, cfg):
     if len(routes)>cfg['vehicles']:
         errors.append('Too many vehicle routes.')
     for number,route in enumerate(routes,1):
-        if not isinstance(route,list) or not route or any(x not in ids or x=='D0' for x in route):
+        if not isinstance(route,list) or not route or any(not isinstance(x,str) or x not in ids or x=='D0' for x in route):
             errors.append(f'Route {number} contains invalid/empty customer IDs.');continue
         clock=0; current=0; drive=0; waiting=0; service=0; load=0; stops=[]
         for customer in route:

@@ -19,5 +19,7 @@ def main():
         print(name,r['status'],r.get('total_cost_dkk',''),flush=True)
     (OUT/'ortools_evidence.json').write_text(json.dumps({'python':platform.python_version(),'ortools':ortools.__version__,'search_settings':{'first_solution':'PARALLEL_CHEAPEST_INSERTION','local_search':'GUIDED_LOCAL_SEARCH','requested_limit_seconds':3,'fallback':'Alternative first-solution strategies; independently searched spare-vehicle seed only if it uses <= requested vehicles. All elapsed time reported.','objective':'500 per used van + 4 per minute of each route span; start fixed at zero; no optional customers'},'experiments':results},indent=2)+'\n')
     for filename,rows in [('ortools_summary.csv',summary),('ortools_schedules.csv',schedules)]:
-        with (OUT/filename).open('w',newline='') as f:w=csv.DictWriter(f,fieldnames=list(rows[0]));w.writeheader();w.writerows(rows)
+        fields = list(rows[0]) if rows else ['scenario','vehicle','id','arrival_minute','start_minute','finish_minute','wait_minutes','demand','load_remaining','route_load','route_return_minute','route_cost_dkk']
+        with (OUT/filename).open('w',newline='',encoding='utf-8') as f:
+            w=csv.DictWriter(f,fieldnames=fields);w.writeheader();w.writerows(rows)
 if __name__=='__main__':main()

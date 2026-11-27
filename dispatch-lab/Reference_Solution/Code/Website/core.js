@@ -9,6 +9,7 @@ export function parseCSV(text){
 export function prepare(payload={},data){
  if(!payload||typeof payload!=='object'||Array.isArray(payload))throw Error('Invalid request.');
  if(Object.keys(payload).some(k=>!['config','locations_csv','matrix_csv','window_change','method','extra_prompt'].includes(k)))throw Error('Unknown request field.');
+ if(payload.config!==undefined&&(!payload.config||typeof payload.config!=='object'||Array.isArray(payload.config)))throw Error('Configuration must be an object.');
  const cfg={...DEFAULTS,...payload.config};
  if(Object.keys(cfg).some(k=>!(k in DEFAULTS)))throw Error('Unknown configuration field.');
  for(const [k,lo,hi] of [['vehicles',1,5],['capacity',1,500],['shift_minutes',30,480],['fixed_cost_dkk',0,5000],['minute_cost_dkk',1,50],['search_seconds',1,10]])if(!Number.isInteger(cfg[k])||cfg[k]<lo||cfg[k]>hi)throw Error(`${k} must be an integer from ${lo} to ${hi}.`);

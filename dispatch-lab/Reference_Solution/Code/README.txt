@@ -1,7 +1,8 @@
 RUN THE REFERENCE SOLUTION
 
-Keep Reference_Solution beside Student_Materials, which supplies the two CSVs.
-Run the commands below from Reference_Solution unless stated otherwise.
+Keep 2. Reference_Solution beside 1. Student_Materials, which supplies the CSVs.
+The unnumbered folder names also work. Run the commands below from
+2. Reference_Solution unless stated otherwise.
 
 1. LOCAL PYTHON / OR-TOOLS (Python 3.12; OR-Tools 9.15.6755)
 
