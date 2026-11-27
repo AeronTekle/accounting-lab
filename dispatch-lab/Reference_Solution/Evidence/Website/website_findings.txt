@@ -1,0 +1,78 @@
+DISPATCH LAB — EXPERIMENT REPORT
+Exported: 2026-11-27T16:12:26.739Z
+
+RECOMMENDATION
+Use the independently validated OR-Tools two-van plan (DKK 2696) for the supplied day. Increasing capacity from 100 to 125 does not improve its cost and does not repair the LLM timing failures. The model does not establish that a third van is always unnecessary under other disruptions.
+
+EXPERIMENT e4b1ae17-6c5c-40e4-b196-ebe6b7cac9a4
+Scenario: Normal day - two vans
+Method: llm
+Status: INVALID_LLM_PLAN
+Input SHA-256: 6c97386ac7be39e3ae2f4785f63150264f0bf4e31d385ce5aaf280e89296ec45
+Settings: {"vehicles":2,"capacity":100,"shift_minutes":240,"travel_multiplier":1,"demand_multiplier":1,"fixed_cost_dkk":500,"minute_cost_dkk":4,"search_seconds":3}
+Finding: Gemini claimed total demand was 173; the input total is 175. Its second van carries 117 units and returns at 12:51, so the DKK 2724 candidate is invalid and cannot support savings.
+The total demand is 173, which exceeds the capacity of a single van (100). Two vans are required. The routes are clustered geographically to minimize travel time and costs while respecting the capacity and time window constraints.
+All schedules and costs were recalculated from the supplied inputs. Invalid-plan costs are excluded from savings comparisons.
+C19: service ends after its window closes.
+C24: service ends after its window closes.
+C22: service ends after its window closes.
+C23: service ends after its window closes.
+C25: service ends after its window closes.
+C18: service ends after its window closes.
+Route 2: capacity exceeded (117>100).
+Route 2: returns after shift/depot closing time.
+
+Used vans: 2; unique customers: 25; paid minutes: 431; invalid candidate cost (excluded from savings): DKK 2724; runtime: 0.917s
+Van 1: D0 → C02 → C05 → C04 → C03 → C01 → C08 → C07 → C06 → D0; load 58; return 10:20; cost DKK 1060
+Van 2: D0 → C10 → C11 → C12 → C15 → C13 → C14 → C16 → C09 → C19 → C17 → C20 → C21 → C24 → C22 → C23 → C25 → C18 → D0; load 117; return 12:51; cost DKK 1664
+
+EXPERIMENT f2d49ba2-6669-40f5-9ec9-46961fcdfd9a
+Scenario: Normal day - three vans
+Method: llm
+Status: FEASIBLE_NOT_PROVEN_OPTIMAL
+Input SHA-256: adafb95b881ac3a81c318d707d5d73a815ce59d6520631e979432904e99274d4
+Settings: {"vehicles":3,"capacity":100,"shift_minutes":240,"travel_multiplier":1,"demand_multiplier":1,"fixed_cost_dkk":500,"minute_cost_dkk":4,"search_seconds":3}
+Finding: The independent checker accepts all 25 deliveries using 3 vans at DKK 3252. Feasible, not proved optimal.
+The customers were grouped into three routes based on their geographic proximity (West, East, and North) to minimize travel time. Each route respects the capacity constraint of 100 and the time window requirements, including the specific opening times for C06, C14, and C23.
+All schedules and costs were recalculated from the supplied inputs. Invalid-plan costs are excluded from savings comparisons.
+
+Used vans: 3; unique customers: 25; paid minutes: 438; valid cost: DKK 3252; runtime: 4.843s
+Van 1: D0 → C02 → C05 → C04 → C03 → C01 → C08 → C07 → C06 → D0; load 58; return 10:20; cost DKK 1060
+Van 2: D0 → C10 → C11 → C12 → C13 → C15 → C16 → C14 → C09 → D0; load 55; return 10:24; cost DKK 1076
+Van 3: D0 → C19 → C17 → C20 → C21 → C22 → C24 → C23 → C25 → C18 → D0; load 62; return 10:34; cost DKK 1116
+
+EXPERIMENT ec4811fc-e044-4dea-9d68-e034ceafa137
+Scenario: Normal day - two vans
+Method: llm
+Status: API_ERROR
+Input SHA-256: 6c97386ac7be39e3ae2f4785f63150264f0bf4e31d385ce5aaf280e89296ec45
+Settings: {"vehicles":2,"capacity":100,"shift_minutes":240,"travel_multiplier":1,"demand_multiplier":1,"fixed_cost_dkk":500,"minute_cost_dkk":4,"search_seconds":3}
+Finding: Provider returned HTTP 503; no route was evaluated. This is a service failure, not evidence of routing infeasibility.
+Gemini API returned HTTP 503. This attempt is retained; no automatic retry was made.
+
+
+EXPERIMENT afbcf2d2-0f2e-47cc-a6db-01d1b188e855
+Scenario: Chosen change - capacity 125, two vans
+Method: llm
+Status: INVALID_LLM_PLAN
+Input SHA-256: 123578678a04c51fd49d5ad14ee67dc40a169ae7742da2e332053163724ad5fa
+Settings: {"vehicles":2,"capacity":125,"shift_minutes":240,"travel_multiplier":1,"demand_multiplier":1,"fixed_cost_dkk":500,"minute_cost_dkk":4,"search_seconds":3}
+Finding: Increasing capacity to 125 removed the overload violation, but the regenerated proposal is still invalid: C19: service ends after its window closes.; C17: service ends after its window closes.; C20: service ends after its window closes.; C21: service ends after its window closes.; C22: service ends after its window closes.; C23: service ends after its window closes.; C25: service ends after its window closes.; C18: service ends after its window closes.; Route 2: returns after shift/depot closing time.
+The customers were partitioned into two routes based on geographic proximity (West/South-West and East/North) to minimize travel time while respecting capacity constraints and time windows.
+All schedules and costs were recalculated from the supplied inputs. Invalid-plan costs are excluded from savings comparisons.
+C19: service ends after its window closes.
+C17: service ends after its window closes.
+C20: service ends after its window closes.
+C21: service ends after its window closes.
+C22: service ends after its window closes.
+C23: service ends after its window closes.
+C25: service ends after its window closes.
+C18: service ends after its window closes.
+Route 2: returns after shift/depot closing time.
+
+Used vans: 2; unique customers: 25; paid minutes: 460; invalid candidate cost (excluded from savings): DKK 2840; runtime: 1.146s
+Van 1: D0 → C02 → C05 → C04 → C03 → C01 → C08 → C07 → C06 → D0; load 58; return 10:20; cost DKK 1060
+Van 2: D0 → C10 → C15 → C13 → C14 → C09 → C16 → C11 → C12 → C19 → C24 → C17 → C20 → C21 → C22 → C23 → C25 → C18 → D0; load 117; return 13:20; cost DKK 1780
+
+LIMITATIONS
+Feasible plans are not proven optimal. A missing plan does not prove impossibility. Invalid-plan costs cannot demonstrate savings. Full prompts and raw provider responses are in the JSON download.

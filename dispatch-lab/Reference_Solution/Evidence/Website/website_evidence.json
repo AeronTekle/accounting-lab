@@ -1,5 +1,6 @@
 {
   "schema_version": 2,
+  "exported_at": "2026-11-27T16:12:26.138Z",
   "conclusion": "Use the independently validated OR-Tools two-van plan (DKK 2696) for the supplied day. Increasing capacity from 100 to 125 does not improve its cost and does not repair the LLM timing failures. The model does not establish that a third van is always unnecessary under other disruptions.",
   "experiments": [
     {
@@ -8284,6 +8285,5 @@
         "elapsed_seconds": 1.146
       }
     }
-  ],
-  "scope": "Final-model normal-three/normal-two comparisons, the relevant failed attempt and one capacity change chosen from a specific observed overload. Historical raw provider responses are unchanged."
+  ]
 }
