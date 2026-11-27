@@ -1,4 +1,8 @@
 'use strict';
+if(location.protocol==='file:'){
+  document.querySelector('main').innerHTML=`<section style="max-width:720px;margin:60px auto"><div class="eyebrow">DISPATCH LAB</div><h1>Open the working website</h1><p>This is a local copy of the website source. Use the published website to run Gemini experiments and download results.</p><p><a href="https://dispatch-lab-northline.atleks.chatgpt.site/" style="display:inline-block;padding:12px 20px;background:#115e6f;color:white;border-radius:8px;text-decoration:none">Open Dispatch Lab</a></p><p class="small">To run your own local server, follow Code/README.txt. Opening index.html directly does not start the API server.</p></section>`;
+}else{
+'use strict';
 const $=id=>document.getElementById(id),KEY='dispatch-lab-final-case-v1';let experiments=[],latest=null,activeId=null;
 const fmt=n=>n===undefined?'—':Number(n).toLocaleString('en-GB'),clock=n=>`${String(8+Math.floor(n/60)).padStart(2,'0')}:${String(n%60).padStart(2,'0')}`;
 function validEvidence(e){return e&&typeof e.id==='string'&&typeof e.finding==='string'&&e.result&&typeof e.result.status==='string'&&Array.isArray(e.result.routes)&&Array.isArray(e.result.dataset?.locations)&&Array.isArray(e.result.explanation);}
@@ -35,3 +39,5 @@ function importEvidence(d){if(d.schema_version!==2||!Array.isArray(d.experiments
 $('import').onchange=async e=>{try{const f=e.target.files[0];if(f)importEvidence(JSON.parse(await f.text()));}catch(e){$('save-status').textContent=e.message;}};
 $('example-evidence').onclick=async()=>{try{const r=await fetch('/reference-evidence.json');if(!r.ok)throw Error('Reference experiments are not available yet.');importEvidence(await r.json());}catch(e){$('save-status').textContent=e.message;}};
 fetch('/api/config').then(r=>r.json()).then(c=>$('api-status').textContent=c.configured?'Gemini connected · '+c.model:'Gemini needs server configuration. Saved experiments remain available.').catch(()=>$('api-status').textContent='Cannot reach the server. Open the hosted website or start the local server.');history();
+
+}

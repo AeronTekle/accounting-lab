@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Dispatch Lab · Route Planning</title><link rel="stylesheet" href="/style.css"></head>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Dispatch Lab · Route Planning</title><link rel="stylesheet" href="./style.css"></head>
 <body><main>
 <header><div class="eyebrow">DISPATCH LAB / NORTHLINE DELIVERIES</div><h1>Can one fewer van<br>still deliver the day?</h1><p>Ask Gemini for a plan. Check the routes. Keep the evidence.</p></header>
 <div class="workspace"><aside><section><h2>Plan settings</h2><label for="scenario">Experiment</label><select id="scenario"><option value="normal">Normal day - three vans</option><option value="breakdown">Normal day - two vans</option><option value="capacity">Chosen change - capacity 125, two vans</option></select>
@@ -15,4 +15,4 @@
 <section><h2>Experiment notes</h2><label for="finding">What did this experiment show?</label><textarea id="finding" placeholder="Explain the result, a check you performed, and any limitation. This note is attached to the current result."></textarea><button id="save">Save note to this experiment</button><p id="save-status" role="status"></p><div id="history"></div></section>
 <section><h2>Download your work</h2><label for="conclusion">Final recommendation and tradeoffs</label><textarea id="conclusion" placeholder="Can a driver be removed? Under what assumptions? Distinguish a feasible route from a proven optimum."></textarea><div class="buttons"><button id="example-evidence" class="secondary">Load reference experiments</button><button id="json">Download complete evidence</button><button id="csv" class="secondary">Download route schedules · CSV</button><button id="report" class="secondary">Download findings · TXT</button></div><label for="import">Restore a saved evidence file</label><input id="import" type="file" accept=".json"><p id="storage" class="small"></p><p class="small">Every API attempt is saved automatically, including failed requests. JSON includes the original data, prompt, raw response and checks. Downloads contain no API key.</p></section></div></div>
 <footer>Fictional data and costs. Gemini access is configured on the server. OR-Tools runs separately from this website.</footer>
-</main><script src="/app.js"></script></body></html>
+</main><script src="./app.js"></script></body></html>
