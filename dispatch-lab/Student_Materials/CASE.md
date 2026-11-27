@@ -9,9 +9,8 @@ Investigate routing models, build a website that requests plans through an LLM A
 STARTING MATERIALS
 
 locations.csv: Depot, customers, demand, service times and delivery windows
+
 travel_minutes.csv: Journey times between locations
-current_plan.json: The existing three-van dispatch
-scenarios.json: Example experiment settings
 
 All data and costs are fictional. Times are minutes after 08:00; open_minute and close_minute define delivery windows. Match files by location ID. Use the supplied matrix for journeys; coordinates are for drawing only.
 
@@ -39,11 +38,11 @@ Explore Google's examples for simple vehicle routing (https://developers.google.
 
 Write one paragraph comparing their objectives and restrictions, and explain which features are needed for Northline's problem.
 
-Run the capacity and time-window examples in Python, using Colab or a local environment. For each, save the original output, change one input and rerun. Record the exact change and explain its observed effect. An unsuccessful search does not automatically prove impossibility.
+Run the capacity and time-window examples in Python, using Terminal or a local environment. For each, save the original output, change one input and rerun. Record the exact change and explain its observed effect. An unsuccessful search does not automatically prove impossibility.
 
 2. Build your website with AI and an API
 
-Use AI to build a website that calls a hosted or local LLM API to propose customer visit orders as JSON, using the supplied data and rules. Use actual API responses.
+Use AI to build a website that calls a hosted or local LLM API to propose customer visit orders as JSON, using the supplied data and rules.
 
 The website must:
 
@@ -62,7 +61,7 @@ Run locally in Python, separately from the website and independently of the LLM'
 
 4. Compare and challenge the plans
 
-Compare both methods with three vans available and then two. Also test 50% longer journeys, 30% higher demand and one additional change you choose. Running every entry in scenarios.json is unnecessary.
+Compare both methods with three vans available and then two. Also test 50% longer journeys, 30% higher demand and one additional change you choose.
 
 Use identical inputs, costs and constraints. Report customers served, violations, vans used, paid minutes, cost and runtime. Compare savings only between valid plans. Manually check one generated route's load, timing and cost, and verify complete customer coverage. Explain one finding using a specific route or failed run.
 
@@ -74,7 +73,7 @@ Explain whether two vans are sufficient, how disruptions affect that conclusion 
 
 DELIVERABLES
 
-- Working website URL and GitHub repository with setup instructions, API configuration and dependency versions.
+- Working website URL and GitHub repository.
 - Website experiment downloads and local OR-Tools code, schedules and scenario-summary CSV.
 
 Submit one report containing:

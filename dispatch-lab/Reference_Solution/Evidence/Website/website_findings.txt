@@ -1,5 +1,5 @@
 DISPATCH LAB — EXPERIMENT REPORT
-Exported: 2026-11-26T17:01:06.981Z
+Exported: 2026-11-27T15:27:41.764Z
 
 RECOMMENDATION
 Use the validated OR-Tools two-van plan on the normal day (DKK 2696). Keep access to a third van for demand increases and disruption planning. Two vans cannot carry the rounded higher demand of 240 units. Search failures alone do not establish impossibility; the window-change three-van search actually produced a valid two-route witness.
@@ -25,20 +25,6 @@ Route 2: returns after shift/depot closing time.
 Used vans: 2; unique customers: 25; paid minutes: 431; invalid candidate cost (excluded from savings): DKK 2724; runtime: 0.917s
 Van 1: D0 → C02 → C05 → C04 → C03 → C01 → C08 → C07 → C06 → D0; load 58; return 10:20; cost DKK 1060
 Van 2: D0 → C10 → C11 → C12 → C15 → C13 → C14 → C16 → C09 → C19 → C17 → C20 → C21 → C24 → C22 → C23 → C25 → C18 → D0; load 117; return 12:51; cost DKK 1664
-
-EXPERIMENT 8326b23d-07e4-471d-b286-e15139b65c4c
-Scenario: current_dispatch
-Method: baseline
-Status: FEASIBLE_BASELINE
-Input SHA-256: adafb95b881ac3a81c318d707d5d73a815ce59d6520631e979432904e99274d4
-Settings: {"vehicles":3,"capacity":100,"shift_minutes":240,"travel_multiplier":1,"demand_multiplier":1,"fixed_cost_dkk":500,"minute_cost_dkk":4,"search_seconds":3}
-Finding: The supplied current dispatch, replayed without redesign.
-Replay of the supplied three-van dispatch, without redesign.
-
-Used vans: 3; unique customers: 25; paid minutes: 441; valid cost: DKK 3264; runtime: 0.00743781300000046s
-Van 1: D0 → C01 → C02 → C03 → C04 → C05 → C06 → C07 → C08 → D0; load 58; return 10:18; cost DKK 1052
-Van 2: D0 → C09 → C10 → C11 → C12 → C13 → C14 → C15 → C16 → D0; load 55; return 10:21; cost DKK 1064
-Van 3: D0 → C17 → C18 → C19 → C20 → C21 → C22 → C23 → C24 → C25 → D0; load 62; return 10:42; cost DKK 1148
 
 EXPERIMENT b6ca3577-f333-4a37-ac4f-b4c7f1d55aef
 Scenario: normal_three

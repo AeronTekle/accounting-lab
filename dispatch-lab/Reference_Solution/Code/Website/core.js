@@ -49,10 +49,9 @@ export function makePrompt(p,extra=''){
 }
 export async function runExperiment(payload,data,env,fetcher=fetch){
  const started=performance.now(),p=prepare(payload,data),method=payload.method??'llm';
- if(!['llm','baseline'].includes(method))throw Error('Unknown method.');
+ if(method!=='llm')throw Error('Unknown method.');
  const hash=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify({config:p.config,dataset:p.dataset})));
  const base={...p,recorded_at:new Date().toISOString(),method,input_sha256:[...new Uint8Array(hash)].map(x=>x.toString(16).padStart(2,'0')).join(''),optimality_proven:false,routes:[],explanation:[],errors:[]};
- if(method==='baseline'){const check=evaluate(data.current_plan,p);return {...base,...check,status:check.valid?'FEASIBLE_BASELINE':'INVALID_BASELINE',explanation:['Replay of the supplied three-van dispatch, without redesign.'],elapsed_seconds:(performance.now()-started)/1000};}
  if(!env.GEMINI_API_KEY)throw Error('Gemini is not configured. Set GEMINI_API_KEY on the server.');
  const extra=payload.extra_prompt??'';if(typeof extra!=='string'||extra.length>3000)throw Error('Planning guidance must be at most 3000 characters.');
  const model=env.GEMINI_MODEL||'gemini-3.1-flash-lite';if(!/^[a-zA-Z0-9._-]+$/.test(model))throw Error('Invalid server model configuration.');

@@ -1,11 +1,13 @@
 """Local-only OR-Tools benchmark. Run: python benchmark.py. Never imports LLM routes."""
-import csv,json,platform
+import csv,json,platform,argparse
 from pathlib import Path
 import ortools
 from engine import solve
-OUT=Path(__file__).resolve().parent/'results';OUT.mkdir(parents=True,exist_ok=True)
+OUT=None
 SCENARIOS=[('normal_three',{'vehicles':3}),('normal_two',{'vehicles':2}),('traffic_three',{'vehicles':3,'travel_multiplier':1.5}),('traffic_two',{'vehicles':2,'travel_multiplier':1.5}),('demand_three',{'vehicles':3,'demand_multiplier':1.3}),('demand_two',{'vehicles':2,'demand_multiplier':1.3}),('window_three',{'vehicles':3}),('window_two',{'vehicles':2})]
 def main():
+    global OUT
+    parser=argparse.ArgumentParser();parser.add_argument('--output',default='new_results');args=parser.parse_args();OUT=Path(args.output);OUT.mkdir(parents=True,exist_ok=True)
     results=[];summary=[];schedules=[]
     for name,config in SCENARIOS:
         payload={'config':config}

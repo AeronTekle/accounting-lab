@@ -8,7 +8,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-DATA = Path(__file__).resolve().parent.parent / 'Student_Materials'
+DATA = Path(__file__).resolve().parents[3] / 'Student_Materials'
 
 def read_inputs(locations_text=None, matrix_text=None):
     locations_text = locations_text if locations_text is not None else (DATA / 'locations.csv').read_text()
@@ -145,7 +145,7 @@ def solve(payload=None,method='optimized'):
     import ortools
     from ortools.constraint_solver import pywrapcp,routing_enums_pb2
     start=time.perf_counter();locations,matrix,cfg,travel,demands=prepare(payload)
-    if method not in {'optimized','baseline'}:raise ValueError('Unknown method.')
+    if method != 'optimized':raise ValueError('Unknown method.')
     digest=hashlib.sha256(json.dumps({'locations':locations,'matrix':matrix,'config':cfg},sort_keys=True).encode()).hexdigest()
     base={'recorded_at':datetime.now(timezone.utc).isoformat(),'method':method,'config':cfg,
           'input_sha256':digest,'ortools_version':ortools.__version__,
@@ -162,13 +162,6 @@ def solve(payload=None,method='optimized'):
             reasons.append(loc['id']+' has a window shorter than its service duration.')
     if reasons:
         return {**base,'status':'PROVEN_INFEASIBLE_BY_BOUND','explanation':reasons,'elapsed_seconds':round(time.perf_counter()-start,3)}
-    if method=='baseline':
-        # Replay the supplied existing three-van dispatch; never silently redesign it.
-        raw=json.loads((DATA/'current_plan.json').read_text())['routes']
-        replay=evaluate_routes(raw,locations,travel,demands,cfg)
-        return {**base,**replay,'status':'FEASIBLE_BASELINE' if replay['valid'] else 'INVALID_BASELINE',
-                'explanation':['Replay of the supplied current three-van dispatch. An invalid plan is not a usable cost-saving comparator.'],
-                'elapsed_seconds':round(time.perf_counter()-start,3)}
     manager=pywrapcp.RoutingIndexManager(len(locations),cfg['vehicles'],0)
     routing=pywrapcp.RoutingModel(manager)
     time_cb=routing.RegisterTransitCallback(lambda a,b:travel[manager.IndexToNode(a)][manager.IndexToNode(b)]+locations[manager.IndexToNode(a)]['service_minutes'])
